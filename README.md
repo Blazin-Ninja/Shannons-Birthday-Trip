@@ -26,11 +26,17 @@ Open the local URL. Live sync works out of the box via the shared `VITE_MANTLE_N
 
 ### Family URL (GitHub Pages)
 
-After Pages is enabled on the repo:
+1. Open **Settings → Pages** on the repo.
+2. Set **Source** to **Deploy from a branch**.
+3. Choose branch **`gh-pages`** / folder **`/`** → Save.
+
+Site URL:
 
 **https://blazin-ninja.github.io/Shannons-Birthday-Trip/**
 
 On Android Chrome: open the link → menu → **Add to Home screen** for an app-like icon.
+
+The `gh-pages` branch is already published from this PR; enabling Pages is a one-time repo setting.
 
 ### Director PIN
 

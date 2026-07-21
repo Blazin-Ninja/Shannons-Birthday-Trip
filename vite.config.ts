@@ -9,5 +9,10 @@ export default defineConfig({
   base,
   plugins: [react()],
   server: { host: true, port: 5173 },
-  preview: { host: true, port: 4173 },
+  preview: {
+    host: true,
+    port: 4173,
+    // Cloudflare quick tunnels + other public previews
+    allowedHosts: true,
+  },
 })
