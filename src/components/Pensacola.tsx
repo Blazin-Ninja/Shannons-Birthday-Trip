@@ -21,27 +21,24 @@ const PICKS = [
 
 export function Pensacola() {
   return (
-    <section className="section" id="pensacola">
+    <section className="section trip-section trip-peak-section" id="pensacola">
       <p className="section-kicker">Birthday peak days</p>
       <h2>Pensacola for Shannon</h2>
       <p className="section-lead">
-        Tue–Wed are for celebrating Shannon — propose anything here and await her
-        call.
+        Tue–Wed are for celebrating Shannon — propose anything and await her call.
       </p>
-      <div className="stack">
+      <div className="stack trip-peak-grid">
         {PICKS.map((p, i) => (
           <motion.div
             key={p.title}
-            className="panel"
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            className="panel trip-panel trip-peak-card"
+            initial={{ opacity: 0, y: 16, rotate: -1 }}
+            whileInView={{ opacity: 1, y: 0, rotate: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: i * 0.06 }}
+            transition={{ delay: i * 0.06, type: 'spring', stiffness: 320, damping: 20 }}
           >
-            <h3 style={{ margin: '0 0 0.35rem' }}>{p.title}</h3>
-            <p className="muted" style={{ margin: 0 }}>
-              {p.detail}
-            </p>
+            <h3>{p.title}</h3>
+            <p className="muted">{p.detail}</p>
           </motion.div>
         ))}
       </div>

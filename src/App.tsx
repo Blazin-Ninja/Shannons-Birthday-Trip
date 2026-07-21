@@ -82,7 +82,7 @@ export default function App() {
   }
 
   return (
-    <div className="app-shell">
+    <div className="app-shell trip-shell">
       <Confetti show={celebrate} />
       <Hero />
       <LiveStatus
@@ -122,10 +122,8 @@ export default function App() {
       />
       <Timeline />
       <Pensacola />
-      <footer className="footer">
-        <p className="display" style={{ fontSize: '1.4rem', margin: 0 }}>
-          Happy birthday, Shannon.
-        </p>
+      <footer className="footer trip-footer">
+        <p className="trip-footer-brand">Happy birthday, Shannon.</p>
         <p className="muted">
           Signed in as {identity.name}
           {identity.isDirector ? ' · Director' : ''}

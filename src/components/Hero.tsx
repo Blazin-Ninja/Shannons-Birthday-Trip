@@ -1,50 +1,49 @@
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { ALT_HERO_IMAGE, HERO_IMAGE } from '../data/travelers'
 import { firebaseEnabled } from '../lib/firebase'
 
 export function Hero() {
+  const reduceMotion = useReducedMotion()
+
   return (
-    <header className="hero">
+    <header className="hero trip-hero">
       <motion.div
         className="hero-media"
         style={{ backgroundImage: `url(${HERO_IMAGE}), url(${ALT_HERO_IMAGE})` }}
-        initial={{ scale: 1.12 }}
-        animate={{ scale: 1.04 }}
-        transition={{ duration: 1.8, ease: 'easeOut' }}
+        initial={reduceMotion ? false : { scale: 1.14 }}
+        animate={{ scale: 1.05 }}
+        transition={{ duration: 1.6, ease: 'easeOut' }}
       />
       <div className="hero-scrim" />
+      <div className="hero-decor" aria-hidden>
+        <span className="hero-balloon hero-balloon-a" />
+        <span className="hero-balloon hero-balloon-b" />
+        <span className="hero-balloon hero-balloon-c" />
+      </div>
       <div className="hero-content">
         <motion.p
-          className="section-kicker"
-          style={{ color: 'rgba(255,255,255,0.85)' }}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          A Gulf road trip celebration
-        </motion.p>
-        <motion.h1
           className="hero-brand"
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.7 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 28, scale: 0.92 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ type: 'spring', stiffness: 380, damping: 18 }}
         >
-          Shannon&apos;s Birthday Trip
-        </motion.h1>
+          Shannon&apos;s
+          <span className="hero-brand-accent">Birthday Trip</span>
+        </motion.p>
         <motion.p
           className="hero-sub"
-          initial={{ opacity: 0, y: 16 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25 }}
+          transition={{ delay: 0.15 }}
         >
-          OKC to Pensacola and back — live map, family plans, and every stop
-          filtered through Shannon&apos;s call.
+          OKC → Pensacola and back — live map, family plans, Shannon&apos;s call.
         </motion.p>
         <div className="hero-route" aria-hidden>
           <motion.div
             className="hero-route-fill"
-            initial={{ scaleX: 0 }}
+            initial={reduceMotion ? false : { scaleX: 0 }}
             animate={{ scaleX: 1 }}
-            transition={{ delay: 0.45, duration: 1.2, ease: 'easeInOut' }}
+            transition={{ delay: 0.35, duration: 1.1, ease: 'easeInOut' }}
           />
         </div>
         <div className="sync-pill">
