@@ -26,14 +26,14 @@ const youIcon = (color: string) =>
 
 const destIcon = L.divIcon({
   className: '',
-  html: `<div style="width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:18px solid #e07a5f;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))"></div>`,
+  html: `<div style="width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:18px solid #ff5a5f;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))"></div>`,
   iconSize: [20, 18],
   iconAnchor: [10, 18],
 })
 
 const spotIcon = L.divIcon({
   className: '',
-  html: `<div style="width:12px;height:12px;border-radius:3px;background:#1a6b6a;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3)"></div>`,
+  html: `<div style="width:12px;height:12px;border-radius:3px;background:#0e6b75;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3)"></div>`,
   iconSize: [12, 12],
   iconAnchor: [6, 6],
 })
