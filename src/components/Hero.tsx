@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { ALT_HERO_IMAGE, HERO_IMAGE } from '../data/travelers'
-import { firebaseEnabled } from '../lib/firebase'
+import { syncLabel } from '../lib/firebase'
 
 export function Hero() {
   return (
@@ -47,9 +47,7 @@ export function Hero() {
             transition={{ delay: 0.45, duration: 1.2, ease: 'easeInOut' }}
           />
         </div>
-        <div className="sync-pill">
-          {firebaseEnabled() ? 'Live sync on' : 'Local preview sync'}
-        </div>
+        <div className="sync-pill">{syncLabel()}</div>
       </div>
     </header>
   )

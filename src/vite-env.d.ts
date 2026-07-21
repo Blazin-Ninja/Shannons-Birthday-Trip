@@ -2,6 +2,7 @@
 
 interface ImportMetaEnv {
   readonly VITE_SHANNON_DIRECTOR_PIN?: string
+  readonly VITE_MANTLE_NS?: string
   readonly VITE_FIREBASE_API_KEY?: string
   readonly VITE_FIREBASE_AUTH_DOMAIN?: string
   readonly VITE_FIREBASE_DATABASE_URL?: string
