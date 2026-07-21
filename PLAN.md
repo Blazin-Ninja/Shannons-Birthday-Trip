@@ -41,6 +41,21 @@ flowchart LR
 - Non-Shannon devices never see Agree/Veto controls.
 - PIN is local unlock for director powers on that phone (not a full account system).
 
+## Travelers (seeded)
+
+| Name | Role | Avatar sources |
+|------|------|----------------|
+| Shannon | Birthday lead / Director (PIN) | `shannon-ellie.png`, `shannon-sophia-ellie.png`, `ellie-sophia-shannon.png`, `sophia-william-shannon.png`, `sophia-william-shannon-ellie.png` |
+| William | Family | `william.png`, `sophia-william-shannon.png`, `sophia-william-shannon-ellie.png` |
+| Sophia | Family | `sophia.png` + group shots |
+| Ellie | Family | `ellie.png` + group shots |
+| Matthew | Trip guest (William’s brother) | `matthew-celina.png` |
+| Celina | Trip guest (Matthew’s wife / sister-in-law) | `matthew-celina.png` |
+
+Hero: `assets/hero/escape-room-family.png`  
+Strong alternate hero/splash (core 4 — Sophia, William, Shannon, Ellie): `assets/travelers/sophia-william-shannon-ellie.png`  
+Group candids: `assets/travelers/sophia-william-shannon.png` (Sophia, William, Shannon); `assets/travelers/ellie-sophia-shannon.png` (Ellie, Sophia, Shannon)
+
 ## Birthday reiteration (throughout the app)
 
 Not a one-time banner — recurring cues:
