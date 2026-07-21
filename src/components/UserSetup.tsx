@@ -223,7 +223,7 @@ export function UserSetup({ onComplete }: Props) {
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
               >
-                Director mode unlocked on this phone — no PIN needed. Happy birthday!
+                Director powers unlocked on this phone. Happy birthday, Shannon!
               </motion.p>
             )}
           </AnimatePresence>
