@@ -145,6 +145,42 @@ Director PIN is **not** stored in Firebase (lives in app env: `VITE_SHANNON_DIRE
 
 Curated spots by route segment. Users can tap a spot → “Propose this for Shannon” pre-fills a plan. Active segment from trip status + optional distance boost from GPS.
 
+## Buc-ee’s along the route (≤20 min detour)
+
+Rule for the app: include every **open** Buc-ee’s that sits on (or within ~20 minutes of) the family’s highway corridor. Exclude stores that require a longer detour or are not open during the trip (7/27–8/2/2026).
+
+### Included (on-corridor / under 20 min)
+
+These fit the natural **I-10 Gulf approach** to and from Pensacola (Shreveport → Pensacola and Pensacola → Lake Village via I-10 west):
+
+| Store | Address | Highway | Why it qualifies |
+|-------|---------|---------|------------------|
+| **Harrison County / Pass Christian, MS** (#61) | 8245 Firetower Rd, Pass Christian, MS 39571 | I-10 at Menge Ave (Exit 24) | Right off I-10 west of Mobile — on the drive toward Pensacola and again heading home westbound |
+| **Loxley / Robertsdale, AL** (#42) | 20403 County Rd 68, Robertsdale, AL 36567 | I-10 Exit 49 | ~0.2–0.3 mi off I-10 between Mobile and Pensacola — last mega-stop before the beach / first stop leaving west |
+
+In app data: tag both as `kind: 'stop'`, brand **Buc-ee’s**, segments `shreveport-pensacola` and `pensacola-lakevillage`, and show them in **Near you now** + map pins when those legs are active. One-tap **“Propose this for Shannon”** should pre-fill a plan.
+
+### Optional (only if outbound goes OKC → DFW → I-20 → Shreveport)
+
+The shortest OKC → Shreveport drive (US-69 corridor) has **no** Buc-ee’s. If the family takes the longer DFW / I-20 path instead:
+
+| Store | Address | Highway | Notes |
+|-------|---------|---------|-------|
+| **Denton, TX** (#39) | 2800 S Interstate 35 E, Denton, TX 76210 | I-35E | On the OKC → DFW approach |
+| **Terrell, TX** (#36) | 506 W. IH 20, Terrell, TX 75160 | I-20 | On I-20 east of Dallas toward Shreveport |
+
+Default app setting: **I-10 Buc-ee’s always on**; Denton/Terrell shown only if trip status / route mode is “via DFW,” or as optional proposes Shannon can veto.
+
+### Excluded for this trip (wrong corridor, >20 min, or not open yet)
+
+- **Leeds, Athens, Auburn, AL** — not on the Pensacola I-10 path without a large detour
+- **St. Augustine / Daytona Beach, FL** — Florida east coast, far from Pensacola
+- **Benton, AR** (I-30) — first Arkansas store; **opens Aug 17, 2026** (after this trip ends Aug 2)
+- **Ruston, LA** (I-20) — targeted ~2027, not open yet
+- All other TX / out-of-corridor stores (Houston, I-45 south, etc.)
+
+Source for live addresses: [buc-ees.com/locations](https://buc-ees.com/locations/).
+
 ## Visual direction
 
 Gulf teal / sugar-sand / sunset coral / night navy; expressive birthday typography; intentional motion; Shannon brand-first; no purple / cream-terracotta / newspaper defaults. Plans UI is interaction-first (not a card dump in the hero).
