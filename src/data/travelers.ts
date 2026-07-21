@@ -55,7 +55,7 @@ export const TRAVELERS: TravelerSeed[] = [
   },
 ]
 
-export const HERO_IMAGE = publicAsset('hero/escape-room-family.png')
+export const HERO_IMAGE = publicAsset('hero/disney-family-hero.png')
 export const ALT_HERO_IMAGE = publicAsset(
   'travelers/sophia-william-shannon-ellie.png',
 )

@@ -6,21 +6,28 @@ export function Hero() {
   const reduceMotion = useReducedMotion()
 
   return (
-    <header className="hero trip-hero">
+    <header className="hero trip-hero hero-cast">
       <motion.div
-        className="hero-media"
+        className="hero-media hero-media-cast"
         style={{ backgroundImage: `url(${HERO_IMAGE}), url(${ALT_HERO_IMAGE})` }}
-        initial={reduceMotion ? false : { scale: 1.14 }}
-        animate={{ scale: 1.05 }}
-        transition={{ duration: 1.6, ease: 'easeOut' }}
+        initial={reduceMotion ? false : { scale: 1.12, y: 18 }}
+        animate={{ scale: 1.02, y: 0 }}
+        transition={{ duration: 1.5, ease: 'easeOut' }}
       />
-      <div className="hero-scrim" />
+      <div className="hero-scrim hero-scrim-cast" />
       <div className="hero-decor" aria-hidden>
         <span className="hero-balloon hero-balloon-a" />
         <span className="hero-balloon hero-balloon-b" />
         <span className="hero-balloon hero-balloon-c" />
       </div>
-      <div className="hero-content">
+      <div className="hero-content hero-content-cast">
+        <motion.p
+          className="hero-cast-label"
+          initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          William · Sophia · Ellie · Shannon
+        </motion.p>
         <motion.p
           className="hero-brand"
           initial={reduceMotion ? false : { opacity: 0, y: 28, scale: 0.92 }}
@@ -36,7 +43,7 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
         >
-          OKC → Pensacola and back — live map, family plans, Shannon&apos;s call.
+          The birthday crew hits the Gulf — live map, family plans, Shannon&apos;s call.
         </motion.p>
         <div className="hero-route" aria-hidden>
           <motion.div
