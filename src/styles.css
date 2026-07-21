@@ -421,6 +421,232 @@ textarea {
   margin: 0 auto;
 }
 
+.setup-cartoon {
+  position: relative;
+  max-width: none;
+  overflow: hidden;
+  font-family: 'Nunito', 'Outfit', system-ui, sans-serif;
+  background:
+    radial-gradient(ellipse 900px 420px at 50% -8%, rgba(255, 214, 102, 0.55), transparent 60%),
+    radial-gradient(ellipse 700px 380px at 0% 30%, rgba(78, 205, 196, 0.28), transparent 55%),
+    radial-gradient(ellipse 640px 360px at 100% 40%, rgba(255, 143, 171, 0.22), transparent 50%),
+    linear-gradient(180deg, #7ec8f0 0%, #b8e4f8 28%, #ffe8a3 62%, #fff6e0 100%);
+}
+
+.setup-sky {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.setup-cartoon-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 560px;
+  margin: 0 auto;
+  padding-top: 0.5rem;
+}
+
+.setup-brand {
+  margin: 0 0 0.35rem;
+  font-family: 'Fredoka', 'Fraunces', Georgia, sans-serif;
+  font-size: clamp(2rem, 8vw, 2.85rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: #0b3d4a;
+  text-align: center;
+  text-shadow:
+    0 3px 0 rgba(255, 255, 255, 0.65),
+    0 8px 24px rgba(11, 61, 74, 0.18);
+}
+
+.setup-headline {
+  margin: 0 0 0.55rem;
+  font-family: 'Fredoka', 'Fraunces', Georgia, sans-serif;
+  font-size: clamp(1.55rem, 5.5vw, 2.05rem);
+  font-weight: 600;
+  line-height: 1.15;
+  text-align: center;
+  color: #1f5f6b;
+}
+
+.setup-lead {
+  margin: 0 auto 1.15rem;
+  max-width: 26rem;
+  text-align: center;
+  color: #355868;
+  font-weight: 600;
+  font-size: 1.02rem;
+}
+
+.setup-balloon {
+  position: absolute;
+  top: 4%;
+  border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
+  background: radial-gradient(circle at 30% 28%, #fff8, transparent 42%), var(--balloon);
+  box-shadow: inset -6px -10px 16px rgba(0, 0, 0, 0.12);
+}
+
+.setup-balloon::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 2px;
+  height: 48px;
+  transform: translateX(-50%);
+  background: linear-gradient(#7a8794, transparent);
+}
+
+.setup-sparkle {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: #fff7b0;
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+  filter: drop-shadow(0 0 6px rgba(255, 247, 176, 0.8));
+}
+
+.setup-cloud {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 999px;
+  filter: blur(0.2px);
+}
+
+.setup-cloud::before,
+.setup-cloud::after {
+  content: '';
+  position: absolute;
+  background: inherit;
+  border-radius: 50%;
+}
+
+.setup-cloud-a {
+  width: 110px;
+  height: 36px;
+  top: 18%;
+  left: 8%;
+}
+
+.setup-cloud-a::before {
+  width: 48px;
+  height: 48px;
+  top: -24px;
+  left: 18px;
+}
+
+.setup-cloud-a::after {
+  width: 36px;
+  height: 36px;
+  top: -16px;
+  left: 52px;
+}
+
+.setup-cloud-b {
+  width: 130px;
+  height: 40px;
+  top: 28%;
+  right: 4%;
+  left: auto;
+}
+
+.setup-cloud-b::before {
+  width: 54px;
+  height: 54px;
+  top: -28px;
+  left: 22px;
+}
+
+.setup-cloud-b::after {
+  width: 40px;
+  height: 40px;
+  top: -18px;
+  left: 62px;
+}
+
+.setup-traveler-grid {
+  margin-bottom: 1.1rem;
+}
+
+.setup-chip {
+  border-width: 3px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 8px 0 rgba(31, 95, 107, 0.08);
+  transform-origin: center bottom;
+}
+
+.setup-chip.selected {
+  border-color: #ff6b6b;
+  background: #fff;
+  box-shadow:
+    0 0 0 4px rgba(255, 107, 107, 0.2),
+    0 10px 0 rgba(255, 107, 107, 0.18);
+}
+
+.setup-chip img {
+  border-width: 4px;
+  border-color: #fff;
+}
+
+.setup-panel {
+  background: rgba(255, 255, 255, 0.92);
+  border: 3px solid rgba(31, 95, 107, 0.12);
+  border-radius: 1.5rem;
+  box-shadow: 0 12px 0 rgba(31, 95, 107, 0.08);
+}
+
+.setup-director {
+  font-weight: 700;
+  color: #1f5f6b;
+  align-items: flex-start;
+}
+
+.setup-director input {
+  width: auto;
+  margin-top: 0.2rem;
+  accent-color: #ff6b6b;
+}
+
+.setup-director-note {
+  margin: 0;
+  overflow: hidden;
+  font-weight: 700;
+  color: #1a6b6a;
+  background: rgba(78, 205, 196, 0.18);
+  border-radius: 0.85rem;
+  padding: 0.55rem 0.75rem;
+}
+
+.setup-cta {
+  width: 100%;
+  font-family: 'Fredoka', 'Nunito', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  padding: 0.9rem 1.2rem;
+  border-radius: 1.1rem;
+  background: linear-gradient(180deg, #ff8a70 0%, #e07a5f 55%, #d4664a 100%);
+  border-bottom: none;
+  margin-top: 0.25rem;
+}
+
+.setup-cta:active {
+  transform: translateY(4px) scale(0.98);
+}
+
 .confetti-burst {
   pointer-events: none;
   position: fixed;
