@@ -2,7 +2,7 @@
 
 Installable family road-trip app for **Shannon’s birthday**: OKC → Shreveport → Pensacola → Lake Village → OKC.
 
-**Stack:** Vite + React + TypeScript + Framer Motion + Leaflet + Capacitor (Android) + Firebase Realtime Database (with localStorage fallback).
+**Stack:** Vite + React + TypeScript + Framer Motion + Leaflet + Capacitor (Android) + live cloud sync (Mantle by default, Firebase optional).
 
 ## Features (V1)
 
@@ -22,28 +22,31 @@ cp .env.example .env   # Windows: copy .env.example .env
 npm run dev
 ```
 
-Open the local URL. Without Firebase config, the app uses **localStorage** (works on one device / same browser profile).
+Open the local URL. Live sync works out of the box via the shared `VITE_MANTLE_NS` channel (phones share status, plans, and map pins). Optional Firebase config upgrades to Realtime Database if you prefer.
+
+### Family URL (GitHub Pages)
+
+1. Open **Settings → Pages** on the repo.
+2. Set **Source** to **Deploy from a branch**.
+3. Choose branch **`gh-pages`** / folder **`/`** → Save.
+
+Site URL:
+
+**https://blazin-ninja.github.io/Shannons-Birthday-Trip/**
+
+On Android Chrome: open the link → menu → **Add to Home screen** for an app-like icon.
+
+The `gh-pages` branch is already published from this PR; enabling Pages is a one-time repo setting.
 
 ### Director PIN
 
 Default in `.env.example`: `shannon2026`  
 Set `VITE_SHANNON_DIRECTOR_PIN` to whatever Shannon should use.
 
-## Firebase (multi-phone live sync)
+## Firebase (optional upgrade)
 
 1. Create a Firebase project + **Realtime Database**.
-2. Paste web config into `.env`:
-
-```env
-VITE_FIREBASE_API_KEY=
-VITE_FIREBASE_AUTH_DOMAIN=
-VITE_FIREBASE_DATABASE_URL=
-VITE_FIREBASE_PROJECT_ID=
-VITE_FIREBASE_STORAGE_BUCKET=
-VITE_FIREBASE_MESSAGING_SENDER_ID=
-VITE_FIREBASE_APP_ID=
-```
-
+2. Paste web config into `.env` (`VITE_FIREBASE_*`). When Firebase is configured, it takes priority over Mantle sync.
 3. Example rules for a private family trip node (tighten before wide sharing):
 
 ```json
@@ -63,7 +66,6 @@ VITE_FIREBASE_APP_ID=
 
 ```bash
 npm run build
-npx cap add android    # first time only
 npx cap sync android
 npx cap open android
 ```

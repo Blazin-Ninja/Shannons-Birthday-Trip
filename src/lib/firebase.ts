@@ -9,7 +9,11 @@ import {
   update,
   type Database,
 } from 'firebase/database'
+import { defaultStatus } from './defaults'
+import * as mantle from './mantle'
 import type { LiveUser, TripPlan, TripStatus } from './types'
+
+export { defaultStatus }
 
 const tripPath = import.meta.env.VITE_TRIP_PATH || 'trips/shannon-birthday-2026'
 
@@ -34,6 +38,17 @@ export function firebaseEnabled(): boolean {
   )
 }
 
+/** True when phones can share live data (Firebase or Mantle cloud sync). */
+export function cloudSyncEnabled(): boolean {
+  return firebaseEnabled() || mantle.mantleEnabled()
+}
+
+export function syncLabel(): string {
+  if (firebaseEnabled()) return 'Live sync on (Firebase)'
+  if (mantle.mantleEnabled()) return 'Live sync on'
+  return 'Local preview sync'
+}
+
 function getDb(): Database | null {
   if (!firebaseEnabled()) return null
   if (!app) {
@@ -46,14 +61,6 @@ function getDb(): Database | null {
 const LS_STATUS = 'sbt-status-v1'
 const LS_PLANS = 'sbt-plans-v1'
 const LS_USERS = 'sbt-users-v1'
-
-export const defaultStatus: TripStatus = {
-  whereWeAre: 'Oklahoma City',
-  leavingAt: '2026-07-27T09:00',
-  headedTo: 'Shreveport',
-  updatedAt: Date.now(),
-  viaDfw: false,
-}
 
 function readLs<T>(key: string, fallback: T): T {
   try {
@@ -73,56 +80,64 @@ type Unsub = () => void
 
 export function subscribeStatus(cb: (s: TripStatus) => void): Unsub {
   const database = getDb()
-  if (!database) {
-    cb(readLs(LS_STATUS, defaultStatus))
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === LS_STATUS && e.newValue) {
-        cb(JSON.parse(e.newValue) as TripStatus)
-      }
-    }
-    window.addEventListener('storage', onStorage)
-    return () => window.removeEventListener('storage', onStorage)
+  if (database) {
+    const r = ref(database, `${tripPath}/status`)
+    return onValue(r, (snap) => {
+      const val = snap.val() as TripStatus | null
+      cb(val ?? defaultStatus)
+    })
   }
-  const r = ref(database, `${tripPath}/status`)
-  return onValue(r, (snap) => {
-    const val = snap.val() as TripStatus | null
-    cb(val ?? defaultStatus)
-  })
+  if (mantle.mantleEnabled()) return mantle.subscribeStatus(cb)
+
+  cb(readLs(LS_STATUS, defaultStatus))
+  const onStorage = (e: StorageEvent) => {
+    if (e.key === LS_STATUS && e.newValue) {
+      cb(JSON.parse(e.newValue) as TripStatus)
+    }
+  }
+  window.addEventListener('storage', onStorage)
+  return () => window.removeEventListener('storage', onStorage)
 }
 
 export async function saveStatus(status: TripStatus): Promise<void> {
   const next = { ...status, updatedAt: Date.now() }
   const database = getDb()
-  if (!database) {
-    writeLs(LS_STATUS, next)
-    window.dispatchEvent(
-      new StorageEvent('storage', {
-        key: LS_STATUS,
-        newValue: JSON.stringify(next),
-      }),
-    )
+  if (database) {
+    await set(ref(database, `${tripPath}/status`), next)
     return
   }
-  await set(ref(database, `${tripPath}/status`), next)
+  if (mantle.mantleEnabled()) {
+    await mantle.saveStatus(next)
+    return
+  }
+  writeLs(LS_STATUS, next)
+  window.dispatchEvent(
+    new StorageEvent('storage', {
+      key: LS_STATUS,
+      newValue: JSON.stringify(next),
+    }),
+  )
 }
 
 export function subscribeUsers(
   cb: (users: Record<string, LiveUser>) => void,
 ): Unsub {
   const database = getDb()
-  if (!database) {
-    cb(readLs(LS_USERS, {}))
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === LS_USERS && e.newValue) {
-        cb(JSON.parse(e.newValue) as Record<string, LiveUser>)
-      }
-    }
-    window.addEventListener('storage', onStorage)
-    return () => window.removeEventListener('storage', onStorage)
+  if (database) {
+    return onValue(ref(database, `${tripPath}/users`), (snap) => {
+      cb((snap.val() as Record<string, LiveUser>) ?? {})
+    })
   }
-  return onValue(ref(database, `${tripPath}/users`), (snap) => {
-    cb((snap.val() as Record<string, LiveUser>) ?? {})
-  })
+  if (mantle.mantleEnabled()) return mantle.subscribeUsers(cb)
+
+  cb(readLs(LS_USERS, {}))
+  const onStorage = (e: StorageEvent) => {
+    if (e.key === LS_USERS && e.newValue) {
+      cb(JSON.parse(e.newValue) as Record<string, LiveUser>)
+    }
+  }
+  window.addEventListener('storage', onStorage)
+  return () => window.removeEventListener('storage', onStorage)
 }
 
 export async function publishUser(
@@ -130,43 +145,49 @@ export async function publishUser(
   user: LiveUser,
 ): Promise<void> {
   const database = getDb()
-  if (!database) {
-    const all = readLs<Record<string, LiveUser>>(LS_USERS, {})
-    all[userId] = user
-    writeLs(LS_USERS, all)
-    window.dispatchEvent(
-      new StorageEvent('storage', {
-        key: LS_USERS,
-        newValue: JSON.stringify(all),
-      }),
-    )
+  if (database) {
+    await set(ref(database, `${tripPath}/users/${userId}`), user)
     return
   }
-  await set(ref(database, `${tripPath}/users/${userId}`), user)
+  if (mantle.mantleEnabled()) {
+    await mantle.publishUser(userId, user)
+    return
+  }
+  const all = readLs<Record<string, LiveUser>>(LS_USERS, {})
+  all[userId] = user
+  writeLs(LS_USERS, all)
+  window.dispatchEvent(
+    new StorageEvent('storage', {
+      key: LS_USERS,
+      newValue: JSON.stringify(all),
+    }),
+  )
 }
 
 export function subscribePlans(cb: (plans: TripPlan[]) => void): Unsub {
   const database = getDb()
-  if (!database) {
-    cb(readLs(LS_PLANS, []))
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === LS_PLANS && e.newValue) {
-        cb(JSON.parse(e.newValue) as TripPlan[])
+  if (database) {
+    return onValue(ref(database, `${tripPath}/plans`), (snap) => {
+      const val = snap.val() as Record<string, Omit<TripPlan, 'id'>> | null
+      if (!val) {
+        cb([])
+        return
       }
-    }
-    window.addEventListener('storage', onStorage)
-    return () => window.removeEventListener('storage', onStorage)
+      const list = Object.entries(val).map(([id, p]) => ({ ...p, id }))
+      list.sort((a, b) => b.createdAt - a.createdAt)
+      cb(list)
+    })
   }
-  return onValue(ref(database, `${tripPath}/plans`), (snap) => {
-    const val = snap.val() as Record<string, Omit<TripPlan, 'id'>> | null
-    if (!val) {
-      cb([])
-      return
+  if (mantle.mantleEnabled()) return mantle.subscribePlans(cb)
+
+  cb(readLs(LS_PLANS, []))
+  const onStorage = (e: StorageEvent) => {
+    if (e.key === LS_PLANS && e.newValue) {
+      cb(JSON.parse(e.newValue) as TripPlan[])
     }
-    const list = Object.entries(val).map(([id, p]) => ({ ...p, id }))
-    list.sort((a, b) => b.createdAt - a.createdAt)
-    cb(list)
-  })
+  }
+  window.addEventListener('storage', onStorage)
+  return () => window.removeEventListener('storage', onStorage)
 }
 
 export async function createPlan(
@@ -181,20 +202,24 @@ export async function createPlan(
     createdAt: Date.now(),
   }
   const database = getDb()
-  if (!database) {
-    const all = readLs<TripPlan[]>(LS_PLANS, [])
-    const id = `local-${Date.now()}`
-    all.unshift({ ...payload, id })
-    writeLs(LS_PLANS, all)
-    window.dispatchEvent(
-      new StorageEvent('storage', {
-        key: LS_PLANS,
-        newValue: JSON.stringify(all),
-      }),
-    )
+  if (database) {
+    await push(ref(database, `${tripPath}/plans`), payload)
     return
   }
-  await push(ref(database, `${tripPath}/plans`), payload)
+  if (mantle.mantleEnabled()) {
+    await mantle.createPlan(plan)
+    return
+  }
+  const all = readLs<TripPlan[]>(LS_PLANS, [])
+  const id = `local-${Date.now()}`
+  all.unshift({ ...payload, id })
+  writeLs(LS_PLANS, all)
+  window.dispatchEvent(
+    new StorageEvent('storage', {
+      key: LS_PLANS,
+      newValue: JSON.stringify(all),
+    }),
+  )
 }
 
 export async function decidePlan(
@@ -203,46 +228,54 @@ export async function decidePlan(
   decisionNote?: string,
 ): Promise<void> {
   const database = getDb()
-  if (!database) {
-    const all = readLs<TripPlan[]>(LS_PLANS, [])
-    const next = all.map((p) =>
-      p.id === planId
-        ? {
-            ...p,
-            status,
-            decidedAt: Date.now(),
-            decisionNote,
-          }
-        : p,
-    )
-    writeLs(LS_PLANS, next)
-    window.dispatchEvent(
-      new StorageEvent('storage', {
-        key: LS_PLANS,
-        newValue: JSON.stringify(next),
-      }),
-    )
+  if (database) {
+    await update(ref(database, `${tripPath}/plans/${planId}`), {
+      status,
+      decidedAt: Date.now(),
+      decisionNote: decisionNote ?? null,
+    })
     return
   }
-  await update(ref(database, `${tripPath}/plans/${planId}`), {
-    status,
-    decidedAt: Date.now(),
-    decisionNote: decisionNote ?? null,
-  })
+  if (mantle.mantleEnabled()) {
+    await mantle.decidePlan(planId, status, decisionNote)
+    return
+  }
+  const all = readLs<TripPlan[]>(LS_PLANS, [])
+  const next = all.map((p) =>
+    p.id === planId
+      ? {
+          ...p,
+          status,
+          decidedAt: Date.now(),
+          decisionNote,
+        }
+      : p,
+  )
+  writeLs(LS_PLANS, next)
+  window.dispatchEvent(
+    new StorageEvent('storage', {
+      key: LS_PLANS,
+      newValue: JSON.stringify(next),
+    }),
+  )
 }
 
 export async function withdrawPlan(planId: string): Promise<void> {
   const database = getDb()
-  if (!database) {
-    const all = readLs<TripPlan[]>(LS_PLANS, []).filter((p) => p.id !== planId)
-    writeLs(LS_PLANS, all)
-    window.dispatchEvent(
-      new StorageEvent('storage', {
-        key: LS_PLANS,
-        newValue: JSON.stringify(all),
-      }),
-    )
+  if (database) {
+    await remove(ref(database, `${tripPath}/plans/${planId}`))
     return
   }
-  await remove(ref(database, `${tripPath}/plans/${planId}`))
+  if (mantle.mantleEnabled()) {
+    await mantle.withdrawPlan(planId)
+    return
+  }
+  const all = readLs<TripPlan[]>(LS_PLANS, []).filter((p) => p.id !== planId)
+  writeLs(LS_PLANS, all)
+  window.dispatchEvent(
+    new StorageEvent('storage', {
+      key: LS_PLANS,
+      newValue: JSON.stringify(all),
+    }),
+  )
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { STOP_PRESETS } from '../data/stops'
 import { saveStatus } from '../lib/firebase'
 import type { LocalIdentity, TripStatus } from '../lib/types'
@@ -12,6 +12,10 @@ type Props = {
 export function LiveStatus({ status, identity, onLocalUpdate }: Props) {
   const [draft, setDraft] = useState(status)
   const [saving, setSaving] = useState(false)
+
+  useEffect(() => {
+    setDraft(status)
+  }, [status])
 
   async function save() {
     setSaving(true)

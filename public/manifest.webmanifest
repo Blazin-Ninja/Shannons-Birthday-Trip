@@ -1,0 +1,21 @@
+{
+  "name": "shannons-birthday-trip",
+  "short_name": "Shannon Trip",
+  "description": "Shannon's birthday road trip — live map, plans, and family sync",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0b3d4a",
+  "theme_color": "#0b3d4a",
+  "icons": [
+    {
+      "src": "travelers/shannon-ellie.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "travelers/shannon-ellie.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
