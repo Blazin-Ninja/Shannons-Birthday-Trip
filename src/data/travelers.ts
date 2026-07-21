@@ -1,3 +1,5 @@
+import { publicAsset } from '../lib/assets'
+
 export type TravelerSeed = {
   id: string
   name: string
@@ -13,7 +15,7 @@ export const TRAVELERS: TravelerSeed[] = [
     name: 'Shannon',
     role: 'Birthday lead / Director',
     color: '#e07a5f',
-    avatar: '/travelers/shannon-ellie.png',
+    avatar: publicAsset('travelers/shannon-ellie.png'),
     isDirectorCandidate: true,
   },
   {
@@ -21,37 +23,39 @@ export const TRAVELERS: TravelerSeed[] = [
     name: 'William',
     role: 'Family',
     color: '#3d8b8a',
-    avatar: '/travelers/william.png',
+    avatar: publicAsset('travelers/william.png'),
   },
   {
     id: 'sophia',
     name: 'Sophia',
     role: 'Family',
     color: '#f2a65a',
-    avatar: '/travelers/sophia.png',
+    avatar: publicAsset('travelers/sophia.png'),
   },
   {
     id: 'ellie',
     name: 'Ellie',
     role: 'Family',
     color: '#7eb09b',
-    avatar: '/travelers/ellie.png',
+    avatar: publicAsset('travelers/ellie.png'),
   },
   {
     id: 'matthew',
     name: 'Matthew',
     role: 'Trip guest',
     color: '#4a6fa5',
-    avatar: '/travelers/matthew-celina.png',
+    avatar: publicAsset('travelers/matthew-celina.png'),
   },
   {
     id: 'celina',
     name: 'Celina',
     role: 'Trip guest',
     color: '#c77d99',
-    avatar: '/travelers/matthew-celina.png',
+    avatar: publicAsset('travelers/matthew-celina.png'),
   },
 ]
 
-export const HERO_IMAGE = '/hero/escape-room-family.png'
-export const ALT_HERO_IMAGE = '/travelers/sophia-william-shannon-ellie.png'
+export const HERO_IMAGE = publicAsset('hero/disney-family-hero.png')
+export const ALT_HERO_IMAGE = publicAsset(
+  'travelers/sophia-william-shannon-ellie.png',
+)

@@ -55,13 +55,13 @@ export function SharingToggle({ identity }: Props) {
   }, [sharing, identity])
 
   return (
-    <section className="section">
+    <section className="section trip-section">
       <p className="section-kicker">Share with the birthday crew</p>
       <h2>My live location</h2>
       <p className="section-lead">
         Keep the app open while sharing so Shannon&apos;s trip map stays fresh.
       </p>
-      <div className="panel row">
+      <div className="panel row trip-panel trip-share">
         <button
           type="button"
           className={`btn ${sharing ? 'btn-coral' : 'btn-primary'}`}

@@ -1,120 +1,205 @@
-import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { useState, type CSSProperties } from 'react'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { TRAVELERS } from '../data/travelers'
-import { tryUnlockDirector } from '../lib/director'
+import { unlockDirector, lockDirector } from '../lib/director'
 import type { LocalIdentity } from '../lib/types'
 
 type Props = {
   onComplete: (identity: Omit<LocalIdentity, 'userId'>) => void
 }
 
+const pop = { type: 'spring' as const, stiffness: 520, damping: 16, mass: 0.9 }
+const soft = { type: 'spring' as const, stiffness: 280, damping: 22 }
+
 export function UserSetup({ onComplete }: Props) {
+  const reduceMotion = useReducedMotion()
   const [selected, setSelected] = useState(TRAVELERS[0].id)
   const [customName, setCustomName] = useState('')
-  const [pin, setPin] = useState('')
-  const [wantDirector, setWantDirector] = useState(false)
-  const [error, setError] = useState('')
+  const [wantDirector, setWantDirector] = useState(
+    () => Boolean(TRAVELERS[0].isDirectorCandidate),
+  )
 
   const seed = TRAVELERS.find((t) => t.id === selected) ?? TRAVELERS[0]
 
+  function pickTraveler(id: string) {
+    const next = TRAVELERS.find((t) => t.id === id) ?? TRAVELERS[0]
+    setSelected(id)
+    if (next.isDirectorCandidate) setWantDirector(true)
+  }
+
   function submit() {
     const name = customName.trim() || seed.name
-    let isDirector = false
-    if (wantDirector) {
-      if (!tryUnlockDirector(pin)) {
-        setError('That PIN did not unlock Shannon Director.')
-        return
-      }
-      isDirector = true
-    }
+    if (wantDirector) unlockDirector()
+    else lockDirector()
     onComplete({
       name,
       color: seed.color,
       avatar: seed.avatar,
-      isDirector,
+      isDirector: wantDirector,
     })
   }
 
   return (
-    <div className="setup-screen">
-      <motion.p
-        className="section-kicker"
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        Shannon&apos;s Birthday Trip
-      </motion.p>
-      <motion.h1
-        className="display"
-        style={{ fontSize: '2.4rem', margin: '0 0 0.5rem', color: 'var(--gulf-teal)' }}
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        Who&apos;s joining the celebration?
-      </motion.h1>
-      <p className="section-lead">
-        Pick your face for the live map. Location stays on this family trip only —
-        and fun plans need Shannon&apos;s OK.
-      </p>
+    <div className="party-launch">
+      <div className="party-stage" aria-hidden>
+        <div className="party-sun" />
+        <div className="party-ray party-ray-a" />
+        <div className="party-ray party-ray-b" />
+        <div className="party-ray party-ray-c" />
 
-      <div className="traveler-grid" style={{ marginBottom: '1rem' }}>
-        {TRAVELERS.map((t) => (
-          <button
-            key={t.id}
-            type="button"
-            className={`traveler-chip ${selected === t.id ? 'selected' : ''}`}
-            onClick={() => setSelected(t.id)}
-          >
-            <img src={t.avatar} alt={t.name} />
-            <strong>{t.name}</strong>
-            <span className="muted" style={{ fontSize: '0.78rem' }}>
-              {t.role}
-            </span>
-          </button>
-        ))}
+        <div className="party-streamer party-streamer-l" />
+        <div className="party-streamer party-streamer-r" />
+
+        <div className="party-balloon party-balloon-1" />
+        <div className="party-balloon party-balloon-2" />
+        <div className="party-balloon party-balloon-3" />
+        <div className="party-balloon party-balloon-4" />
+        <div className="party-balloon party-balloon-5" />
+
+        <div className="party-hill party-hill-back" />
+        <div className="party-hill party-hill-front" />
+        <div className="party-wave" />
+
+        <div className="party-confetti-layer">
+          {Array.from({ length: 14 }).map((_, i) => (
+            <span key={i} className={`party-bit party-bit-${(i % 5) + 1}`} />
+          ))}
+        </div>
       </div>
 
-      <div className="panel stack">
-        <label className="field">
-          Display name
-          <input
-            value={customName}
-            onChange={(e) => setCustomName(e.target.value)}
-            placeholder={seed.name}
-          />
-        </label>
+      <div className="party-content">
+        <header className="party-hero">
+          <motion.p
+            className="party-brand"
+            initial={reduceMotion ? false : { opacity: 0, scale: 0.55, y: 40 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={pop}
+          >
+            Shannon&apos;s
+            <span className="party-brand-line">Birthday Trip</span>
+          </motion.p>
 
-        <label className="row" style={{ fontWeight: 600, color: 'var(--gulf-teal)' }}>
-          <input
-            type="checkbox"
-            checked={wantDirector}
-            onChange={(e) => setWantDirector(e.target.checked)}
-          />
-          I am Shannon (Director) — unlock Agree / Veto
-        </label>
+          <motion.p
+            className="party-tag"
+            initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ ...soft, delay: 0.12 }}
+          >
+            Gulf adventure · family celebration
+          </motion.p>
+        </header>
 
-        {wantDirector && (
-          <label className="field">
-            Director PIN
+        <motion.section
+          className="party-cast"
+          initial={reduceMotion ? false : { opacity: 0, y: 28 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...soft, delay: 0.18 }}
+        >
+          <h1 className="party-ask">Who&apos;s coming?</h1>
+          <div className="party-faces" role="listbox" aria-label="Choose traveler">
+            {TRAVELERS.map((t, i) => {
+              const active = selected === t.id
+              return (
+                <motion.button
+                  key={t.id}
+                  type="button"
+                  role="option"
+                  aria-selected={active}
+                  className={`party-face ${active ? 'is-on' : ''}`}
+                  style={{ '--face': t.color } as CSSProperties}
+                  onClick={() => pickTraveler(t.id)}
+                  initial={reduceMotion ? false : { opacity: 0, scale: 0.6 }}
+                  animate={{ opacity: 1, scale: active ? 1.08 : 1 }}
+                  transition={{ ...pop, delay: reduceMotion ? 0 : 0.16 + i * 0.04 }}
+                  whileTap={reduceMotion ? undefined : { scale: 0.9 }}
+                >
+                  <span className="party-face-ring">
+                    <motion.img
+                      src={t.avatar}
+                      alt=""
+                      animate={
+                        active && !reduceMotion
+                          ? { y: [0, -5, 0], rotate: [0, -4, 4, 0] }
+                          : { y: 0, rotate: 0 }
+                      }
+                      transition={
+                        active && !reduceMotion
+                          ? { duration: 1.4, repeat: Infinity, ease: 'easeInOut' }
+                          : soft
+                      }
+                    />
+                  </span>
+                  <span className="party-face-name">{t.name}</span>
+                </motion.button>
+              )
+            })}
+          </div>
+        </motion.section>
+
+        <motion.section
+          className="party-form"
+          initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...soft, delay: 0.28 }}
+        >
+          <label className="party-field">
+            <span>Your name on the map</span>
             <input
-              type="password"
-              value={pin}
-              onChange={(e) => setPin(e.target.value)}
-              placeholder="Enter Shannon’s PIN"
-              autoComplete="off"
+              value={customName}
+              onChange={(e) => setCustomName(e.target.value)}
+              placeholder={seed.name}
+              autoComplete="nickname"
+              enterKeyHint="done"
             />
           </label>
-        )}
 
-        {error && (
-          <p className="muted" style={{ color: 'var(--veto)', margin: 0 }}>
-            {error}
-          </p>
-        )}
+          <button
+            type="button"
+            className={`party-director ${wantDirector ? 'is-on' : ''}`}
+            onClick={() => setWantDirector((v) => !v)}
+            aria-pressed={wantDirector}
+          >
+            <span className="party-director-knob" aria-hidden />
+            <span className="party-director-copy">
+              <strong>I&apos;m Shannon</strong>
+              <small>Director · Agree &amp; Veto</small>
+            </span>
+          </button>
 
-        <button type="button" className="btn btn-coral" onClick={submit}>
-          Start Shannon&apos;s Birthday Trip
-        </button>
+          <AnimatePresence>
+            {wantDirector && (
+              <motion.p
+                className="party-director-ok"
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+              >
+                Birthday director unlocked — let&apos;s party!
+              </motion.p>
+            )}
+          </AnimatePresence>
+        </motion.section>
+      </div>
+
+      <div className="party-dock">
+        <motion.button
+          type="button"
+          className="party-go"
+          onClick={submit}
+          whileTap={reduceMotion ? undefined : { scale: 0.96, y: 3 }}
+          animate={
+            reduceMotion
+              ? undefined
+              : { y: [0, -4, 0] }
+          }
+          transition={
+            reduceMotion
+              ? undefined
+              : { duration: 2.2, repeat: Infinity, ease: 'easeInOut' }
+          }
+        >
+          Start the celebration
+        </motion.button>
       </div>
     </div>
   )

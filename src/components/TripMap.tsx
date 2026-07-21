@@ -26,14 +26,14 @@ const youIcon = (color: string) =>
 
 const destIcon = L.divIcon({
   className: '',
-  html: `<div style="width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:18px solid #e07a5f;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))"></div>`,
+  html: `<div style="width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:18px solid #ff5a5f;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))"></div>`,
   iconSize: [20, 18],
   iconAnchor: [10, 18],
 })
 
 const spotIcon = L.divIcon({
   className: '',
-  html: `<div style="width:12px;height:12px;border-radius:3px;background:#1a6b6a;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3)"></div>`,
+  html: `<div style="width:12px;height:12px;border-radius:3px;background:#0e6b75;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3)"></div>`,
   iconSize: [12, 12],
   iconAnchor: [6, 6],
 })
@@ -77,14 +77,14 @@ export function TripMap({ status, users, spots, agreedPlans, focus }: Props) {
   }, [you, dest, users, spots, focus])
 
   return (
-    <section className="section" id="map">
+    <section className="section trip-section" id="map">
       <p className="section-kicker">Live for Shannon</p>
       <h2>Family map</h2>
       <p className="section-lead">
         See everyone sharing location, where we&apos;re headed, and birthday-trip
         spots near this leg.
       </p>
-      <div className="map-wrap">
+      <div className="map-wrap trip-map">
         <MapContainer
           center={[you.lat, you.lng]}
           zoom={6}
@@ -96,9 +96,9 @@ export function TripMap({ status, users, spots, agreedPlans, focus }: Props) {
           />
           <Polyline
             positions={ROUTE_COORDS}
-            pathOptions={{ color: '#0b3d4a', weight: 4, opacity: 0.65 }}
+            pathOptions={{ color: '#0e6b75', weight: 5, opacity: 0.75 }}
           />
-          <Marker position={[you.lat, you.lng]} icon={youIcon('#f2a65a')}>
+          <Marker position={[you.lat, you.lng]} icon={youIcon('#ffd84d')}>
             <Popup>Tagged: {status.whereWeAre}</Popup>
           </Marker>
           {dest && (
@@ -138,7 +138,7 @@ export function TripMap({ status, users, spots, agreedPlans, focus }: Props) {
               <Marker
                 key={p.id}
                 position={[p.lat!, p.lng!]}
-                icon={youIcon('#e07a5f')}
+                icon={youIcon('#ff5a5f')}
               >
                 <Popup>
                   Shannon said yes: {p.title}

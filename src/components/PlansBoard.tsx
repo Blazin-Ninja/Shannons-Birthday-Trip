@@ -63,14 +63,14 @@ export function PlansBoard({
   }
 
   return (
-    <section className="section" id="plans">
+    <section className="section trip-section" id="plans">
       <p className="section-kicker">Plans for Shannon</p>
       <h2>Shannon&apos;s call</h2>
       <p className="section-lead">
         Anyone can propose. Shannon agrees or vetoes — it&apos;s her birthday trip.
       </p>
 
-      <div className="panel stack" style={{ marginBottom: '1rem' }}>
+      <div className="panel stack trip-panel" style={{ marginBottom: '1rem' }}>
         <label className="field">
           Idea for Shannon
           <input
@@ -100,7 +100,7 @@ export function PlansBoard({
         </button>
       </div>
 
-      <div className="tabs">
+      <div className="tabs trip-tabs">
         {(['pending', 'agreed', 'vetoed'] as Tab[]).map((t) => (
           <button
             key={t}
@@ -115,7 +115,7 @@ export function PlansBoard({
 
       <div className="stack">
         {filtered.length === 0 && (
-          <div className="panel muted">
+          <div className="panel trip-panel muted">
             {tab === 'pending'
               ? 'Nothing pending — suggest something for Shannon’s birthday.'
               : tab === 'agreed'
@@ -124,7 +124,7 @@ export function PlansBoard({
           </div>
         )}
         {filtered.map((p) => (
-          <article key={p.id} className="plan-item">
+          <article key={p.id} className="plan-item trip-plan">
             <div className="row">
               <h3>{p.title}</h3>
               <span className={`badge badge-${p.status}`}>{p.status}</span>

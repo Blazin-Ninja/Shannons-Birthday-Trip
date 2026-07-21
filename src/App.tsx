@@ -16,13 +16,32 @@ import {
   subscribeStatus,
   subscribeUsers,
 } from './lib/firebase'
-import { isDirectorUnlocked } from './lib/director'
-import { loadIdentity, saveIdentity } from './lib/identity'
+import { isDirectorUnlocked, lockDirector } from './lib/director'
+import { clearIdentity, loadIdentity, saveIdentity } from './lib/identity'
 import { spotsForStatus } from './lib/segments'
 import type { LiveUser, LocalIdentity, TripPlan, TripStatus } from './lib/types'
 
+function shouldForceSetup(): boolean {
+  if (typeof window === 'undefined') return false
+  const params = new URLSearchParams(window.location.search)
+  return params.has('fresh') || params.has('setup') || params.get('reset') === '1'
+}
+
+function stripSetupParams() {
+  const url = new URL(window.location.href)
+  ;['fresh', 'setup', 'reset'].forEach((key) => url.searchParams.delete(key))
+  const next = `${url.pathname}${url.search}${url.hash}`
+  window.history.replaceState({}, '', next || url.pathname)
+}
+
 export default function App() {
   const [identity, setIdentity] = useState<LocalIdentity | null>(() => {
+    if (shouldForceSetup()) {
+      clearIdentity()
+      lockDirector()
+      stripSetupParams()
+      return null
+    }
     const loaded = loadIdentity()
     if (!loaded) return null
     return { ...loaded, isDirector: loaded.isDirector && isDirectorUnlocked() }
@@ -63,7 +82,7 @@ export default function App() {
   }
 
   return (
-    <div className="app-shell">
+    <div className="app-shell trip-shell">
       <Confetti show={celebrate} />
       <Hero />
       <LiveStatus
@@ -103,14 +122,24 @@ export default function App() {
       />
       <Timeline />
       <Pensacola />
-      <footer className="footer">
-        <p className="display" style={{ fontSize: '1.4rem', margin: 0 }}>
-          Happy birthday, Shannon.
-        </p>
+      <footer className="footer trip-footer">
+        <p className="trip-footer-brand">Happy birthday, Shannon.</p>
         <p className="muted">
           Signed in as {identity.name}
           {identity.isDirector ? ' · Director' : ''}
         </p>
+        <button
+          type="button"
+          className="btn btn-ghost"
+          style={{ marginTop: '0.75rem' }}
+          onClick={() => {
+            clearIdentity()
+            lockDirector()
+            setIdentity(null)
+          }}
+        >
+          Switch traveler
+        </button>
       </footer>
     </div>
   )
