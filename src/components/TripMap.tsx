@@ -35,13 +35,14 @@ const destIcon = L.divIcon({
   iconAnchor: [10, 18],
 })
 
-const spotIcon = (kind: string, selected = false) => {
+const spotIcon = (kind: string, selected = false, dimmed = false) => {
   const meta = isSpotKind(kind) ? SPOT_KIND_META[kind] : SPOT_KIND_META.landmark
-  const size = selected ? 38 : 32
-  const fontSize = selected ? 18 : 15
+  const size = selected ? 38 : dimmed ? 28 : 32
+  const fontSize = selected ? 18 : dimmed ? 13 : 15
+  const dimClass = dimmed ? ' spot-marker-pin--dim' : ''
   return L.divIcon({
     className: 'spot-marker-icon',
-    html: `<div class="spot-marker-pin${selected ? ' spot-marker-pin--selected' : ''}" style="width:${size}px;height:${size}px;background:linear-gradient(145deg,${meta.hue},${meta.hue}cc);border:3px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:${fontSize}px;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28)">${meta.emoji}</div>`,
+    html: `<div class="spot-marker-pin${selected ? ' spot-marker-pin--selected' : ''}${dimClass}" style="width:${size}px;height:${size}px;background:linear-gradient(145deg,${meta.hue},${meta.hue}cc);border:3px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:${fontSize}px;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28)">${meta.emoji}</div>`,
     iconSize: [size, size],
     iconAnchor: [size / 2, size / 2],
   })
@@ -119,6 +120,7 @@ type Props = {
   status: TripStatus
   users: Record<string, LiveUser>
   spots: TouristSpot[]
+  mapSpots?: TouristSpot[]
   agreedPlans: TripPlan[]
   focus?: { lat: number; lng: number } | null
   selectedSpotId?: string | null
@@ -132,6 +134,7 @@ export function TripMap({
   status,
   users,
   spots,
+  mapSpots,
   agreedPlans,
   focus,
   selectedSpotId,
@@ -144,6 +147,8 @@ export function TripMap({
   const dest = destinationPosition(status)
   const activeSegment = resolveSegment(status)
   const now = Date.now()
+  const displaySpots = mapSpots ?? spots
+  const legSpotIds = useMemo(() => new Set(spots.map((s) => s.id)), [spots])
 
   const activeStops = useMemo(() => {
     const here = status.whereWeAre
@@ -159,10 +164,10 @@ export function TripMap({
     Object.values(users).forEach((u) => {
       if (u.sharing) list.push({ lat: u.lat, lng: u.lng })
     })
-    spots.forEach((s) => list.push({ lat: s.lat, lng: s.lng }))
+    displaySpots.forEach((s) => list.push({ lat: s.lat, lng: s.lng }))
     if (focus) list.push(focus)
     return list
-  }, [you, dest, users, spots, focus])
+  }, [you, dest, users, displaySpots, focus])
 
   const activeSegmentCoords = SEGMENT_COORDS[activeSegment] ?? []
 
@@ -247,11 +252,12 @@ export function TripMap({
           </Marker>
         )
       })}
-      {spots.map((s) => (
+      {displaySpots.map((s) => (
         <Marker
           key={s.id}
           position={[s.lat, s.lng]}
-          icon={spotIcon(s.kind, s.id === selectedSpotId)}
+          icon={spotIcon(s.kind, s.id === selectedSpotId, !legSpotIds.has(s.id))}
+          opacity={legSpotIds.has(s.id) ? 1 : 0.82}
           eventHandlers={{
             click: () => onSpotSelect?.(s),
           }}

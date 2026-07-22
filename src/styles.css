@@ -1246,6 +1246,36 @@ textarea {
   color: #6d28d9;
 }
 
+.spot-detail-detour {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #b45309;
+}
+
+.spot-detail-detour--on-route {
+  color: #15803d;
+}
+
+.spot-marker-pin--dim {
+  opacity: 0.72;
+  filter: saturate(0.85);
+}
+
+.map-hub-route-link {
+  display: inline-block;
+  margin-top: 0.2rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--gulf-mid);
+  text-decoration: none;
+}
+
+.map-hub-route-link:hover {
+  text-decoration: underline;
+}
+
 .spot-detail-desc {
   margin: 0;
   color: #5b4b6a;

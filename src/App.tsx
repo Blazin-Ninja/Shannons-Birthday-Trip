@@ -15,7 +15,7 @@ import {
 } from './lib/firebase'
 import { isDirectorUnlocked, lockDirector } from './lib/director'
 import { clearIdentity, loadIdentity, saveIdentity } from './lib/identity'
-import { spotsForStatus } from './lib/segments'
+import { allMapSpots, spotsForStatus } from './lib/segments'
 import type { LiveUser, LocalIdentity, TripPlan, TripStatus } from './lib/types'
 
 export default function App() {
@@ -47,6 +47,7 @@ export default function App() {
   }, [])
 
   const spots = useMemo(() => spotsForStatus(status), [status])
+  const mapSpots = useMemo(() => allMapSpots(status), [status])
   const agreed = useMemo(
     () => plans.filter((p) => p.status === 'agreed'),
     [plans],
@@ -83,6 +84,7 @@ export default function App() {
         status={status}
         users={users}
         spots={spots}
+        mapSpots={mapSpots}
         agreedPlans={agreed}
         onLocalUpdate={setStatus}
         onPropose={(spot) => {

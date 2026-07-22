@@ -64,3 +64,7 @@ export function spotsForStatus(status: TripStatus): TouristSpot[] {
     return true
   })
 }
+
+export function allMapSpots(status: TripStatus): TouristSpot[] {
+  return TOURIST_SPOTS.filter((s) => !s.viaDfwOnly || status.viaDfw)
+}

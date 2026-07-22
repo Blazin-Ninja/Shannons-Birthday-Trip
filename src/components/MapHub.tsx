@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import type { TouristSpot } from '../data/touristSpots'
+import { googleMapsRouteUrl } from '../lib/routeDeviation'
 import type { LiveUser, LocalIdentity, TripPlan, TripStatus } from '../lib/types'
 import { CartoonFrame } from './CartoonFrame'
 import { LiveStatus } from './LiveStatus'
@@ -13,6 +14,7 @@ type Props = {
   status: TripStatus
   users: Record<string, LiveUser>
   spots: TouristSpot[]
+  mapSpots: TouristSpot[]
   agreedPlans: TripPlan[]
   onLocalUpdate: (s: TripStatus) => void
   onPropose: (spot: TouristSpot) => void
@@ -26,6 +28,7 @@ export function MapHub({
   status,
   users,
   spots,
+  mapSpots,
   agreedPlans,
   onLocalUpdate,
   onPropose,
@@ -41,14 +44,14 @@ export function MapHub({
 
   useEffect(() => {
     if (!externalFocus) return
-    const match = spots.find((s) => s.id === externalFocus.spotId)
+    const match = mapSpots.find((s) => s.id === externalFocus.spotId)
     if (match) {
       setSelectedSpot(match)
     }
     setFocus({ lat: externalFocus.lat, lng: externalFocus.lng })
     setAutoFit(false)
     setSheetExpanded(true)
-  }, [externalFocus, spots])
+  }, [externalFocus, mapSpots])
 
   const liveCount = Object.values(users).filter((u) => u.sharing).length
 
@@ -70,6 +73,7 @@ export function MapHub({
         status={status}
         users={users}
         spots={spots}
+        mapSpots={mapSpots}
         agreedPlans={agreedPlans}
         focus={focus}
         selectedSpotId={selectedSpot?.id ?? null}
@@ -90,6 +94,14 @@ export function MapHub({
         >
           <p className="map-hub-kicker">Birthday route map</p>
           <h1 className="map-hub-title">Shannon&apos;s Birthday Trip!</h1>
+          <a
+            href={googleMapsRouteUrl()}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="map-hub-route-link"
+          >
+            Open full route in Google Maps
+          </a>
         </motion.div>
         <div className="map-hub-user-wrap">
           <motion.div

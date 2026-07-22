@@ -15,8 +15,9 @@ export function NearYou({ spots, onPropose, onFocus }: Props) {
       <p className="toon-kicker">✨ Adventure nearby ✨</p>
       <h2 className="toon-title">Near you now</h2>
       <p className="toon-lead">
-        Spots on this leg of Shannon&apos;s birthday quest — map it or pitch it
-        for her royal approval!
+        Spots on this leg of Shannon&apos;s birthday quest — the map shows the
+        whole route, including secluded detours with estimated miles and time
+        off the main path.
       </p>
       <div className="spot-list spot-list--toon">
         {spots.length === 0 && (

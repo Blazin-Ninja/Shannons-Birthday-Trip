@@ -2,6 +2,7 @@ import { SPOT_KIND_META } from '../data/spotKinds'
 import { isSpotKind } from '../data/spotKinds'
 import type { TouristSpot } from '../data/touristSpots'
 import { resolveSpotDetails } from '../lib/spotDetails'
+import { estimateRouteDetour, formatDetour } from '../lib/routeDeviation'
 
 type Props = {
   spot: TouristSpot
@@ -11,6 +12,7 @@ type Props = {
 export function SpotDetail({ spot, compact = false }: Props) {
   const meta = isSpotKind(spot.kind) ? SPOT_KIND_META[spot.kind] : SPOT_KIND_META.landmark
   const { description, mapsUrl, websiteUrl } = resolveSpotDetails(spot)
+  const detour = estimateRouteDetour(spot)
 
   return (
     <div className={`spot-detail${compact ? ' spot-detail--compact' : ''}`}>
@@ -24,6 +26,11 @@ export function SpotDetail({ spot, compact = false }: Props) {
             {spot.brand ? ` · ${spot.brand}` : ''}
           </strong>
           <span className="spot-detail-tag">{meta.label}</span>
+          <span
+            className={`spot-detail-detour${detour.onRoute ? ' spot-detail-detour--on-route' : ''}`}
+          >
+            {formatDetour(detour)}
+          </span>
         </div>
       </div>
       <p className="spot-detail-desc">{description}</p>
