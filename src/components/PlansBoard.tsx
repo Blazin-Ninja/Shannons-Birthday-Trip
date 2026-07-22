@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
 import {
   createPlan,
   decidePlan,
@@ -63,15 +64,21 @@ export function PlansBoard({
   }
 
   return (
-    <section className="section" id="plans">
-      <p className="section-kicker">Plans for Shannon</p>
-      <h2>Shannon&apos;s call</h2>
-      <p className="section-lead">
-        Anyone can propose. Shannon agrees or vetoes — it&apos;s her birthday trip.
+    <section className="section section--toon" id="plans">
+      <p className="toon-kicker">👑 Shannon&apos;s call 👑</p>
+      <h2 className="toon-title">Plans for Shannon</h2>
+      <p className="toon-lead">
+        Anyone can propose. Shannon agrees or vetoes — it&apos;s her birthday
+        kingdom.
       </p>
 
-      <div className="panel stack" style={{ marginBottom: '1rem' }}>
-        <label className="field">
+      <motion.div
+        className="toon-card toon-compose stack"
+        initial={{ opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+      >
+        <label className="field field--toon">
           Idea for Shannon
           <input
             value={title}
@@ -79,7 +86,7 @@ export function PlansBoard({
             placeholder="Beach sunrise, Buc-ee’s run, Fort Pickens…"
           />
         </label>
-        <label className="field">
+        <label className="field field--toon">
           Place
           <input
             value={placeName}
@@ -87,7 +94,7 @@ export function PlansBoard({
             placeholder="Optional place name"
           />
         </label>
-        <label className="field">
+        <label className="field field--toon">
           Notes
           <textarea
             value={notes}
@@ -95,81 +102,87 @@ export function PlansBoard({
             placeholder="Why this is perfect for Shannon’s birthday…"
           />
         </label>
-        <button type="button" className="btn btn-coral" onClick={() => void submit()}>
-          {identity.isDirector ? 'Add (auto-agreed)' : 'Propose for Shannon'}
+        <button type="button" className="btn btn-toon-coral" onClick={() => void submit()}>
+          {identity.isDirector ? '✨ Add (auto-agreed)' : '🎂 Propose for Shannon'}
         </button>
-      </div>
+      </motion.div>
 
-      <div className="tabs">
+      <div className="tabs tabs--toon">
         {(['pending', 'agreed', 'vetoed'] as Tab[]).map((t) => (
           <button
             key={t}
             type="button"
-            className={`tab ${tab === t ? 'active' : ''}`}
+            className={`tab tab--toon ${tab === t ? 'active' : ''}`}
             onClick={() => setTab(t)}
           >
-            {t}
+            {t === 'pending' ? '⏳ pending' : t === 'agreed' ? '✅ agreed' : '❌ vetoed'}
           </button>
         ))}
       </div>
 
-      <div className="stack">
+      <div className="stack stack--toon">
         {filtered.length === 0 && (
-          <div className="panel muted">
-            {tab === 'pending'
-              ? 'Nothing pending — suggest something for Shannon’s birthday.'
-              : tab === 'agreed'
-                ? 'Shannon hasn’t green-lit a plan yet.'
-                : 'No vetoes. Keep the birthday ideas coming.'}
+          <div className="toon-card toon-card--empty">
+            <span className="toon-card-emoji" aria-hidden>
+              {tab === 'pending' ? '💡' : tab === 'agreed' ? '🎉' : '👍'}
+            </span>
+            <p>
+              {tab === 'pending'
+                ? 'Nothing pending — suggest something magical for Shannon’s birthday.'
+                : tab === 'agreed'
+                  ? 'Shannon hasn’t green-lit a plan yet.'
+                  : 'No vetoes. Keep the birthday ideas coming.'}
+            </p>
           </div>
         )}
-        {filtered.map((p) => (
-          <article key={p.id} className="plan-item">
+        {filtered.map((p, i) => (
+          <motion.article
+            key={p.id}
+            className={`toon-card plan-item--toon plan-item--${p.status}`}
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.04 }}
+          >
             <div className="row">
               <h3>{p.title}</h3>
-              <span className={`badge badge-${p.status}`}>{p.status}</span>
+              <span className={`badge badge-${p.status} badge--toon`}>{p.status}</span>
             </div>
-            {p.placeName && (
-              <p className="muted" style={{ margin: 0 }}>
-                {p.placeName}
-              </p>
-            )}
-            {p.notes && <p style={{ margin: 0 }}>{p.notes}</p>}
-            <p className="muted" style={{ margin: 0 }}>
-              From {p.createdByName}
-            </p>
+            {p.placeName && <p className="plan-item-place">{p.placeName}</p>}
+            {p.notes && <p className="plan-item-notes">{p.notes}</p>}
+            <p className="plan-item-from">From {p.createdByName}</p>
             <div className="row">
               {identity.isDirector && p.status === 'pending' && (
                 <>
                   <button
                     type="button"
-                    className="btn btn-ok"
+                    className="btn btn-toon-ok"
                     onClick={() => {
                       void decidePlan(p.id, 'agreed').then(onAgreed)
                     }}
                   >
-                    Agree
+                    ✅ Agree
                   </button>
                   <button
                     type="button"
-                    className="btn btn-veto"
+                    className="btn btn-toon-veto"
                     onClick={() => void decidePlan(p.id, 'vetoed')}
                   >
-                    Veto
+                    ❌ Veto
                   </button>
                 </>
               )}
               {p.createdById === identity.userId && p.status === 'pending' && (
                 <button
                   type="button"
-                  className="btn btn-ghost"
+                  className="btn btn-toon-ghost"
                   onClick={() => void withdrawPlan(p.id)}
                 >
                   Withdraw
                 </button>
               )}
             </div>
-          </article>
+          </motion.article>
         ))}
       </div>
     </section>

@@ -16,6 +16,7 @@ type Props = {
   onPropose: (spot: TouristSpot) => void
   onScrollTo: (id: string) => void
   externalFocus?: { lat: number; lng: number; spotId: string } | null
+  onLogout: () => void
 }
 
 export function MapHub({
@@ -28,6 +29,7 @@ export function MapHub({
   onPropose,
   onScrollTo,
   externalFocus,
+  onLogout,
 }: Props) {
   const [selectedSpot, setSelectedSpot] = useState<TouristSpot | null>(null)
   const [focus, setFocus] = useState<{ lat: number; lng: number } | null>(null)
@@ -83,9 +85,14 @@ export function MapHub({
           <p className="map-hub-kicker">Shannon&apos;s Birthday Trip</p>
           <h1 className="map-hub-title">Explore the route</h1>
         </div>
-        <div className="map-hub-user" style={{ borderColor: identity.color }}>
-          <img src={identity.avatar} alt="" />
-          <span>{identity.name}</span>
+        <div className="map-hub-user-wrap">
+          <div className="map-hub-user" style={{ borderColor: identity.color }}>
+            <img src={identity.avatar} alt="" />
+            <span>{identity.name}</span>
+          </div>
+          <button type="button" className="map-hub-logout" onClick={onLogout}>
+            Switch
+          </button>
         </div>
       </header>
 

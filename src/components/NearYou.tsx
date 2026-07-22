@@ -1,3 +1,5 @@
+import { motion } from 'framer-motion'
+import { SPOT_KIND_META } from '../data/spotKinds'
 import type { TouristSpot } from '../data/touristSpots'
 
 type Props = {
@@ -8,45 +10,75 @@ type Props = {
 
 export function NearYou({ spots, onPropose, onFocus }: Props) {
   return (
-    <section className="section" id="near">
-      <p className="section-kicker">Near Shannon&apos;s route</p>
-      <h2>Near you now</h2>
-      <p className="section-lead">
-        Spots for this leg of Shannon&apos;s birthday trip — tap to map, or propose
-        for Shannon&apos;s OK.
+    <section className="section section--toon" id="near">
+      <p className="toon-kicker">✨ Adventure nearby ✨</p>
+      <h2 className="toon-title">Near you now</h2>
+      <p className="toon-lead">
+        Spots on this leg of Shannon&apos;s birthday quest — map it or pitch it
+        for her royal approval!
       </p>
-      <div className="spot-list">
+      <div className="spot-list spot-list--toon">
         {spots.length === 0 && (
-          <div className="panel muted">
-            Nothing pending on this segment — update trip status or suggest
-            something for Shannon&apos;s birthday.
-          </div>
+          <motion.div
+            className="toon-card toon-card--empty"
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+          >
+            <span className="toon-card-emoji" aria-hidden>
+              🗺️
+            </span>
+            <p>
+              Nothing on this stretch yet — update trip status or dream up
+              something magical for Shannon&apos;s birthday.
+            </p>
+          </motion.div>
         )}
-        {spots.map((s) => (
-          <div key={s.id} className="spot">
-            <strong>
-              {s.name}
-              {s.brand ? ` · ${s.brand}` : ''}
-            </strong>
-            <span className="muted">{s.blurb}</span>
-            <div className="row">
-              <button
-                type="button"
-                className="btn btn-ghost"
-                onClick={() => onFocus(s)}
-              >
-                Show on map
-              </button>
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => onPropose(s)}
-              >
-                Propose for Shannon
-              </button>
-            </div>
-          </div>
-        ))}
+        {spots.map((s, i) => {
+          const meta = SPOT_KIND_META[s.kind]
+          return (
+            <motion.article
+              key={s.id}
+              className="toon-card spot--toon"
+              style={{ '--spot-hue': meta.hue } as React.CSSProperties}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-20px' }}
+              transition={{ delay: i * 0.04, type: 'spring', stiffness: 260 }}
+              whileHover={{ y: -4, scale: 1.01 }}
+            >
+              <div className="spot--toon-head">
+                <span className="spot--toon-emoji" aria-hidden>
+                  {meta.emoji}
+                </span>
+                <div>
+                  <strong>
+                    {s.name}
+                    {s.brand ? ` · ${s.brand}` : ''}
+                  </strong>
+                  <span className="spot--toon-tag">{meta.label}</span>
+                </div>
+              </div>
+              <p className="spot--toon-blurb">{s.blurb}</p>
+              <div className="row">
+                <button
+                  type="button"
+                  className="btn btn-toon-ghost"
+                  onClick={() => onFocus(s)}
+                >
+                  🗺️ Map it
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-toon-primary"
+                  onClick={() => onPropose(s)}
+                >
+                  🎂 Propose for Shannon
+                </button>
+              </div>
+            </motion.article>
+          )
+        })}
       </div>
     </section>
   )

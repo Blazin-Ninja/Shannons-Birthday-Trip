@@ -3,31 +3,31 @@ import { ITINERARY } from '../data/itinerary'
 
 export function Timeline() {
   return (
-    <section className="section" id="timeline">
-      <p className="section-kicker">Birthday route</p>
-      <h2>Day by day for Shannon</h2>
-      <p className="section-lead">
-        Real addresses and drive days — the Gulf Coast is Shannon&apos;s birthday peak.
+    <section className="section section--toon" id="timeline">
+      <p className="toon-kicker">🎟️ The grand tour 🎟️</p>
+      <h2 className="toon-title">Day by day for Shannon</h2>
+      <p className="toon-lead">
+        Real addresses, real drive days — the Gulf Coast is the birthday peak of
+        the whole adventure.
       </p>
-      <div className="timeline">
+      <div className="timeline timeline--toon">
         {ITINERARY.map((day, i) => (
           <motion.article
             key={day.id}
-            className={`timeline-item ${day.birthdayPeak ? 'peak' : ''}`}
-            initial={{ opacity: 0, x: -12 }}
+            className={`timeline-item timeline-item--toon ${day.birthdayPeak ? 'peak' : ''}`}
+            initial={{ opacity: 0, x: -16 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: '-40px' }}
-            transition={{ delay: i * 0.05 }}
+            transition={{ delay: i * 0.05, type: 'spring', stiffness: 220 }}
           >
-            <p className="muted" style={{ margin: 0 }}>
-              {day.dateLabel}
-            </p>
+            <span className="timeline-ticket-date">{day.dateLabel}</span>
             <h3>{day.title}</h3>
-            <p style={{ margin: '0.25rem 0 0' }}>{day.detail}</p>
+            <p className="timeline-ticket-detail">{day.detail}</p>
             {day.address && (
-              <p className="muted" style={{ margin: '0.35rem 0 0', fontSize: '0.85rem' }}>
-                {day.address}
-              </p>
+              <p className="timeline-ticket-address">{day.address}</p>
+            )}
+            {day.birthdayPeak && (
+              <span className="timeline-peak-badge">Birthday peak ✨</span>
             )}
           </motion.article>
         ))}

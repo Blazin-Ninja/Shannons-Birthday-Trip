@@ -13,8 +13,8 @@ import {
   subscribeStatus,
   subscribeUsers,
 } from './lib/firebase'
-import { isDirectorUnlocked } from './lib/director'
-import { loadIdentity, saveIdentity } from './lib/identity'
+import { isDirectorUnlocked, lockDirector } from './lib/director'
+import { clearIdentity, loadIdentity, saveIdentity } from './lib/identity'
 import { spotsForStatus } from './lib/segments'
 import type { LiveUser, LocalIdentity, TripPlan, TripStatus } from './lib/types'
 
@@ -56,6 +56,14 @@ export default function App() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
   }
 
+  function handleLogout() {
+    clearIdentity()
+    lockDirector()
+    setIdentity(null)
+    setMapFocus(null)
+    setDraftSpot(null)
+  }
+
   if (!identity) {
     return (
       <UserSetup
@@ -83,9 +91,10 @@ export default function App() {
         }}
         onScrollTo={scrollToSection}
         externalFocus={mapFocus}
+        onLogout={handleLogout}
       />
 
-      <div className="below-map">
+      <div className="below-map storybook-zone">
         <NearYou
           spots={spots}
           onPropose={(spot) => {
@@ -110,14 +119,18 @@ export default function App() {
         />
         <Timeline />
         <Pensacola />
-        <footer className="footer">
-          <p className="display" style={{ fontSize: '1.4rem', margin: 0 }}>
-            Happy birthday, Shannon.
+        <footer className="footer footer--toon">
+          <p className="footer-sparkle" aria-hidden>
+            ✨ 🎂 ✨
           </p>
-          <p className="muted">
-            Signed in as {identity.name}
+          <p className="display footer-title">Happy birthday, Shannon.</p>
+          <p className="footer-signed">
+            Signed in as <strong>{identity.name}</strong>
             {identity.isDirector ? ' · Director' : ''}
           </p>
+          <button type="button" className="btn btn-logout" onClick={handleLogout}>
+            Switch traveler
+          </button>
         </footer>
       </div>
     </div>
