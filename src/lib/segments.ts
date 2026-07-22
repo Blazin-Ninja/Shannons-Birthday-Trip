@@ -1,6 +1,16 @@
-import { getStopCoords, midpoint } from '../data/stops'
+import { getStopCoords, midpoint, ROUTE_COORDS } from '../data/stops'
 import { TOURIST_SPOTS, type TouristSpot } from '../data/touristSpots'
 import type { TripStatus } from './types'
+
+export const SEGMENT_COORDS: Record<string, [number, number][]> = {
+  'okc-shreveport': [ROUTE_COORDS[0], ROUTE_COORDS[1]],
+  'shreveport-pensacola': [ROUTE_COORDS[1], ROUTE_COORDS[2]],
+  pensacola: [ROUTE_COORDS[2], ROUTE_COORDS[2]],
+  'pensacola-lakevillage': [ROUTE_COORDS[2], ROUTE_COORDS[3]],
+  lakevillage: [ROUTE_COORDS[3], ROUTE_COORDS[3]],
+  'lakevillage-okc': [ROUTE_COORDS[3], ROUTE_COORDS[4]],
+  shreveport: [ROUTE_COORDS[1], ROUTE_COORDS[1]],
+}
 
 export function resolveSegment(status: TripStatus): string {
   const here = status.whereWeAre

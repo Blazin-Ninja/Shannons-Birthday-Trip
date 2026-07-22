@@ -8,20 +8,30 @@ import {
   useMap,
 } from 'react-leaflet'
 import L from 'leaflet'
-import { ROUTE_COORDS } from '../data/stops'
+import { ROUTE_COORDS, STOPS } from '../data/stops'
 import type { TouristSpot } from '../data/touristSpots'
 import {
   destinationPosition,
+  resolveSegment,
+  SEGMENT_COORDS,
   youPosition,
 } from '../lib/segments'
 import type { LiveUser, TripPlan, TripStatus } from '../lib/types'
 
-const youIcon = (color: string) =>
+const SPOT_COLORS: Record<string, string> = {
+  landmark: '#1a6b6a',
+  food: '#e07a5f',
+  nature: '#2f9e7b',
+  fun: '#f2a65a',
+  stop: '#102a43',
+}
+
+const youIcon = (color: string, size = 18) =>
   L.divIcon({
     className: '',
-    html: `<div style="width:18px;height:18px;border-radius:50%;background:${color};border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,.35)"></div>`,
-    iconSize: [18, 18],
-    iconAnchor: [9, 9],
+    html: `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${color};border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,.35)"></div>`,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
   })
 
 const destIcon = L.divIcon({
@@ -31,24 +41,82 @@ const destIcon = L.divIcon({
   iconAnchor: [10, 18],
 })
 
-const spotIcon = L.divIcon({
-  className: '',
-  html: `<div style="width:12px;height:12px;border-radius:3px;background:#1a6b6a;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3)"></div>`,
-  iconSize: [12, 12],
-  iconAnchor: [6, 6],
-})
+const spotIcon = (kind: string, selected = false) => {
+  const color = SPOT_COLORS[kind] ?? '#1a6b6a'
+  const size = selected ? 16 : 12
+  return L.divIcon({
+    className: '',
+    html: `<div style="width:${size}px;height:${size}px;border-radius:3px;background:${color};border:2px solid white;box-shadow:0 ${selected ? 3 : 1}px ${selected ? 8 : 4}px rgba(0,0,0,.${selected ? 4 : 3})${selected ? ';transform:scale(1.15)' : ''}"></div>`,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+  })
+}
+
+const stopIcon = (name: string, active: boolean) =>
+  L.divIcon({
+    className: '',
+    html: `<div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+      <div style="width:${active ? 14 : 11}px;height:${active ? 14 : 11}px;border-radius:50%;background:${active ? '#f2a65a' : '#0b3d4a'};border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>
+      <span style="font-size:10px;font-weight:700;color:#0b3d4a;background:rgba(255,255,255,.92);padding:1px 5px;border-radius:4px;white-space:nowrap;box-shadow:0 1px 4px rgba(0,0,0,.15)">${name.split(' ')[0]}</span>
+    </div>`,
+    iconSize: [60, 32],
+    iconAnchor: [30, 7],
+  })
 
 function FitBounds({
   points,
+  enabled,
 }: {
   points: { lat: number; lng: number }[]
+  enabled: boolean
 }) {
   const map = useMap()
   useEffect(() => {
-    if (!points.length) return
+    if (!enabled || !points.length) return
     const bounds = L.latLngBounds(points.map((p) => [p.lat, p.lng] as [number, number]))
-    map.fitBounds(bounds.pad(0.25), { animate: true })
-  }, [map, points])
+    map.fitBounds(bounds.pad(0.2), { animate: true })
+  }, [map, points, enabled])
+  return null
+}
+
+function FlyToFocus({ focus }: { focus?: { lat: number; lng: number } | null }) {
+  const map = useMap()
+  useEffect(() => {
+    if (!focus) return
+    map.flyTo([focus.lat, focus.lng], Math.max(map.getZoom(), 9), { duration: 0.8 })
+  }, [map, focus])
+  return null
+}
+
+function MapRecenter({
+  center,
+  onRecenter,
+}: {
+  center: { lat: number; lng: number }
+  onRecenter?: () => void
+}) {
+  const map = useMap()
+  useEffect(() => {
+    const Control = L.Control.extend({
+      onAdd() {
+        const btn = L.DomUtil.create('button', 'map-control-btn') as HTMLButtonElement
+        btn.type = 'button'
+        btn.setAttribute('aria-label', 'Recenter map')
+        btn.textContent = '⊕'
+        L.DomEvent.disableClickPropagation(btn)
+        btn.onclick = () => {
+          map.flyTo([center.lat, center.lng], 7, { duration: 0.6 })
+          onRecenter?.()
+        }
+        return btn
+      },
+    })
+    const control = new Control({ position: 'bottomright' })
+    control.addTo(map)
+    return () => {
+      control.remove()
+    }
+  }, [map, center.lat, center.lng, onRecenter])
   return null
 }
 
@@ -58,12 +126,37 @@ type Props = {
   spots: TouristSpot[]
   agreedPlans: TripPlan[]
   focus?: { lat: number; lng: number } | null
+  selectedSpotId?: string | null
+  variant?: 'embedded' | 'fullscreen'
+  autoFit?: boolean
+  onSpotSelect?: (spot: TouristSpot) => void
+  onRecenter?: () => void
 }
 
-export function TripMap({ status, users, spots, agreedPlans, focus }: Props) {
+export function TripMap({
+  status,
+  users,
+  spots,
+  agreedPlans,
+  focus,
+  selectedSpotId,
+  variant = 'embedded',
+  autoFit = true,
+  onSpotSelect,
+  onRecenter,
+}: Props) {
   const you = youPosition(status)
   const dest = destinationPosition(status)
+  const activeSegment = resolveSegment(status)
   const now = Date.now()
+
+  const activeStops = useMemo(() => {
+    const here = status.whereWeAre
+    const headed = status.headedTo
+    return new Set(
+      [here, headed].filter((s) => s !== 'En route' && s !== 'Home'),
+    )
+  }, [status.whereWeAre, status.headedTo])
 
   const points = useMemo(() => {
     const list = [you]
@@ -76,78 +169,149 @@ export function TripMap({ status, users, spots, agreedPlans, focus }: Props) {
     return list
   }, [you, dest, users, spots, focus])
 
+  const activeSegmentCoords = SEGMENT_COORDS[activeSegment] ?? []
+
+  const mapContent = (
+    <MapContainer
+      center={[you.lat, you.lng]}
+      zoom={7}
+      scrollWheelZoom
+      zoomControl={false}
+    >
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      <Polyline
+        positions={ROUTE_COORDS}
+        pathOptions={{ color: '#0b3d4a', weight: 4, opacity: 0.35 }}
+      />
+      {activeSegmentCoords.length >= 2 && (
+        <Polyline
+          positions={activeSegmentCoords}
+          pathOptions={{ color: '#f2a65a', weight: 6, opacity: 0.9 }}
+        />
+      )}
+      {STOPS.filter((s) => s.id !== 'Home').map((stop) => (
+        <Marker
+          key={stop.id}
+          position={[stop.lat, stop.lng]}
+          icon={stopIcon(stop.id, activeStops.has(stop.id))}
+          eventHandlers={{
+            click: () => {
+              onSpotSelect?.({
+                id: `stop-${stop.id}`,
+                name: stop.id,
+                lat: stop.lat,
+                lng: stop.lng,
+                segment: activeSegment,
+                blurb: `Birthday route stop — ${stop.id}`,
+                kind: 'landmark',
+              })
+            },
+          }}
+        >
+          <Popup>
+            <strong>{stop.id}</strong>
+            <br />
+            {activeStops.has(stop.id) ? 'On this leg of the trip' : 'Tap to explore'}
+          </Popup>
+        </Marker>
+      ))}
+      <Marker position={[you.lat, you.lng]} icon={youIcon('#f2a65a', 20)}>
+        <Popup>
+          <strong>Where we are</strong>
+          <br />
+          {status.whereWeAre}
+        </Popup>
+      </Marker>
+      {dest && (
+        <Marker position={[dest.lat, dest.lng]} icon={destIcon}>
+          <Popup>
+            <strong>Headed to</strong>
+            <br />
+            {status.headedTo}
+          </Popup>
+        </Marker>
+      )}
+      {Object.entries(users).map(([id, u]) => {
+        if (!u.sharing) return null
+        const stale = now - u.updatedAt > 2 * 60 * 1000
+        return (
+          <Marker
+            key={id}
+            position={[u.lat, u.lng]}
+            icon={youIcon(stale ? '#9aa5b1' : u.color)}
+            opacity={stale ? 0.55 : 1}
+          >
+            <Popup>
+              <strong>{u.name}</strong>
+              <br />
+              {stale ? 'Last seen' : 'Live now'}
+            </Popup>
+          </Marker>
+        )
+      })}
+      {spots.map((s) => (
+        <Marker
+          key={s.id}
+          position={[s.lat, s.lng]}
+          icon={spotIcon(s.kind, s.id === selectedSpotId)}
+          eventHandlers={{
+            click: () => onSpotSelect?.(s),
+          }}
+        >
+          <Popup>
+            <strong>{s.name}</strong>
+            {s.brand ? ` · ${s.brand}` : ''}
+            <br />
+            {s.blurb}
+          </Popup>
+        </Marker>
+      ))}
+      {agreedPlans
+        .filter((p) => p.lat != null && p.lng != null)
+        .map((p) => (
+          <Marker
+            key={p.id}
+            position={[p.lat!, p.lng!]}
+            icon={youIcon('#e07a5f', 14)}
+          >
+            <Popup>
+              <strong>Shannon said yes</strong>
+              <br />
+              {p.title}
+            </Popup>
+          </Marker>
+        ))}
+      <FitBounds points={points} enabled={autoFit && !focus} />
+      <FlyToFocus focus={focus} />
+      <MapRecenter center={you} onRecenter={onRecenter} />
+    </MapContainer>
+  )
+
+  if (variant === 'fullscreen') {
+    return (
+      <div className="map-wrap map-wrap--fullscreen">
+        <div className="map-legend" aria-label="Map legend">
+          <span><i className="legend-dot legend-dot--crew" /> Crew</span>
+          <span><i className="legend-dot legend-dot--spot" /> Spots</span>
+          <span><i className="legend-dot legend-dot--route" /> Active leg</span>
+        </div>
+        {mapContent}
+      </div>
+    )
+  }
+
   return (
     <section className="section" id="map">
       <p className="section-kicker">Live for Shannon</p>
       <h2>Family map</h2>
       <p className="section-lead">
-        See everyone sharing location, where we&apos;re headed, and birthday-trip
-        spots near this leg.
+        Pinch, drag, and tap markers to explore the birthday route — everyone
+        sharing location shows up live.
       </p>
-      <div className="map-wrap">
-        <MapContainer
-          center={[you.lat, you.lng]}
-          zoom={6}
-          scrollWheelZoom={false}
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <Polyline
-            positions={ROUTE_COORDS}
-            pathOptions={{ color: '#0b3d4a', weight: 4, opacity: 0.65 }}
-          />
-          <Marker position={[you.lat, you.lng]} icon={youIcon('#f2a65a')}>
-            <Popup>Tagged: {status.whereWeAre}</Popup>
-          </Marker>
-          {dest && (
-            <Marker position={[dest.lat, dest.lng]} icon={destIcon}>
-              <Popup>Headed to {status.headedTo}</Popup>
-            </Marker>
-          )}
-          {Object.entries(users).map(([id, u]) => {
-            if (!u.sharing) return null
-            const stale = now - u.updatedAt > 2 * 60 * 1000
-            return (
-              <Marker
-                key={id}
-                position={[u.lat, u.lng]}
-                icon={youIcon(stale ? '#9aa5b1' : u.color)}
-                opacity={stale ? 0.55 : 1}
-              >
-                <Popup>
-                  {u.name}
-                  {stale ? ' · last seen' : ' · live'}
-                </Popup>
-              </Marker>
-            )
-          })}
-          {spots.map((s) => (
-            <Marker key={s.id} position={[s.lat, s.lng]} icon={spotIcon}>
-              <Popup>
-                <strong>{s.name}</strong>
-                <br />
-                {s.blurb}
-              </Popup>
-            </Marker>
-          ))}
-          {agreedPlans
-            .filter((p) => p.lat != null && p.lng != null)
-            .map((p) => (
-              <Marker
-                key={p.id}
-                position={[p.lat!, p.lng!]}
-                icon={youIcon('#e07a5f')}
-              >
-                <Popup>
-                  Shannon said yes: {p.title}
-                </Popup>
-              </Marker>
-            ))}
-          <FitBounds points={points} />
-        </MapContainer>
-      </div>
+      <div className="map-wrap">{mapContent}</div>
     </section>
   )
 }

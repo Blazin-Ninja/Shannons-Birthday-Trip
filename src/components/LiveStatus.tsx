@@ -7,9 +7,10 @@ type Props = {
   status: TripStatus
   identity: LocalIdentity
   onLocalUpdate: (s: TripStatus) => void
+  compact?: boolean
 }
 
-export function LiveStatus({ status, identity, onLocalUpdate }: Props) {
+export function LiveStatus({ status, identity, onLocalUpdate, compact }: Props) {
   const [draft, setDraft] = useState(status)
   const [saving, setSaving] = useState(false)
 
@@ -26,13 +27,17 @@ export function LiveStatus({ status, identity, onLocalUpdate }: Props) {
   }
 
   return (
-    <section className="section" id="status">
-      <p className="section-kicker">Birthday route desk</p>
-      <h2>Where is Shannon&apos;s crew?</h2>
-      <p className="section-lead">
-        Tag where we are, when we leave, and where we&apos;re headed so everyone
-        celebrating with Shannon stays aligned.
-      </p>
+    <section className={compact ? undefined : 'section'} id={compact ? undefined : 'status'}>
+      {!compact && (
+        <>
+          <p className="section-kicker">Birthday route desk</p>
+          <h2>Where is Shannon&apos;s crew?</h2>
+          <p className="section-lead">
+            Tag where we are, when we leave, and where we&apos;re headed so everyone
+            celebrating with Shannon stays aligned.
+          </p>
+        </>
+      )}
       <div className="panel stack">
         <label className="field">
           Where we are

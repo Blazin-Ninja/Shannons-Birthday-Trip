@@ -5,9 +5,10 @@ import type { LocalIdentity } from '../lib/types'
 
 type Props = {
   identity: LocalIdentity
+  compact?: boolean
 }
 
-export function SharingToggle({ identity }: Props) {
+export function SharingToggle({ identity, compact }: Props) {
   const [sharing, setSharing] = useState(false)
   const [last, setLast] = useState<string>('')
   const [error, setError] = useState('')
@@ -53,6 +54,25 @@ export function SharingToggle({ identity }: Props) {
       })
     }
   }, [sharing, identity])
+
+  if (compact) {
+    return (
+      <div className="sharing-compact">
+        <button
+          type="button"
+          className={`btn ${sharing ? 'btn-coral' : 'btn-primary'}`}
+          onClick={() => setSharing((v) => !v)}
+        >
+          {sharing ? '● Live' : 'Share location'}
+        </button>
+        {error && (
+          <span className="sharing-compact-error" title={error}>
+            !
+          </span>
+        )}
+      </div>
+    )
+  }
 
   return (
     <section className="section">

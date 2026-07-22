@@ -1,13 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Confetti } from './components/Confetti'
-import { Hero } from './components/Hero'
-import { LiveStatus } from './components/LiveStatus'
+import { MapHub } from './components/MapHub'
 import { NearYou } from './components/NearYou'
 import { Pensacola } from './components/Pensacola'
 import { PlansBoard } from './components/PlansBoard'
-import { SharingToggle } from './components/SharingToggle'
 import { Timeline } from './components/Timeline'
-import { TripMap } from './components/TripMap'
 import { UserSetup } from './components/UserSetup'
 import type { TouristSpot } from './data/touristSpots'
 import {
@@ -31,8 +28,12 @@ export default function App() {
   const [users, setUsers] = useState<Record<string, LiveUser>>({})
   const [plans, setPlans] = useState<TripPlan[]>([])
   const [draftSpot, setDraftSpot] = useState<TouristSpot | null>(null)
-  const [focus, setFocus] = useState<{ lat: number; lng: number } | null>(null)
   const [celebrate, setCelebrate] = useState(false)
+  const [mapFocus, setMapFocus] = useState<{
+    lat: number
+    lng: number
+    spotId: string
+  } | null>(null)
 
   useEffect(() => {
     const u1 = subscribeStatus(setStatus)
@@ -51,10 +52,14 @@ export default function App() {
     [plans],
   )
 
+  function scrollToSection(id: string) {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+  }
+
   if (!identity) {
     return (
       <UserSetup
-        onComplete={( partial) => {
+        onComplete={(partial) => {
           const next = saveIdentity(partial)
           setIdentity(next)
         }}
@@ -63,55 +68,58 @@ export default function App() {
   }
 
   return (
-    <div className="app-shell">
+    <div className="app-shell app-shell--map-first">
       <Confetti show={celebrate} />
-      <Hero />
-      <LiveStatus
-        status={status}
+      <MapHub
         identity={identity}
-        onLocalUpdate={setStatus}
-      />
-      <SharingToggle identity={identity} />
-      <TripMap
         status={status}
         users={users}
         spots={spots}
         agreedPlans={agreed}
-        focus={focus}
-      />
-      <NearYou
-        spots={spots}
+        onLocalUpdate={setStatus}
         onPropose={(spot) => {
           setDraftSpot(spot)
-          document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' })
+          scrollToSection('plans')
         }}
-        onFocus={(spot) => {
-          setFocus({ lat: spot.lat, lng: spot.lng })
-          document.getElementById('map')?.scrollIntoView({ behavior: 'smooth' })
-        }}
+        onScrollTo={scrollToSection}
+        externalFocus={mapFocus}
       />
-      <PlansBoard
-        identity={identity}
-        status={status}
-        plans={plans}
-        draftSpot={draftSpot}
-        onClearDraft={() => setDraftSpot(null)}
-        onAgreed={() => {
-          setCelebrate(true)
-          window.setTimeout(() => setCelebrate(false), 2200)
-        }}
-      />
-      <Timeline />
-      <Pensacola />
-      <footer className="footer">
-        <p className="display" style={{ fontSize: '1.4rem', margin: 0 }}>
-          Happy birthday, Shannon.
-        </p>
-        <p className="muted">
-          Signed in as {identity.name}
-          {identity.isDirector ? ' · Director' : ''}
-        </p>
-      </footer>
+
+      <div className="below-map">
+        <NearYou
+          spots={spots}
+          onPropose={(spot) => {
+            setDraftSpot(spot)
+            scrollToSection('plans')
+          }}
+          onFocus={(spot) => {
+            setMapFocus({ lat: spot.lat, lng: spot.lng, spotId: spot.id })
+            scrollToSection('map-hub')
+          }}
+        />
+        <PlansBoard
+          identity={identity}
+          status={status}
+          plans={plans}
+          draftSpot={draftSpot}
+          onClearDraft={() => setDraftSpot(null)}
+          onAgreed={() => {
+            setCelebrate(true)
+            window.setTimeout(() => setCelebrate(false), 2200)
+          }}
+        />
+        <Timeline />
+        <Pensacola />
+        <footer className="footer">
+          <p className="display" style={{ fontSize: '1.4rem', margin: 0 }}>
+            Happy birthday, Shannon.
+          </p>
+          <p className="muted">
+            Signed in as {identity.name}
+            {identity.isDirector ? ' · Director' : ''}
+          </p>
+        </footer>
+      </div>
     </div>
   )
 }
