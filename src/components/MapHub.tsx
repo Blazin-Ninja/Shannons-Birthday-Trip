@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import type { TouristSpot } from '../data/touristSpots'
 import type { LiveUser, LocalIdentity, TripPlan, TripStatus } from '../lib/types'
+import { CartoonFrame } from './CartoonFrame'
 import { LiveStatus } from './LiveStatus'
 import { SharingToggle } from './SharingToggle'
 import { TripMap } from './TripMap'
@@ -81,15 +82,24 @@ export function MapHub({
       />
 
       <header className="map-hub-header">
-        <div>
-          <p className="map-hub-kicker">Shannon&apos;s Birthday Trip</p>
-          <h1 className="map-hub-title">Explore the route</h1>
-        </div>
+        <motion.div
+          className="map-hub-title-card"
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <p className="map-hub-kicker">Birthday route map</p>
+          <h1 className="map-hub-title">Shannon&apos;s Birthday Trip!</h1>
+        </motion.div>
         <div className="map-hub-user-wrap">
-          <div className="map-hub-user" style={{ borderColor: identity.color }}>
-            <img src={identity.avatar} alt="" />
+          <motion.div
+            className="map-hub-user"
+            style={{ borderColor: identity.color }}
+            initial={{ opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+          >
+            <CartoonFrame src={identity.avatar ?? '/travelers/shannon-ellie.png'} alt="" />
             <span>{identity.name}</span>
-          </div>
+          </motion.div>
           <button type="button" className="map-hub-logout" onClick={onLogout}>
             Switch
           </button>

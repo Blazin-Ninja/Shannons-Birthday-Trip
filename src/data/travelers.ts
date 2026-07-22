@@ -37,21 +37,8 @@ export const TRAVELERS: TravelerSeed[] = [
     color: '#7eb09b',
     avatar: '/travelers/ellie.png',
   },
-  {
-    id: 'matthew',
-    name: 'Matthew',
-    role: 'Trip guest',
-    color: '#4a6fa5',
-    avatar: '/travelers/matthew-celina.png',
-  },
-  {
-    id: 'celina',
-    name: 'Celina',
-    role: 'Trip guest',
-    color: '#c77d99',
-    avatar: '/travelers/matthew-celina.png',
-  },
 ]
 
 export const HERO_IMAGE = '/hero/escape-room-family.png'
+export const FAMILY_CARTOON_HERO = '/travelers/sophia-william-shannon-ellie.png'
 export const ALT_HERO_IMAGE = '/travelers/sophia-william-shannon-ellie.png'

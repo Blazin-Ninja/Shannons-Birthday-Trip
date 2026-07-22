@@ -10,3 +10,7 @@ export const SPOT_KIND_META: Record<
   fun: { emoji: '🎢', label: 'Fun', hue: '#ec4899' },
   stop: { emoji: '⭐', label: 'Stop', hue: '#0ea5e9' },
 }
+
+export function isSpotKind(kind: string): kind is SpotKind {
+  return kind in SPOT_KIND_META
+}

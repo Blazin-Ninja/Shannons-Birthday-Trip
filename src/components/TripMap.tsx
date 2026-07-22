@@ -10,6 +10,7 @@ import {
 import L from 'leaflet'
 import { ROUTE_COORDS, STOPS } from '../data/stops'
 import type { TouristSpot } from '../data/touristSpots'
+import { isSpotKind, SPOT_KIND_META } from '../data/spotKinds'
 import {
   destinationPosition,
   resolveSegment,
@@ -17,14 +18,6 @@ import {
   youPosition,
 } from '../lib/segments'
 import type { LiveUser, TripPlan, TripStatus } from '../lib/types'
-
-const SPOT_COLORS: Record<string, string> = {
-  landmark: '#1a6b6a',
-  food: '#e07a5f',
-  nature: '#2f9e7b',
-  fun: '#f2a65a',
-  stop: '#102a43',
-}
 
 const youIcon = (color: string, size = 18) =>
   L.divIcon({
@@ -42,11 +35,12 @@ const destIcon = L.divIcon({
 })
 
 const spotIcon = (kind: string, selected = false) => {
-  const color = SPOT_COLORS[kind] ?? '#1a6b6a'
-  const size = selected ? 16 : 12
+  const meta = isSpotKind(kind) ? SPOT_KIND_META[kind] : SPOT_KIND_META.landmark
+  const size = selected ? 38 : 32
+  const fontSize = selected ? 18 : 15
   return L.divIcon({
-    className: '',
-    html: `<div style="width:${size}px;height:${size}px;border-radius:3px;background:${color};border:2px solid white;box-shadow:0 ${selected ? 3 : 1}px ${selected ? 8 : 4}px rgba(0,0,0,.${selected ? 4 : 3})${selected ? ';transform:scale(1.15)' : ''}"></div>`,
+    className: 'spot-marker-icon',
+    html: `<div class="spot-marker-pin${selected ? ' spot-marker-pin--selected' : ''}" style="width:${size}px;height:${size}px;background:linear-gradient(145deg,${meta.hue},${meta.hue}cc);border:3px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:${fontSize}px;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.28)">${meta.emoji}</div>`,
     iconSize: [size, size],
     iconAnchor: [size / 2, size / 2],
   })
@@ -184,12 +178,12 @@ export function TripMap({
       />
       <Polyline
         positions={ROUTE_COORDS}
-        pathOptions={{ color: '#0b3d4a', weight: 4, opacity: 0.35 }}
+        pathOptions={{ color: '#c084fc', weight: 5, opacity: 0.45, lineCap: 'round' }}
       />
       {activeSegmentCoords.length >= 2 && (
         <Polyline
           positions={activeSegmentCoords}
-          pathOptions={{ color: '#f2a65a', weight: 6, opacity: 0.9 }}
+          pathOptions={{ color: '#fbbf24', weight: 8, opacity: 0.95, lineCap: 'round' }}
         />
       )}
       {STOPS.filter((s) => s.id !== 'Home').map((stop) => (
@@ -252,7 +246,9 @@ export function TripMap({
           </Marker>
         )
       })}
-      {spots.map((s) => (
+      {spots.map((s) => {
+        const meta = isSpotKind(s.kind) ? SPOT_KIND_META[s.kind] : SPOT_KIND_META.landmark
+        return (
         <Marker
           key={s.id}
           position={[s.lat, s.lng]}
@@ -262,13 +258,20 @@ export function TripMap({
           }}
         >
           <Popup>
-            <strong>{s.name}</strong>
+            <strong>
+              {meta.emoji} {s.name}
+            </strong>
             {s.brand ? ` · ${s.brand}` : ''}
+            <br />
+            <span style={{ fontSize: 11, color: '#6b21a8', fontWeight: 700 }}>
+              {meta.label}
+            </span>
             <br />
             {s.blurb}
           </Popup>
         </Marker>
-      ))}
+        )
+      })}
       {agreedPlans
         .filter((p) => p.lat != null && p.lng != null)
         .map((p) => (
@@ -292,11 +295,17 @@ export function TripMap({
 
   if (variant === 'fullscreen') {
     return (
-      <div className="map-wrap map-wrap--fullscreen">
-        <div className="map-legend" aria-label="Map legend">
-          <span><i className="legend-dot legend-dot--crew" /> Crew</span>
-          <span><i className="legend-dot legend-dot--spot" /> Spots</span>
-          <span><i className="legend-dot legend-dot--route" /> Active leg</span>
+      <div className="map-wrap map-wrap--fullscreen map-wrap--celebrate">
+        <div className="map-garland map-garland--top" aria-hidden />
+        <div className="map-legend map-legend--celebrate" aria-label="Map legend">
+          <span className="map-legend-title">🎂 Birthday map</span>
+          {(Object.entries(SPOT_KIND_META) as [keyof typeof SPOT_KIND_META, typeof SPOT_KIND_META.landmark][]).map(
+            ([key, m]) => (
+              <span key={key} className="map-legend-item">
+                {m.emoji} {m.label}
+              </span>
+            ),
+          )}
         </div>
         {mapContent}
       </div>
