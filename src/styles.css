@@ -786,7 +786,7 @@ textarea {
 }
 
 .map-legend--celebrate {
-  top: auto;
+  top: auto !important;
   bottom: calc(5.75rem + env(safe-area-inset-bottom));
   left: 0.75rem;
   right: auto;

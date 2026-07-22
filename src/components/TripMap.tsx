@@ -297,16 +297,6 @@ export function TripMap({
     return (
       <div className="map-wrap map-wrap--fullscreen map-wrap--celebrate">
         <div className="map-garland map-garland--top" aria-hidden />
-        <div className="map-legend map-legend--celebrate" aria-label="Map legend">
-          <span className="map-legend-title">🎂 Birthday map</span>
-          {(Object.entries(SPOT_KIND_META) as [keyof typeof SPOT_KIND_META, typeof SPOT_KIND_META.landmark][]).map(
-            ([key, m]) => (
-              <span key={key} className="map-legend-item">
-                {m.emoji} {m.label}
-              </span>
-            ),
-          )}
-        </div>
         {mapContent}
       </div>
     )
