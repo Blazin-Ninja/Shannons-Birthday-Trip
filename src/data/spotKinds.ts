@@ -9,6 +9,9 @@ export const SPOT_KIND_META: Record<
   nature: { emoji: '🌴', label: 'Nature', hue: '#22c55e' },
   fun: { emoji: '🎢', label: 'Fun', hue: '#ec4899' },
   stop: { emoji: '⭐', label: 'Stop', hue: '#0ea5e9' },
+  museum: { emoji: '🏛️', label: 'Museum', hue: '#6366f1' },
+  zoo: { emoji: '🦁', label: 'Zoo', hue: '#eab308' },
+  waterpark: { emoji: '💦', label: 'Water park', hue: '#06b6d4' },
 }
 
 export function isSpotKind(kind: string): kind is SpotKind {

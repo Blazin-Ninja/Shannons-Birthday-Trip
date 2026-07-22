@@ -5,6 +5,7 @@ import type { LiveUser, LocalIdentity, TripPlan, TripStatus } from '../lib/types
 import { CartoonFrame } from './CartoonFrame'
 import { LiveStatus } from './LiveStatus'
 import { SharingToggle } from './SharingToggle'
+import { SpotDetail } from './SpotDetail'
 import { TripMap } from './TripMap'
 
 type Props = {
@@ -198,15 +199,7 @@ export function MapHub({
         <div className="map-hub-sheet-body">
           {selectedSpot ? (
             <div className="map-hub-spot-detail">
-              <div>
-                <strong>{selectedSpot.name}</strong>
-                {selectedSpot.brand ? (
-                  <span className="muted"> · {selectedSpot.brand}</span>
-                ) : null}
-                <p className="muted" style={{ margin: '0.35rem 0 0' }}>
-                  {selectedSpot.blurb}
-                </p>
-              </div>
+              <SpotDetail spot={selectedSpot} compact />
               <div className="row">
                 <button
                   type="button"

@@ -18,6 +18,7 @@ import {
   youPosition,
 } from '../lib/segments'
 import type { LiveUser, TripPlan, TripStatus } from '../lib/types'
+import { SpotDetail } from './SpotDetail'
 
 const youIcon = (color: string, size = 18) =>
   L.divIcon({
@@ -246,9 +247,7 @@ export function TripMap({
           </Marker>
         )
       })}
-      {spots.map((s) => {
-        const meta = isSpotKind(s.kind) ? SPOT_KIND_META[s.kind] : SPOT_KIND_META.landmark
-        return (
+      {spots.map((s) => (
         <Marker
           key={s.id}
           position={[s.lat, s.lng]}
@@ -257,21 +256,11 @@ export function TripMap({
             click: () => onSpotSelect?.(s),
           }}
         >
-          <Popup>
-            <strong>
-              {meta.emoji} {s.name}
-            </strong>
-            {s.brand ? ` · ${s.brand}` : ''}
-            <br />
-            <span style={{ fontSize: 11, color: '#6b21a8', fontWeight: 700 }}>
-              {meta.label}
-            </span>
-            <br />
-            {s.blurb}
+          <Popup className="map-popup" minWidth={240}>
+            <SpotDetail spot={s} compact />
           </Popup>
         </Marker>
-        )
-      })}
+      ))}
       {agreedPlans
         .filter((p) => p.lat != null && p.lng != null)
         .map((p) => (

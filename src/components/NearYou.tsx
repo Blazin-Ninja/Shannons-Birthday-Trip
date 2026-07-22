@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { SPOT_KIND_META } from '../data/spotKinds'
 import type { TouristSpot } from '../data/touristSpots'
+import { SpotDetail } from './SpotDetail'
 
 type Props = {
   spots: TouristSpot[]
@@ -47,19 +48,7 @@ export function NearYou({ spots, onPropose, onFocus }: Props) {
               transition={{ delay: i * 0.04, type: 'spring', stiffness: 260 }}
               whileHover={{ y: -4, scale: 1.01 }}
             >
-              <div className="spot--toon-head">
-                <span className="spot--toon-emoji" aria-hidden>
-                  {meta.emoji}
-                </span>
-                <div>
-                  <strong>
-                    {s.name}
-                    {s.brand ? ` · ${s.brand}` : ''}
-                  </strong>
-                  <span className="spot--toon-tag">{meta.label}</span>
-                </div>
-              </div>
-              <p className="spot--toon-blurb">{s.blurb}</p>
+              <SpotDetail spot={s} compact />
               <div className="row">
                 <button
                   type="button"

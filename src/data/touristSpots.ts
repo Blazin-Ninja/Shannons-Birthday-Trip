@@ -1,4 +1,15 @@
-export type SpotKind = 'landmark' | 'food' | 'nature' | 'fun' | 'stop'
+import { enrichSpots } from './spotEnrichment'
+import { EXTRA_TOURIST_SPOTS } from './touristSpotsExtra'
+
+export type SpotKind =
+  | 'landmark'
+  | 'food'
+  | 'nature'
+  | 'fun'
+  | 'stop'
+  | 'museum'
+  | 'zoo'
+  | 'waterpark'
 
 export type TouristSpot = {
   id: string
@@ -7,12 +18,15 @@ export type TouristSpot = {
   lng: number
   segment: string
   blurb: string
+  description?: string
+  websiteUrl?: string
+  mapsUrl?: string
   kind: SpotKind
   brand?: string
   viaDfwOnly?: boolean
 }
 
-export const TOURIST_SPOTS: TouristSpot[] = [
+const BASE_TOURIST_SPOTS: TouristSpot[] = [
   // —— OKC → Shreveport (I-35 / I-20 corridor) ——
   {
     id: 'okc-memorial',
@@ -413,3 +427,5 @@ export const TOURIST_SPOTS: TouristSpot[] = [
     kind: 'landmark',
   },
 ]
+
+export const TOURIST_SPOTS = enrichSpots([...BASE_TOURIST_SPOTS, ...EXTRA_TOURIST_SPOTS])
