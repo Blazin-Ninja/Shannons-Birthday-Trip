@@ -13,7 +13,7 @@ export const TRAVELERS: TravelerSeed[] = [
     name: 'Shannon',
     role: 'Birthday lead / Director',
     color: '#e07a5f',
-    avatar: '/travelers/shannon-ellie.png',
+    avatar: '/travelers/shannon.png',
     isDirectorCandidate: true,
   },
   {
@@ -40,5 +40,5 @@ export const TRAVELERS: TravelerSeed[] = [
 ]
 
 export const HERO_IMAGE = '/hero/escape-room-family.png'
-export const FAMILY_CARTOON_HERO = '/travelers/sophia-william-shannon-ellie.png'
-export const ALT_HERO_IMAGE = '/travelers/sophia-william-shannon-ellie.png'
+export const FAMILY_CARTOON_HERO = '/travelers/family-cartoon-hero.png'
+export const ALT_HERO_IMAGE = '/travelers/family-cartoon-hero.png'

@@ -1478,6 +1478,14 @@ textarea {
   padding: 4px;
 }
 
+.cartoon-frame--native .cartoon-frame-img {
+  filter: none;
+}
+
+.cartoon-frame--native.cartoon-frame--hero {
+  border-radius: 1.35rem;
+}
+
 .cartoon-frame-img {
   display: block;
   width: 100%;

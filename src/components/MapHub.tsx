@@ -97,7 +97,11 @@ export function MapHub({
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
           >
-            <CartoonFrame src={identity.avatar ?? '/travelers/shannon-ellie.png'} alt="" />
+            <CartoonFrame
+              src={identity.avatar ?? '/travelers/shannon.png'}
+              alt=""
+              native
+            />
             <span>{identity.name}</span>
           </motion.div>
           <button type="button" className="map-hub-logout" onClick={onLogout}>

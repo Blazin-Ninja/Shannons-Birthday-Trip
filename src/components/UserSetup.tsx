@@ -58,6 +58,7 @@ export function UserSetup({ onComplete }: Props) {
           src={FAMILY_CARTOON_HERO}
           alt="Shannon's birthday crew — Sophia, William, Shannon, and Ellie"
           variant="hero"
+          native
         />
         <div className="setup-hero-badge">Birthday adventure!</div>
       </motion.div>
@@ -95,7 +96,7 @@ export function UserSetup({ onComplete }: Props) {
             whileTap={{ scale: 0.97 }}
             style={{ '--chip-color': t.color } as React.CSSProperties}
           >
-            <CartoonFrame src={t.avatar} alt={t.name} />
+            <CartoonFrame src={t.avatar} alt={t.name} native />
             <strong>{t.name}</strong>
             <span className="traveler-role">{t.role}</span>
           </motion.button>
