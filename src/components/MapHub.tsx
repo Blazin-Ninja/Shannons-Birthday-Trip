@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { TouristSpot } from '../data/touristSpots'
 import { googleMapsRouteUrl } from '../lib/routeDeviation'
 import type { LiveUser, LocalIdentity, TripPlan, TripStatus } from '../lib/types'
@@ -41,6 +41,40 @@ export function MapHub({
   const [sheetExpanded, setSheetExpanded] = useState(false)
   const [showStatus, setShowStatus] = useState(false)
   const [autoFit, setAutoFit] = useState(true)
+  const dragStartY = useRef<number | null>(null)
+
+  function collapseSheet() {
+    setSheetExpanded(false)
+  }
+
+  function expandSheet() {
+    setSheetExpanded(true)
+  }
+
+  function toggleSheet() {
+    setSheetExpanded((v) => !v)
+  }
+
+  function onHandlePointerDown(clientY: number) {
+    dragStartY.current = clientY
+  }
+
+  function onHandlePointerUp(clientY: number) {
+    const start = dragStartY.current
+    dragStartY.current = null
+    if (start == null) return
+
+    const delta = clientY - start
+    if (delta > 36) {
+      collapseSheet()
+      return
+    }
+    if (delta < -36) {
+      expandSheet()
+      return
+    }
+    toggleSheet()
+  }
 
   useEffect(() => {
     if (!externalFocus) return
@@ -192,14 +226,25 @@ export function MapHub({
       </div>
 
       <motion.div
-        className={`map-hub-sheet ${sheetExpanded ? 'expanded' : ''}`}
-        layout
+        className={`map-hub-sheet ${sheetExpanded ? 'expanded' : 'collapsed'}`}
       >
         <button
           type="button"
           className="map-hub-sheet-handle"
           aria-expanded={sheetExpanded}
-          onClick={() => setSheetExpanded((v) => !v)}
+          onPointerDown={(e) => {
+            e.currentTarget.setPointerCapture(e.pointerId)
+            onHandlePointerDown(e.clientY)
+          }}
+          onPointerUp={(e) => {
+            if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+              e.currentTarget.releasePointerCapture(e.pointerId)
+            }
+            onHandlePointerUp(e.clientY)
+          }}
+          onPointerCancel={() => {
+            dragStartY.current = null
+          }}
         >
           <span className="handle-bar" />
           <span className="handle-label">

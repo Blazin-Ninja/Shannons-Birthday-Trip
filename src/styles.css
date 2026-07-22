@@ -1149,20 +1149,27 @@ textarea {
   right: 0;
   bottom: 0;
   z-index: 800;
+  display: flex;
+  flex-direction: column;
   background: rgba(255, 252, 247, 0.97);
   border-radius: 1.25rem 1.25rem 0 0;
   box-shadow: 0 -8px 40px rgba(16, 42, 67, 0.18);
-  max-height: 38vh;
-  transition: max-height 0.35s ease;
   padding-bottom: env(safe-area-inset-bottom);
+  transition: max-height 0.32s ease;
+  overflow: hidden;
+}
+
+.map-hub-sheet.collapsed {
+  max-height: 3.6rem;
 }
 
 .map-hub-sheet.expanded {
-  max-height: 58vh;
+  max-height: min(58vh, 520px);
 }
 
 .map-hub-sheet-handle {
   width: 100%;
+  flex-shrink: 0;
   border: none;
   background: transparent;
   padding: 0.65rem 1rem 0.5rem;
@@ -1170,6 +1177,7 @@ textarea {
   display: grid;
   justify-items: center;
   gap: 0.35rem;
+  touch-action: none;
 }
 
 .handle-bar {
@@ -1185,10 +1193,16 @@ textarea {
   color: var(--gulf-teal);
 }
 
+.map-hub-sheet.collapsed .map-hub-sheet-body {
+  display: none;
+}
+
 .map-hub-sheet-body {
+  flex: 1;
+  min-height: 0;
   padding: 0 1rem 1rem;
   overflow: auto;
-  max-height: calc(58vh - 3rem);
+  -webkit-overflow-scrolling: touch;
 }
 
 .map-hub-sheet-hint {
