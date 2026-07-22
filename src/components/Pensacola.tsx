@@ -2,20 +2,24 @@ import { motion } from 'framer-motion'
 
 const PICKS = [
   {
+    title: 'Navarre Beach Pier',
+    detail: 'Steps from 7710 Navarre Pkwy — sunset walks and fishing pier views.',
+  },
+  {
     title: 'Pensacola Beach',
     detail: 'Sugar sand and emerald water — Shannon’s birthday shoreline.',
   },
   {
     title: 'Fort Pickens',
-    detail: 'History + Gulf Islands trails when the crew wants to wander.',
-  },
-  {
-    title: 'Beach Boardwalk',
-    detail: 'Dinner lights and a celebratory stroll for the birthday lead.',
+    detail: 'History plus Gulf Islands National Seashore trails when the crew wants to wander.',
   },
   {
     title: 'Naval Aviation Museum',
-    detail: 'AC + jets when afternoon heat calls for an indoor win.',
+    detail: 'AC and jets when the Gulf afternoon heat calls for an indoor win.',
+  },
+  {
+    title: 'Seaside & 30-A',
+    detail: 'Day-trip the pastel coastal towns east along the Emerald Coast.',
   },
 ]
 
@@ -23,10 +27,10 @@ export function Pensacola() {
   return (
     <section className="section" id="pensacola">
       <p className="section-kicker">Birthday peak days</p>
-      <h2>Pensacola for Shannon</h2>
+      <h2>Navarre &amp; the Gulf for Shannon</h2>
       <p className="section-lead">
-        Tue–Wed are for celebrating Shannon — propose anything here and await her
-        call.
+        Tue–Wed are for celebrating Shannon at 7710 Navarre Pkwy — propose anything
+        here and await her call.
       </p>
       <div className="stack">
         {PICKS.map((p, i) => (

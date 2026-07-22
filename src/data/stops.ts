@@ -1,8 +1,10 @@
+import { ROUTE_COORDS, SEGMENT_ROUTE_COORDS } from './routes'
+
 export type StopId =
   | 'Oklahoma City'
   | 'Shreveport'
-  | 'Pensacola'
-  | 'Lake Village'
+  | 'Navarre'
+  | 'Greenville'
   | 'En route'
   | 'Home'
 
@@ -10,37 +12,62 @@ export type Stop = {
   id: StopId
   lat: number
   lng: number
+  address: string
 }
 
 export const STOPS: Stop[] = [
-  { id: 'Oklahoma City', lat: 35.4676, lng: -97.5164 },
-  { id: 'Shreveport', lat: 32.5252, lng: -93.7502 },
-  { id: 'Pensacola', lat: 30.4213, lng: -87.2169 },
-  { id: 'Lake Village', lat: 33.3301, lng: -91.2818 },
-  { id: 'Home', lat: 35.4676, lng: -97.5164 },
+  {
+    id: 'Oklahoma City',
+    lat: 35.4945,
+    lng: -97.6259,
+    address: '6400 NW 24th St, Oklahoma City, OK 73127',
+  },
+  {
+    id: 'Shreveport',
+    lat: 32.5171,
+    lng: -93.7512,
+    address: '104 Market St, Shreveport, LA 71101',
+  },
+  {
+    id: 'Navarre',
+    lat: 30.4017,
+    lng: -86.897,
+    address: '7710 Navarre Pkwy, Navarre, FL 32566',
+  },
+  {
+    id: 'Greenville',
+    lat: 33.4116,
+    lng: -91.0652,
+    address: '211 S Walnut St, Greenville, MS 38701',
+  },
+  {
+    id: 'Home',
+    lat: 35.4945,
+    lng: -97.6259,
+    address: '6400 NW 24th St, Oklahoma City, OK 73127',
+  },
 ]
 
 export const STOP_PRESETS: StopId[] = [
   'Oklahoma City',
   'Shreveport',
-  'Pensacola',
-  'Lake Village',
+  'Navarre',
+  'Greenville',
   'En route',
   'Home',
 ]
 
-export const ROUTE_COORDS: [number, number][] = [
-  [35.4676, -97.5164], // OKC
-  [32.5252, -93.7502], // Shreveport
-  [30.4213, -87.2169], // Pensacola
-  [33.3301, -91.2818], // Lake Village
-  [35.4676, -97.5164], // OKC
-]
+export { ROUTE_COORDS, SEGMENT_ROUTE_COORDS }
 
 export function getStopCoords(name: string): { lat: number; lng: number } | null {
   const hit = STOPS.find((s) => s.id === name)
   if (hit) return { lat: hit.lat, lng: hit.lng }
   return null
+}
+
+export function getStopAddress(name: string): string | null {
+  const hit = STOPS.find((s) => s.id === name)
+  return hit?.address ?? null
 }
 
 export function midpoint(

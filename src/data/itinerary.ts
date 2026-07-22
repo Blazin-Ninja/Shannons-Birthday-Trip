@@ -3,6 +3,7 @@ export type ItineraryDay = {
   dateLabel: string
   title: string
   detail: string
+  address?: string
   birthdayPeak?: boolean
 }
 
@@ -11,37 +12,58 @@ export const ITINERARY: ItineraryDay[] = [
     id: 'd1',
     dateLabel: 'Sat 7/27',
     title: 'OKC → Shreveport',
-    detail: 'Leave ~9:00 AM. Arrive Shreveport around 3–4 PM. Shannon’s birthday road trip begins.',
+    detail:
+      'Leave at 7:00 AM from home. Land in Shreveport around 3–4 PM. Shannon’s birthday road trip begins.',
+    address: '6400 NW 24th St, Oklahoma City → 104 Market St, Shreveport',
   },
   {
     id: 'd2',
     dateLabel: 'Sun 7/28',
-    title: 'Explore Shreveport',
-    detail: 'Full day in Shreveport / Bossier — stretch, eat well, celebrate the journey.',
+    title: 'Explore Shreveport!!',
+    detail:
+      'Full day in Shreveport / Bossier — riverfront, food, and a slow celebration pace. Second night at Market St.',
+    address: '104 Market St, Shreveport, LA 71101',
   },
   {
     id: 'd3',
     dateLabel: 'Mon 7/29',
-    title: 'Shreveport → Pensacola',
-    detail: 'Leave by 10:00 AM. Long drive day — aim for Pensacola around 10–11 PM. Hit those I-10 Buc-ee’s.',
+    title: 'Shreveport → Navarre',
+    detail:
+      'Leave by 12:00 PM. I-49 / I-10 east all day — Buc-ee’s, Gulf views, and be home at the beach rental around 10–11 PM.',
+    address: '104 Market St, Shreveport → 7710 Navarre Pkwy, Navarre, FL',
   },
   {
     id: 'd4',
-    dateLabel: 'Tue–Wed 7/30–7/31',
-    title: 'Pensacola birthday peak',
-    detail: 'Two full days on the Gulf for Shannon’s birthday — beach, boardwalk, Fort Pickens vibes.',
+    dateLabel: 'Tue 7/30',
+    title: 'Gulf Coast day one',
+    detail:
+      'Explore Navarre, Pensacola Beach, and the coast. Live. Laugh. Love.',
+    address: '7710 Navarre Pkwy, Navarre, FL 32566',
     birthdayPeak: true,
   },
   {
     id: 'd5',
-    dateLabel: 'Thu 8/1',
-    title: 'Pensacola → Lake Village',
-    detail: 'Leave by 10:00 AM. Overnight in Lake Village, Arkansas (~8 PM).',
+    dateLabel: 'Wed 7/31',
+    title: 'Gulf Coast day two',
+    detail:
+      'Another full birthday-peak day on the water — propose plans on the map and let Shannon call the shots.',
+    address: '7710 Navarre Pkwy, Navarre, FL 32566',
+    birthdayPeak: true,
   },
   {
     id: 'd6',
+    dateLabel: 'Thu 8/1',
+    title: 'Navarre → Greenville',
+    detail:
+      'Leave by 12:00 PM. Roll west on I-10 and up into the Delta — target Greenville around 9:00 PM for the night.',
+    address: '7710 Navarre Pkwy, Navarre → 211 S Walnut St, Greenville, MS',
+  },
+  {
+    id: 'd7',
     dateLabel: 'Fri 8/2',
-    title: 'Lake Village → OKC',
-    detail: 'Head home. Optional family stop along the way. Shannon’s birthday trip wrap.',
+    title: 'Go the fuck home!',
+    detail:
+      'Greenville → OKC. Maybe stop and say hi to AR family — who cares when you get home, it’s home.',
+    address: '211 S Walnut St, Greenville, MS → 6400 NW 24th St, Oklahoma City',
   },
 ]

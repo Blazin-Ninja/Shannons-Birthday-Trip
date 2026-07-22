@@ -7,7 +7,7 @@ export function Timeline() {
       <p className="section-kicker">Birthday route</p>
       <h2>Day by day for Shannon</h2>
       <p className="section-lead">
-        The fixed family schedule — Pensacola is the birthday peak.
+        Real addresses and drive days — the Gulf Coast is Shannon&apos;s birthday peak.
       </p>
       <div className="timeline">
         {ITINERARY.map((day, i) => (
@@ -24,6 +24,11 @@ export function Timeline() {
             </p>
             <h3>{day.title}</h3>
             <p style={{ margin: '0.25rem 0 0' }}>{day.detail}</p>
+            {day.address && (
+              <p className="muted" style={{ margin: '0.35rem 0 0', fontSize: '0.85rem' }}>
+                {day.address}
+              </p>
+            )}
           </motion.article>
         ))}
       </div>

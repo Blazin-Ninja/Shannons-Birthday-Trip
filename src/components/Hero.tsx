@@ -36,8 +36,8 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25 }}
         >
-          OKC to Pensacola and back — live map, family plans, and every stop
-          filtered through Shannon&apos;s call.
+          OKC to Navarre and back — live map, real route, family plans, and every
+          stop filtered through Shannon&apos;s call.
         </motion.p>
         <div className="hero-route" aria-hidden>
           <motion.div

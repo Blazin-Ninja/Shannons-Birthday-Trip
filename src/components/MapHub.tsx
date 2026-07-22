@@ -110,7 +110,7 @@ export function MapHub({
           { id: 'plans', label: 'Plans' },
           { id: 'near', label: 'Spots' },
           { id: 'timeline', label: 'Timeline' },
-          { id: 'pensacola', label: 'Pensacola' },
+          { id: 'pensacola', label: 'Gulf Coast' },
         ].map((item) => (
           <button
             key={item.id}

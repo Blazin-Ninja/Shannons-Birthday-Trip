@@ -49,7 +49,7 @@ const LS_USERS = 'sbt-users-v1'
 
 export const defaultStatus: TripStatus = {
   whereWeAre: 'Oklahoma City',
-  leavingAt: '2026-07-27T09:00',
+  leavingAt: '2026-07-27T07:00',
   headedTo: 'Shreveport',
   updatedAt: Date.now(),
   viaDfw: false,
