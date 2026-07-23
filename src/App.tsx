@@ -9,6 +9,7 @@ import { UserSetup } from './components/UserSetup'
 import type { TouristSpot } from './data/touristSpots'
 import {
   defaultStatus,
+  publishUser,
   subscribePlans,
   subscribeStatus,
   subscribeUsers,
@@ -58,6 +59,19 @@ export default function App() {
   }
 
   function handleLogout() {
+    const current = identity
+    if (current) {
+      void publishUser(current.travelerId, {
+        name: current.name,
+        color: current.color,
+        avatar: current.avatar,
+        travelerId: current.travelerId,
+        lat: 0,
+        lng: 0,
+        updatedAt: Date.now(),
+        sharing: false,
+      })
+    }
     clearIdentity()
     lockDirector()
     setIdentity(null)

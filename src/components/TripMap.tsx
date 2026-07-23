@@ -124,6 +124,7 @@ type Props = {
   agreedPlans: TripPlan[]
   focus?: { lat: number; lng: number } | null
   selectedSpotId?: string | null
+  excludeTravelerId?: string | null
   variant?: 'embedded' | 'fullscreen'
   autoFit?: boolean
   onSpotSelect?: (spot: TouristSpot) => void
@@ -138,6 +139,7 @@ export function TripMap({
   agreedPlans,
   focus,
   selectedSpotId,
+  excludeTravelerId,
   variant = 'embedded',
   autoFit = true,
   onSpotSelect,
@@ -158,16 +160,24 @@ export function TripMap({
     )
   }, [status.whereWeAre, status.headedTo])
 
+  const liveUsers = useMemo(
+    () =>
+      Object.entries(users).filter(([id, u]) => {
+        if (!u.sharing) return false
+        if (!excludeTravelerId) return true
+        return u.travelerId !== excludeTravelerId && id !== excludeTravelerId
+      }),
+    [users, excludeTravelerId],
+  )
+
   const points = useMemo(() => {
     const list = [you]
     if (dest) list.push(dest)
-    Object.values(users).forEach((u) => {
-      if (u.sharing) list.push({ lat: u.lat, lng: u.lng })
-    })
+    liveUsers.forEach(([, u]) => list.push({ lat: u.lat, lng: u.lng }))
     displaySpots.forEach((s) => list.push({ lat: s.lat, lng: s.lng }))
     if (focus) list.push(focus)
     return list
-  }, [you, dest, users, displaySpots, focus])
+  }, [you, dest, liveUsers, displaySpots, focus])
 
   const activeSegmentCoords = SEGMENT_COORDS[activeSegment] ?? []
 
@@ -234,8 +244,7 @@ export function TripMap({
           </Popup>
         </Marker>
       )}
-      {Object.entries(users).map(([id, u]) => {
-        if (!u.sharing) return null
+      {liveUsers.map(([id, u]) => {
         const stale = now - u.updatedAt > 2 * 60 * 1000
         return (
           <Marker

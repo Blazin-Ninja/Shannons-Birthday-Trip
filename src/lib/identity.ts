@@ -1,29 +1,55 @@
+import { TRAVELERS } from '../data/travelers'
 import type { LocalIdentity } from './types'
 
 const KEY = 'sbt-identity-v1'
 
-function uuid() {
-  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
-    return crypto.randomUUID()
+function inferTravelerId(partial: {
+  travelerId?: string
+  name: string
+  avatar?: string
+}): string {
+  if (partial.travelerId && TRAVELERS.some((t) => t.id === partial.travelerId)) {
+    return partial.travelerId
   }
-  return `u-${Date.now()}-${Math.random().toString(16).slice(2)}`
+
+  const byAvatar = TRAVELERS.find((t) => partial.avatar?.includes(t.id))
+  if (byAvatar) return byAvatar.id
+
+  const byName = TRAVELERS.find(
+    (t) => t.name.toLowerCase() === partial.name.trim().toLowerCase(),
+  )
+  return byName?.id ?? TRAVELERS[0].id
+}
+
+function migrateIdentity(raw: LocalIdentity): LocalIdentity {
+  const travelerId = inferTravelerId(raw)
+  return {
+    ...raw,
+    travelerId,
+    userId: travelerId,
+  }
 }
 
 export function loadIdentity(): LocalIdentity | null {
   try {
     const raw = localStorage.getItem(KEY)
     if (!raw) return null
-    return JSON.parse(raw) as LocalIdentity
+    return migrateIdentity(JSON.parse(raw) as LocalIdentity)
   } catch {
     return null
   }
 }
 
-export function saveIdentity( partial: Omit<LocalIdentity, 'userId'> & { userId?: string },
+export function saveIdentity(
+  partial: Omit<LocalIdentity, 'userId' | 'travelerId'> & {
+    userId?: string
+    travelerId?: string
+  },
 ): LocalIdentity {
-  const existing = loadIdentity()
+  const travelerId = inferTravelerId(partial)
   const next: LocalIdentity = {
-    userId: partial.userId ?? existing?.userId ?? uuid(),
+    userId: travelerId,
+    travelerId,
     name: partial.name,
     color: partial.color,
     avatar: partial.avatar,

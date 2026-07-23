@@ -10,6 +10,7 @@ import {
   type Database,
 } from 'firebase/database'
 import type { LiveUser, TripPlan, TripStatus } from './types'
+import { normalizeLiveUsers } from './liveUsers'
 
 const tripPath = import.meta.env.VITE_TRIP_PATH || 'trips/shannon-birthday-2026'
 
@@ -111,17 +112,17 @@ export function subscribeUsers(
 ): Unsub {
   const database = getDb()
   if (!database) {
-    cb(readLs(LS_USERS, {}))
+    cb(normalizeLiveUsers(readLs(LS_USERS, {})))
     const onStorage = (e: StorageEvent) => {
       if (e.key === LS_USERS && e.newValue) {
-        cb(JSON.parse(e.newValue) as Record<string, LiveUser>)
+        cb(normalizeLiveUsers(JSON.parse(e.newValue) as Record<string, LiveUser>))
       }
     }
     window.addEventListener('storage', onStorage)
     return () => window.removeEventListener('storage', onStorage)
   }
   return onValue(ref(database, `${tripPath}/users`), (snap) => {
-    cb((snap.val() as Record<string, LiveUser>) ?? {})
+    cb(normalizeLiveUsers((snap.val() as Record<string, LiveUser>) ?? {}))
   })
 }
 

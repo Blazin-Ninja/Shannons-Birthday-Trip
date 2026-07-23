@@ -26,10 +26,11 @@ export function SharingToggle({ identity, compact }: Props) {
         return
       }
       setError('')
-      await publishUser(identity.userId, {
+      await publishUser(identity.travelerId, {
         name: identity.name,
         color: identity.color,
         avatar: identity.avatar,
+        travelerId: identity.travelerId,
         lat: pos.lat,
         lng: pos.lng,
         updatedAt: Date.now(),
@@ -43,10 +44,11 @@ export function SharingToggle({ identity, compact }: Props) {
     return () => {
       cancelled = true
       window.clearInterval(id)
-      void publishUser(identity.userId, {
+      void publishUser(identity.travelerId, {
         name: identity.name,
         color: identity.color,
         avatar: identity.avatar,
+        travelerId: identity.travelerId,
         lat: 0,
         lng: 0,
         updatedAt: Date.now(),

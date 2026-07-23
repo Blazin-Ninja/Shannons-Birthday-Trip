@@ -87,7 +87,10 @@ export function MapHub({
     setSheetExpanded(true)
   }, [externalFocus, mapSpots])
 
-  const liveCount = Object.values(users).filter((u) => u.sharing).length
+  const liveCount = Object.entries(users).filter(([id, u]) => {
+    if (!u.sharing) return false
+    return u.travelerId !== identity.travelerId && id !== identity.travelerId
+  }).length
 
   function selectSpot(spot: TouristSpot) {
     setSelectedSpot(spot)
@@ -111,6 +114,7 @@ export function MapHub({
         agreedPlans={agreedPlans}
         focus={focus}
         selectedSpotId={selectedSpot?.id ?? null}
+        excludeTravelerId={identity.travelerId}
         variant="fullscreen"
         autoFit={autoFit}
         onSpotSelect={selectSpot}

@@ -15,6 +15,7 @@ export type LiveUser = {
   updatedAt: number
   sharing: boolean
   avatar?: string
+  travelerId?: string
 }
 
 export type PlanStatus = 'pending' | 'agreed' | 'vetoed'
@@ -37,6 +38,7 @@ export type TripPlan = {
 
 export type LocalIdentity = {
   userId: string
+  travelerId: string
   name: string
   color: string
   avatar?: string

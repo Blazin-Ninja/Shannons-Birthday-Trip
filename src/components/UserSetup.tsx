@@ -29,6 +29,7 @@ export function UserSetup({ onComplete }: Props) {
       isDirector = true
     }
     onComplete({
+      travelerId: seed.id,
       name,
       color: seed.color,
       avatar: seed.avatar,
