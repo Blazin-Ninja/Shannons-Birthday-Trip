@@ -39,7 +39,7 @@ export function Pensacola() {
       <p className="toon-kicker">🌊 Birthday peak days 🌊</p>
       <h2 className="toon-title">Navarre &amp; the Gulf for Shannon</h2>
       <p className="toon-lead">
-        Tue–Wed at 7710 Navarre Pkwy — propose anything here and await the
+        Tue–Wed at Hampton Inn & Suites Navarre — propose anything here and await the
         birthday director&apos;s call.
       </p>
       <div className="toon-pick-grid">

@@ -233,7 +233,7 @@ const BASE_TOURIST_SPOTS: TouristSpot[] = [
     lat: 30.6185,
     lng: -87.7369,
     segment: 'shreveport-navarre',
-    blurb: 'I-10 Exit 49 — last mega-stop before the Navarre rental.',
+    blurb: 'I-10 Exit 49 — last mega-stop before Hampton Inn Navarre.',
     kind: 'stop',
     brand: "Buc-ee's",
   },
@@ -245,7 +245,7 @@ const BASE_TOURIST_SPOTS: TouristSpot[] = [
     lat: 30.3758,
     lng: -86.8632,
     segment: 'navarre',
-    blurb: 'Longest fishing pier in Florida — easy walk from the rental.',
+    blurb: 'Longest fishing pier in Florida — easy walk from the hotel.',
     kind: 'nature',
   },
   {

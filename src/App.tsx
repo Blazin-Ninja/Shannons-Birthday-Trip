@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Confetti } from './components/Confetti'
+import { Destinations } from './components/Destinations'
 import { MapHub } from './components/MapHub'
 import { NearYou } from './components/NearYou'
 import { Pensacola } from './components/Pensacola'
@@ -118,6 +119,12 @@ export default function App() {
             scrollToSection('plans')
           }}
           onFocus={(spot) => {
+            setMapFocus({ lat: spot.lat, lng: spot.lng, spotId: spot.id })
+            scrollToSection('map-hub')
+          }}
+        />
+        <Destinations
+          onFocusSpot={(spot) => {
             setMapFocus({ lat: spot.lat, lng: spot.lng, spotId: spot.id })
             scrollToSection('map-hub')
           }}

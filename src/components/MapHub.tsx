@@ -181,6 +181,7 @@ export function MapHub({
         {[
           { id: 'plans', label: 'Plans' },
           { id: 'near', label: 'Spots' },
+          { id: 'destinations', label: 'Hotels' },
           { id: 'timeline', label: 'Timeline' },
           { id: 'pensacola', label: 'Gulf Coast' },
         ].map((item) => (

@@ -24,20 +24,20 @@ export const STOPS: Stop[] = [
   },
   {
     id: 'Shreveport',
-    lat: 32.5171,
-    lng: -93.7512,
+    lat: 32.5155,
+    lng: -93.7495,
     address: '104 Market St, Shreveport, LA 71101',
   },
   {
     id: 'Navarre',
-    lat: 30.4017,
-    lng: -86.897,
+    lat: 30.4024,
+    lng: -86.9006,
     address: '7710 Navarre Pkwy, Navarre, FL 32566',
   },
   {
     id: 'Greenville',
-    lat: 33.4116,
-    lng: -91.0652,
+    lat: 33.4114,
+    lng: -91.0654,
     address: '211 S Walnut St, Greenville, MS 38701',
   },
   {

@@ -9,6 +9,7 @@ import {
 } from 'react-leaflet'
 import L from 'leaflet'
 import { ROUTE_COORDS, STOPS } from '../data/stops'
+import { TRIP_DESTINATIONS } from '../data/destinations'
 import type { TouristSpot } from '../data/touristSpots'
 import { isSpotKind, SPOT_KIND_META } from '../data/spotKinds'
 import {
@@ -34,6 +35,14 @@ const destIcon = L.divIcon({
   iconSize: [20, 18],
   iconAnchor: [10, 18],
 })
+
+const hotelIcon = (name: string) =>
+  L.divIcon({
+    className: 'hotel-marker-icon',
+    html: `<div class="hotel-marker-pin" title="${name.replace(/"/g, '&quot;')}">🏨</div>`,
+    iconSize: [36, 36],
+    iconAnchor: [18, 18],
+  })
 
 const spotIcon = (kind: string, selected = false, dimmed = false) => {
   const meta = isSpotKind(kind) ? SPOT_KIND_META[kind] : SPOT_KIND_META.landmark
@@ -173,6 +182,7 @@ export function TripMap({
   const points = useMemo(() => {
     const list = [you]
     if (dest) list.push(dest)
+    TRIP_DESTINATIONS.forEach((h) => list.push({ lat: h.lat, lng: h.lng }))
     liveUsers.forEach(([, u]) => list.push({ lat: u.lat, lng: u.lng }))
     displaySpots.forEach((s) => list.push({ lat: s.lat, lng: s.lng }))
     if (focus) list.push(focus)
@@ -235,6 +245,22 @@ export function TripMap({
           {status.whereWeAre}
         </Popup>
       </Marker>
+      {TRIP_DESTINATIONS.map((hotel) => (
+        <Marker
+          key={hotel.id}
+          position={[hotel.lat, hotel.lng]}
+          icon={hotelIcon(hotel.name)}
+          zIndexOffset={500}
+        >
+          <Popup className="map-popup" minWidth={220}>
+            <strong>🏨 {hotel.name}</strong>
+            <br />
+            {hotel.address}
+            <br />
+            <em>{hotel.nightsLabel}</em>
+          </Popup>
+        </Marker>
+      ))}
       {dest && (
         <Marker position={[dest.lat, dest.lng]} icon={destIcon}>
           <Popup>
