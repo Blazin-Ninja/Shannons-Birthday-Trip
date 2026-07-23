@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { TouristSpot } from '../data/touristSpots'
 import { googleMapsRouteUrl } from '../lib/routeDeviation'
 import type { LiveUser, LocalIdentity, TripPlan, TripStatus } from '../lib/types'
@@ -96,6 +96,12 @@ export function MapHub({
     return u.travelerId !== identity.travelerId && id !== identity.travelerId
   }).length
 
+  const myLivePosition = useMemo(() => {
+    const live = users[identity.travelerId]
+    if (!live?.sharing) return null
+    return { lat: live.lat, lng: live.lng }
+  }, [users, identity.travelerId])
+
   function selectSpot(spot: TouristSpot) {
     setSelectedSpot(spot)
     setFocus({ lat: spot.lat, lng: spot.lng })
@@ -119,6 +125,7 @@ export function MapHub({
         focus={focus}
         selectedSpotId={selectedSpot?.id ?? null}
         excludeTravelerId={identity.travelerId}
+        myLivePosition={myLivePosition}
         variant="fullscreen"
         autoFit={autoFit}
         onSpotSelect={selectSpot}

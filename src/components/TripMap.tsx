@@ -12,6 +12,7 @@ import { ROUTE_COORDS, STOPS } from '../data/stops'
 import { TRIP_DESTINATIONS } from '../data/destinations'
 import type { TouristSpot } from '../data/touristSpots'
 import { isSpotKind, SPOT_KIND_META } from '../data/spotKinds'
+import { getCurrentPosition } from '../lib/location'
 import {
   destinationPosition,
   resolveSegment,
@@ -93,25 +94,46 @@ function FlyToFocus({ focus }: { focus?: { lat: number; lng: number } | null }) 
   return null
 }
 
-function MapRecenter({
-  center,
+function MapLocateMe({
+  fallbackCenter,
+  livePosition,
+  zoom = 14,
   onRecenter,
 }: {
-  center: { lat: number; lng: number }
+  fallbackCenter: { lat: number; lng: number }
+  livePosition?: { lat: number; lng: number } | null
+  zoom?: number
   onRecenter?: () => void
 }) {
   const map = useMap()
   useEffect(() => {
     const Control = L.Control.extend({
       onAdd() {
-        const btn = L.DomUtil.create('button', 'map-control-btn') as HTMLButtonElement
+        const btn = L.DomUtil.create(
+          'button',
+          'map-control-btn map-control-btn--locate',
+        ) as HTMLButtonElement
         btn.type = 'button'
-        btn.setAttribute('aria-label', 'Recenter map')
-        btn.textContent = '⊕'
+        btn.setAttribute('aria-label', 'Center on my location')
+        btn.title = 'My location'
+        btn.innerHTML =
+          '<span class="map-control-btn-icon" aria-hidden="true">◎</span>'
         L.DomEvent.disableClickPropagation(btn)
         btn.onclick = () => {
-          map.flyTo([center.lat, center.lng], 7, { duration: 0.6 })
-          onRecenter?.()
+          void (async () => {
+            btn.classList.add('map-control-btn--loading')
+            btn.disabled = true
+            try {
+              let target = await getCurrentPosition()
+              if (!target && livePosition) target = livePosition
+              if (!target) target = fallbackCenter
+              map.flyTo([target.lat, target.lng], zoom, { duration: 0.65 })
+              onRecenter?.()
+            } finally {
+              btn.classList.remove('map-control-btn--loading')
+              btn.disabled = false
+            }
+          })()
         }
         return btn
       },
@@ -121,7 +143,15 @@ function MapRecenter({
     return () => {
       control.remove()
     }
-  }, [map, center.lat, center.lng, onRecenter])
+  }, [
+    map,
+    fallbackCenter.lat,
+    fallbackCenter.lng,
+    livePosition?.lat,
+    livePosition?.lng,
+    zoom,
+    onRecenter,
+  ])
   return null
 }
 
@@ -134,6 +164,7 @@ type Props = {
   focus?: { lat: number; lng: number } | null
   selectedSpotId?: string | null
   excludeTravelerId?: string | null
+  myLivePosition?: { lat: number; lng: number } | null
   variant?: 'embedded' | 'fullscreen'
   autoFit?: boolean
   onSpotSelect?: (spot: TouristSpot) => void
@@ -149,6 +180,7 @@ export function TripMap({
   focus,
   selectedSpotId,
   excludeTravelerId,
+  myLivePosition,
   variant = 'embedded',
   autoFit = true,
   onSpotSelect,
@@ -319,7 +351,11 @@ export function TripMap({
         ))}
       <FitBounds points={points} enabled={autoFit && !focus} />
       <FlyToFocus focus={focus} />
-      <MapRecenter center={you} onRecenter={onRecenter} />
+      <MapLocateMe
+        fallbackCenter={you}
+        livePosition={myLivePosition}
+        onRecenter={onRecenter}
+      />
     </MapContainer>
   )
 
