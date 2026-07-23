@@ -14,8 +14,10 @@ type Props = {
   status: TripStatus
   users: Record<string, LiveUser>
   spots: TouristSpot[]
+  nearbySpots: TouristSpot[]
   mapSpots: TouristSpot[]
   agreedPlans: TripPlan[]
+  pendingPlanCount?: number
   onLocalUpdate: (s: TripStatus) => void
   onPropose: (spot: TouristSpot) => void
   onScrollTo: (id: string) => void
@@ -28,8 +30,10 @@ export function MapHub({
   status,
   users,
   spots,
+  nearbySpots,
   mapSpots,
   agreedPlans,
+  pendingPlanCount = 0,
   onLocalUpdate,
   onPropose,
   onScrollTo,
@@ -179,7 +183,7 @@ export function MapHub({
 
       <nav className="map-hub-nav" aria-label="Trip sections">
         {[
-          { id: 'plans', label: 'Plans' },
+          { id: 'plans', label: 'Plans', badge: pendingPlanCount },
           { id: 'near', label: 'Spots' },
           { id: 'destinations', label: 'Hotels' },
           { id: 'timeline', label: 'Timeline' },
@@ -192,6 +196,11 @@ export function MapHub({
             onClick={() => onScrollTo(item.id)}
           >
             {item.label}
+            {item.badge ? (
+              <span className="map-hub-nav-badge" aria-label={`${item.badge} pending`}>
+                {item.badge}
+              </span>
+            ) : null}
           </button>
         ))}
       </nav>
@@ -253,7 +262,7 @@ export function MapHub({
         >
           <span className="handle-bar" />
           <span className="handle-label">
-            {spots.length} spots on this leg
+            {nearbySpots.length} nearby adventures
             {selectedSpot ? ` · ${selectedSpot.name}` : ''}
           </span>
         </button>
@@ -288,7 +297,7 @@ export function MapHub({
           )}
 
           <div className="map-hub-spot-scroll">
-            {spots.map((s) => (
+            {nearbySpots.map((s) => (
               <button
                 key={s.id}
                 type="button"
@@ -299,7 +308,7 @@ export function MapHub({
                 <span className="muted">{s.blurb}</span>
               </button>
             ))}
-            {spots.length === 0 && (
+            {nearbySpots.length === 0 && (
               <p className="muted" style={{ margin: 0 }}>
                 No spots on this leg yet — update trip status to refresh.
               </p>

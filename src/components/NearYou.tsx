@@ -12,12 +12,11 @@ type Props = {
 export function NearYou({ spots, onPropose, onFocus }: Props) {
   return (
     <section className="section section--toon" id="near">
-      <p className="toon-kicker">✨ Adventure nearby ✨</p>
+      <p className="toon-kicker">✨ Nearby adventures ✨</p>
       <h2 className="toon-title">Near you now</h2>
       <p className="toon-lead">
-        Spots on this leg of Shannon&apos;s birthday quest — the map shows the
-        whole route, including secluded detours with estimated miles and time
-        off the main path.
+        Four hand-picked spots on this leg — a mix of food, fun, nature, and
+        more. Tap the map for the full route.
       </p>
       <div className="spot-list spot-list--toon">
         {spots.length === 0 && (
