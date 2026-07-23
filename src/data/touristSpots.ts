@@ -1,4 +1,5 @@
 import { enrichSpots } from './spotEnrichment'
+import { CORRIDOR_TOURIST_SPOTS } from './touristSpotsCorridor'
 import { EXTRA_TOURIST_SPOTS } from './touristSpotsExtra'
 
 export type SpotKind =
@@ -428,4 +429,8 @@ const BASE_TOURIST_SPOTS: TouristSpot[] = [
   },
 ]
 
-export const TOURIST_SPOTS = enrichSpots([...BASE_TOURIST_SPOTS, ...EXTRA_TOURIST_SPOTS])
+export const TOURIST_SPOTS = enrichSpots([
+  ...BASE_TOURIST_SPOTS,
+  ...EXTRA_TOURIST_SPOTS,
+  ...CORRIDOR_TOURIST_SPOTS,
+])
