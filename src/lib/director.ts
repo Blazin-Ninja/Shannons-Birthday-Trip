@@ -1,7 +1,7 @@
 const UNLOCK_KEY = 'sbt-director-unlocked'
 
 export function getDirectorPin(): string {
-  return import.meta.env.VITE_SHANNON_DIRECTOR_PIN?.trim() || 'shannon2026'
+  return import.meta.env.VITE_SHANNON_DIRECTOR_PIN?.trim() || '5735'
 }
 
 export function isDirectorUnlocked(): boolean {
