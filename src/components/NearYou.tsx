@@ -1,22 +1,24 @@
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import { SPOT_KIND_META } from '../data/spotKinds'
 import type { TouristSpot } from '../data/touristSpots'
 import { SpotDetail } from './SpotDetail'
 
 type Props = {
   spots: TouristSpot[]
+  activeDayId: string
   onPropose: (spot: TouristSpot) => void
   onFocus: (spot: TouristSpot) => void
 }
 
-export function NearYou({ spots, onPropose, onFocus }: Props) {
+export function NearYou({ spots, activeDayId, onPropose, onFocus }: Props) {
   return (
     <section className="section section--toon" id="near">
       <p className="toon-kicker">✨ Nearby adventures ✨</p>
       <h2 className="toon-title">Near you now</h2>
       <p className="toon-lead">
-        Four hand-picked spots on this leg — a mix of food, fun, nature, and
-        more. Tap the map for the full route.
+        Four hand-picked spots on this leg — map them, add to today&apos;s drive
+        playbook, or propose for Shannon&apos;s OK.
       </p>
       <div className="spot-list spot-list--toon">
         {spots.length === 0 && (
@@ -57,6 +59,13 @@ export function NearYou({ spots, onPropose, onFocus }: Props) {
                 >
                   🗺️ Map it
                 </button>
+                <Link
+                  to={`/drive/${activeDayId}`}
+                  state={{ addSpotId: s.id }}
+                  className="btn btn-toon-ghost"
+                >
+                  🚗 Add to drive
+                </Link>
                 <button
                   type="button"
                   className="btn btn-toon-primary"

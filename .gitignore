@@ -14,5 +14,7 @@ android/local.properties
 *.aab
 *.jks
 *.keystore
+!android/shannons-release.keystore
+android-sdk/
 .idea
 .vscode

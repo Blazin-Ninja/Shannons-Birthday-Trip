@@ -9,7 +9,7 @@ import {
   update,
   type Database,
 } from 'firebase/database'
-import type { LiveUser, TripPlan, TripStatus } from './types'
+import type { DriveDayPlan, LiveUser, TripPlan, TripStatus } from './types'
 import { normalizeLiveUsers } from './liveUsers'
 
 const tripPath = import.meta.env.VITE_TRIP_PATH || 'trips/shannon-birthday-2026'
@@ -47,6 +47,7 @@ function getDb(): Database | null {
 const LS_STATUS = 'sbt-status-v1'
 const LS_PLANS = 'sbt-plans-v1'
 const LS_USERS = 'sbt-users-v1'
+const LS_DRIVE_PLANS = 'sbt-drive-plans-v1'
 
 export const defaultStatus: TripStatus = {
   whereWeAre: 'Oklahoma City',
@@ -246,4 +247,52 @@ export async function withdrawPlan(planId: string): Promise<void> {
     return
   }
   await remove(ref(database, `${tripPath}/plans/${planId}`))
+}
+
+function readDrivePlansLs(): Record<string, DriveDayPlan> {
+  return readLs<Record<string, DriveDayPlan>>(LS_DRIVE_PLANS, {})
+}
+
+function writeDrivePlansLs(all: Record<string, DriveDayPlan>) {
+  writeLs(LS_DRIVE_PLANS, all)
+  window.dispatchEvent(
+    new StorageEvent('storage', {
+      key: LS_DRIVE_PLANS,
+      newValue: JSON.stringify(all),
+    }),
+  )
+}
+
+export function subscribeDrivePlan(
+  dayId: string,
+  cb: (plan: DriveDayPlan | null) => void,
+): Unsub {
+  const database = getDb()
+  if (!database) {
+    const all = readDrivePlansLs()
+    cb(all[dayId] ?? null)
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === LS_DRIVE_PLANS && e.newValue) {
+        const next = JSON.parse(e.newValue) as Record<string, DriveDayPlan>
+        cb(next[dayId] ?? null)
+      }
+    }
+    window.addEventListener('storage', onStorage)
+    return () => window.removeEventListener('storage', onStorage)
+  }
+  return onValue(ref(database, `${tripPath}/drivePlans/${dayId}`), (snap) => {
+    cb((snap.val() as DriveDayPlan | null) ?? null)
+  })
+}
+
+export async function saveDrivePlan(plan: DriveDayPlan): Promise<void> {
+  const next: DriveDayPlan = { ...plan, updatedAt: Date.now() }
+  const database = getDb()
+  if (!database) {
+    const all = readDrivePlansLs()
+    all[plan.dayId] = next
+    writeDrivePlansLs(all)
+    return
+  }
+  await set(ref(database, `${tripPath}/drivePlans/${plan.dayId}`), next)
 }

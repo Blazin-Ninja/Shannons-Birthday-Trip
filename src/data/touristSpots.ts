@@ -26,6 +26,26 @@ export type TouristSpot = {
   kind: SpotKind
   brand?: string
   viaDfwOnly?: boolean
+  dwellMinutes?: number
+}
+
+const DEFAULT_DWELL: Record<SpotKind, number> = {
+  stop: 20,
+  food: 45,
+  fun: 60,
+  landmark: 60,
+  nature: 45,
+  museum: 60,
+  zoo: 90,
+  waterpark: 120,
+}
+
+export function dwellMinutesForSpot(spot: TouristSpot): number {
+  return spot.dwellMinutes ?? DEFAULT_DWELL[spot.kind]
+}
+
+export function spotById(id: string): TouristSpot | undefined {
+  return TOURIST_SPOTS.find((s) => s.id === id)
 }
 
 const BASE_TOURIST_SPOTS: TouristSpot[] = [

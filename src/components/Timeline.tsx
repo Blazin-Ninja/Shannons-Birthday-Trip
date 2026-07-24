@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import { ITINERARY } from '../data/itinerary'
 
 export function Timeline() {
@@ -29,6 +30,12 @@ export function Timeline() {
             {day.birthdayPeak && (
               <span className="timeline-peak-badge">Birthday peak ✨</span>
             )}
+            <Link
+              to={`/drive/${day.id}`}
+              className="btn btn-toon-ghost timeline-plan-btn"
+            >
+              Plan this day
+            </Link>
           </motion.article>
         ))}
       </div>

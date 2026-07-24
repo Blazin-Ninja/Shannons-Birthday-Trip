@@ -2150,3 +2150,204 @@ textarea {
   line-height: 1.1rem;
   text-align: center;
 }
+
+.timeline-plan-btn {
+  margin-top: 0.65rem;
+  text-decoration: none;
+  display: inline-flex;
+}
+
+.footer-drive-link {
+  margin-top: 0.75rem;
+  text-decoration: none;
+  display: inline-flex;
+}
+
+.drive-page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 1rem 1rem 4rem;
+  min-height: 100vh;
+}
+
+.drive-header {
+  margin-bottom: 1.5rem;
+}
+
+.drive-back {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  color: var(--gulf-mid);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.drive-title {
+  margin: 0 0 0.4rem;
+  font-size: clamp(1.8rem, 6vw, 2.4rem);
+  color: var(--gulf-teal);
+}
+
+.drive-saving {
+  margin-top: 0.5rem;
+  background: rgba(11, 61, 74, 0.08);
+  color: var(--gulf-teal);
+}
+
+.drive-section {
+  margin-top: 2rem;
+}
+
+.drive-section h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.35rem;
+  color: var(--gulf-teal);
+}
+
+.drive-day-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.drive-day-card {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1rem;
+  border-radius: 1.25rem;
+  background: rgba(255, 252, 247, 0.92);
+  border: 1px solid rgba(11, 61, 74, 0.08);
+  box-shadow: var(--shadow);
+}
+
+.drive-day-card.peak {
+  border-color: rgba(224, 122, 95, 0.35);
+}
+
+.drive-day-card h2 {
+  margin: 0.15rem 0;
+  font-size: 1.25rem;
+  color: var(--gulf-teal);
+}
+
+.drive-day-detail {
+  margin: 0;
+  color: #405066;
+}
+
+.drive-day-meta {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+}
+
+.drive-day-cta {
+  text-decoration: none;
+  text-align: center;
+  justify-self: start;
+}
+
+.drive-spot-toggle {
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.drive-spot-toggle.selected {
+  border-color: var(--gulf-mid);
+  box-shadow: 0 0 0 3px rgba(26, 107, 106, 0.15);
+}
+
+.drive-spot-meta {
+  font-size: 0.82rem;
+  color: var(--gulf-mid);
+  font-weight: 600;
+}
+
+.drive-stop-order {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.drive-stop-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.drive-stop-index {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--gulf-teal);
+  color: white;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.drive-stop-info {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.drive-dwell-field {
+  max-width: 9rem;
+}
+
+.drive-stop-actions {
+  grid-column: 1 / -1;
+}
+
+.drive-playby {
+  margin-top: 2.5rem;
+}
+
+.drive-schedule {
+  display: grid;
+  gap: 0;
+  border-left: 3px solid rgba(26, 107, 106, 0.35);
+  padding-left: 1rem;
+}
+
+.drive-schedule-item {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: 0.75rem;
+  padding: 0.65rem 0;
+  position: relative;
+}
+
+.drive-schedule-item::before {
+  content: '';
+  position: absolute;
+  left: calc(-1rem - 7px);
+  top: 1rem;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--gulf-mid);
+  box-shadow: 0 0 0 4px rgba(26, 107, 106, 0.15);
+}
+
+.drive-schedule-arrive::before,
+.drive-schedule-arriveDest::before {
+  background: var(--coral);
+  box-shadow: 0 0 0 4px rgba(224, 122, 95, 0.2);
+}
+
+.drive-schedule-time {
+  font-weight: 700;
+  color: var(--gulf-teal);
+  font-variant-numeric: tabular-nums;
+}
+
+.drive-schedule-label {
+  margin: 0;
+  font-weight: 600;
+}
+
+.drive-schedule-duration {
+  margin: 0.15rem 0 0;
+  font-size: 0.85rem;
+}
