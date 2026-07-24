@@ -18,8 +18,8 @@ export const CORRIDOR_TOURIST_SPOTS: TouristSpot[] = [
   {
     id: 'main-event-okc',
     name: 'Main Event Oklahoma City',
-    lat: 35.4649,
-    lng: -97.6181,
+    lat: 35.6102,
+    lng: -97.5381,
     segment: 'okc-shreveport',
     blurb: 'Bowling, laser tag, and a huge arcade near NW 24th St.',
     description:

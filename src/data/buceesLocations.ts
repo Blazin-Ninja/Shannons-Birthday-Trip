@@ -1,6 +1,6 @@
 import type { TouristSpot } from './touristSpots'
 
-/** All open Buc-ee's locations — always shown on the map with the beaver logo. */
+/** All open Buc-ee's locations — shown on the map with the beaver logo when within the amenity radius. */
 export const BUCEES_LOCATIONS: TouristSpot[] = [
   {
     id: 'bucees-athens-al',
@@ -13,7 +13,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-auburn-al',
@@ -26,7 +25,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-leeds-al',
@@ -39,7 +37,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-loxley-al',
@@ -52,7 +49,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-goodyear-az',
@@ -65,7 +61,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-johnstown-co',
@@ -78,7 +73,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-daytona-fl',
@@ -91,7 +85,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-st-augustine-fl',
@@ -104,7 +97,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-brunswick-ga',
@@ -117,7 +109,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-adairsville-ga',
@@ -130,7 +121,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-fort-valley-ga',
@@ -143,7 +133,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-richmond-ky',
@@ -156,7 +145,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-smiths-grove-ky',
@@ -169,7 +157,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-pass-christian-ms',
@@ -182,7 +169,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-springfield-mo',
@@ -195,7 +181,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-huber-heights-oh',
@@ -208,7 +193,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-florence-sc',
@@ -221,7 +205,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-crossville-tn',
@@ -234,7 +217,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-kodak-tn',
@@ -247,7 +229,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-mount-crawford-va',
@@ -260,7 +241,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-alvin-tx',
@@ -273,7 +253,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-amarillo-tx',
@@ -286,7 +265,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-angleton-mulberry-tx',
@@ -299,7 +277,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-angleton-loop-tx',
@@ -312,7 +289,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-angleton-west-tx',
@@ -325,7 +301,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-bastrop-tx',
@@ -338,7 +313,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-baytown-tx',
@@ -351,7 +325,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-brazoria-tx',
@@ -364,7 +337,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-cypress-tx',
@@ -377,7 +349,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-denton-tx',
@@ -390,7 +361,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-eagle-lake-tx',
@@ -403,7 +373,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-ennis-tx',
@@ -416,7 +385,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-fort-worth-tx',
@@ -429,7 +397,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-freeport-east-tx',
@@ -442,7 +409,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-freeport-north-tx',
@@ -455,7 +421,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-giddings-tx',
@@ -468,7 +433,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-hillsboro-tx',
@@ -481,7 +445,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-katy-tx',
@@ -494,7 +457,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-lake-jackson-oyster-tx',
@@ -507,7 +469,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-lake-jackson-hwy-tx',
@@ -520,7 +481,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-lake-jackson-332-tx',
@@ -533,7 +493,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-league-city-tx',
@@ -546,7 +505,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-luling-tx',
@@ -559,7 +517,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-madisonville-tx',
@@ -572,7 +529,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-melissa-tx',
@@ -585,7 +541,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-new-braunfels-tx',
@@ -598,7 +553,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-pearland-main-tx',
@@ -611,7 +565,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-pearland-shadow-tx',
@@ -624,7 +577,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-port-lavaca-tx',
@@ -637,7 +589,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-richmond-tx',
@@ -650,7 +601,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-royse-city-tx',
@@ -663,7 +613,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-temple-tx',
@@ -676,7 +625,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-terrell-tx',
@@ -689,7 +637,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-texas-city-tx',
@@ -702,7 +649,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-waller-tx',
@@ -715,7 +661,6 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
   {
     id: 'bucees-wharton-tx',
@@ -728,6 +673,5 @@ export const BUCEES_LOCATIONS: TouristSpot[] = [
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },
 ]

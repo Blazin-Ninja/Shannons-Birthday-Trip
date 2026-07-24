@@ -24,13 +24,12 @@ const lines = raw.map((s) => {
     websiteUrl: 'https://buc-ees.com/locations/',
     kind: 'stop' as const,
     brand: "Buc-ee's",
-    alwaysOnMap: true,
   },`
 })
 
 const file = `import type { TouristSpot } from './touristSpots'
 
-/** All open Buc-ee's locations — always shown on the map with the beaver logo. */
+/** All open Buc-ee's locations — shown on the map with the beaver logo when within the amenity radius. */
 export const BUCEES_LOCATIONS: TouristSpot[] = [
 ${lines.join('\n')}
 ]

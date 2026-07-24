@@ -108,12 +108,12 @@ export function filterSpotsWithinRadius<T extends Pick<TouristSpot, 'lat' | 'lng
   return spots.filter((s) => isWithinRouteRadius(s, radiusMiles, route))
 }
 
-export function filterSpotsForAmenityRadius<
-  T extends Pick<TouristSpot, 'lat' | 'lng'> & { alwaysOnMap?: boolean },
->(spots: T[], radiusMiles: number, route: [number, number][] = ROUTE_COORDS): T[] {
-  return spots.filter(
-    (s) => s.alwaysOnMap || isWithinRouteRadius(s, radiusMiles, route),
-  )
+export function filterSpotsForAmenityRadius<T extends Pick<TouristSpot, 'lat' | 'lng'>>(
+  spots: T[],
+  radiusMiles: number,
+  route: [number, number][] = ROUTE_COORDS,
+): T[] {
+  return filterSpotsWithinRadius(spots, radiusMiles, route)
 }
 
 export function formatDetour(detour: RouteDetour): string {
