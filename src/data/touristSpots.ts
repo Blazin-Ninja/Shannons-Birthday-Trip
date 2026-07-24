@@ -25,6 +25,7 @@ export type TouristSpot = {
   kind: SpotKind
   brand?: string
   viaDfwOnly?: boolean
+  alwaysOnMap?: boolean
 }
 
 const BASE_TOURIST_SPOTS: TouristSpot[] = [

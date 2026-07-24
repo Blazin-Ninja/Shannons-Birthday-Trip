@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type { TouristSpot } from '../data/touristSpots'
 import { googleMapsRouteUrl } from '../lib/routeDeviation'
 import type { LiveUser, LocalIdentity, TripPlan, TripStatus } from '../lib/types'
+import { AmenityRadiusControl } from './AmenityRadiusControl'
 import { CartoonFrame } from './CartoonFrame'
 import { LiveStatus } from './LiveStatus'
 import { SharingToggle } from './SharingToggle'
@@ -16,6 +17,8 @@ type Props = {
   spots: TouristSpot[]
   nearbySpots: TouristSpot[]
   mapSpots: TouristSpot[]
+  amenityRadiusMiles: number
+  onAmenityRadiusChange: (miles: number) => void
   agreedPlans: TripPlan[]
   pendingPlanCount?: number
   onLocalUpdate: (s: TripStatus) => void
@@ -32,6 +35,8 @@ export function MapHub({
   spots,
   nearbySpots,
   mapSpots,
+  amenityRadiusMiles,
+  onAmenityRadiusChange,
   agreedPlans,
   pendingPlanCount = 0,
   onLocalUpdate,
@@ -134,6 +139,13 @@ export function MapHub({
           clearSelection()
         }}
       />
+
+      <div className="map-hub-radius">
+        <AmenityRadiusControl
+          radiusMiles={amenityRadiusMiles}
+          onChange={onAmenityRadiusChange}
+        />
+      </div>
 
       <header className="map-hub-header">
         <motion.div
@@ -269,7 +281,7 @@ export function MapHub({
         >
           <span className="handle-bar" />
           <span className="handle-label">
-            {nearbySpots.length} nearby adventures
+            {nearbySpots.length} nearby adventures · within {amenityRadiusMiles} mi of route
             {selectedSpot ? ` · ${selectedSpot.name}` : ''}
           </span>
         </button>
@@ -317,7 +329,8 @@ export function MapHub({
             ))}
             {nearbySpots.length === 0 && (
               <p className="muted" style={{ margin: 0 }}>
-                No spots on this leg yet — update trip status to refresh.
+                No spots within {amenityRadiusMiles} mi of the route on this leg — try widening
+                the search radius on the map.
               </p>
             )}
           </div>

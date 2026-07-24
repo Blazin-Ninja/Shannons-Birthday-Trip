@@ -91,6 +91,31 @@ export function estimateRouteDetour(
   return { offRouteMiles, detourMiles, detourMinutes, onRoute: false }
 }
 
+export function isWithinRouteRadius(
+  spot: Pick<TouristSpot, 'lat' | 'lng'>,
+  radiusMiles: number,
+  route: [number, number][] = ROUTE_COORDS,
+): boolean {
+  const { distanceMiles } = nearestOnRoute({ lat: spot.lat, lng: spot.lng }, route)
+  return distanceMiles <= radiusMiles
+}
+
+export function filterSpotsWithinRadius<T extends Pick<TouristSpot, 'lat' | 'lng'>>(
+  spots: T[],
+  radiusMiles: number,
+  route: [number, number][] = ROUTE_COORDS,
+): T[] {
+  return spots.filter((s) => isWithinRouteRadius(s, radiusMiles, route))
+}
+
+export function filterSpotsForAmenityRadius<
+  T extends Pick<TouristSpot, 'lat' | 'lng'> & { alwaysOnMap?: boolean },
+>(spots: T[], radiusMiles: number, route: [number, number][] = ROUTE_COORDS): T[] {
+  return spots.filter(
+    (s) => s.alwaysOnMap || isWithinRouteRadius(s, radiusMiles, route),
+  )
+}
+
 export function formatDetour(detour: RouteDetour): string {
   if (detour.onRoute) return 'On the main route'
   return `~${detour.detourMiles} mi / ~${detour.detourMinutes} min off-route`

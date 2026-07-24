@@ -913,12 +913,125 @@ textarea {
   background: white;
 }
 
+.map-control-btn--active {
+  background: white;
+  box-shadow: 0 0 0 3px rgba(242, 166, 90, 0.45);
+}
+
+.map-control-btn--radius {
+  width: auto;
+  min-width: 42px;
+  padding: 0 0.55rem;
+  gap: 0.1rem;
+  border-radius: 999px;
+  font-family: 'Baloo 2', sans-serif;
+}
+
+.map-control-btn--radius .map-control-btn-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.map-control-btn-suffix {
+  font-size: 0.72rem;
+  font-weight: 700;
+  opacity: 0.85;
+}
+
+.map-hub-radius {
+  position: absolute;
+  left: 0.75rem;
+  bottom: calc(4.25rem + env(safe-area-inset-bottom, 0px));
+  z-index: 500;
+  pointer-events: none;
+}
+
+.map-hub-radius > * {
+  pointer-events: auto;
+}
+
+.map-radius-control {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.map-radius-panel {
+  width: min(240px, calc(100vw - 2rem));
+  padding: 0.75rem;
+  border-radius: 1rem;
+  background: rgba(255, 252, 247, 0.97);
+  border: 2px solid white;
+  box-shadow: 0 8px 24px rgba(16, 42, 67, 0.22);
+}
+
+.map-radius-title {
+  margin: 0;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--gulf-teal);
+}
+
+.map-radius-hint {
+  margin: 0.2rem 0 0.55rem;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: rgba(11, 61, 74, 0.72);
+}
+
+.map-radius-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.55rem;
+}
+
+.map-radius-chip {
+  border: 1px solid rgba(11, 61, 74, 0.15);
+  border-radius: 999px;
+  padding: 0.28rem 0.55rem;
+  background: white;
+  color: var(--gulf-teal);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.map-radius-chip--active {
+  background: var(--gulf-teal);
+  border-color: var(--gulf-teal);
+  color: white;
+}
+
+.map-radius-slider-wrap {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.map-radius-slider {
+  width: 100%;
+  accent-color: var(--coral);
+}
+
+.map-radius-slider-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--gulf-teal);
+}
+
 .map-wrap--fullscreen .leaflet-bottom.leaflet-right {
   bottom: calc(4.25rem + env(safe-area-inset-bottom, 0px));
   right: 0.75rem;
 }
 
 .map-wrap--fullscreen .leaflet-bottom.leaflet-right .map-control-btn {
+  border: 2px solid white;
+}
+
+.map-hub-radius .map-control-btn {
   border: 2px solid white;
 }
 

@@ -19,7 +19,12 @@ import {
 } from './lib/firebase'
 import { isDirectorUnlocked, lockDirector } from './lib/director'
 import { clearIdentity, loadIdentity, saveIdentity } from './lib/identity'
+import {
+  loadAmenityRadiusMi,
+  saveAmenityRadiusMi,
+} from './lib/amenityRadius'
 import { pickDiverseNearbySpots } from './lib/nearbySpots'
+import { filterSpotsForAmenityRadius } from './lib/routeDeviation'
 import { allMapSpots, resolveSegment, spotsForStatus } from './lib/segments'
 import type { LiveUser, LocalIdentity, TripPlan, TripStatus } from './lib/types'
 
@@ -39,6 +44,9 @@ export default function App() {
     lng: number
     spotId: string
   } | null>(null)
+  const [amenityRadiusMiles, setAmenityRadiusMiles] = useState(
+    () => loadAmenityRadiusMi(),
+  )
 
   useEffect(() => {
     const u1 = subscribeStatus(setStatus)
@@ -51,9 +59,22 @@ export default function App() {
     }
   }, [])
 
-  const spots = useMemo(() => spotsForStatus(status), [status])
+  const legSpots = useMemo(() => spotsForStatus(status), [status])
+  const mapSpots = useMemo(
+    () => filterSpotsForAmenityRadius(allMapSpots(status), amenityRadiusMiles),
+    [status, amenityRadiusMiles],
+  )
+  const spots = useMemo(
+    () => filterSpotsForAmenityRadius(legSpots, amenityRadiusMiles),
+    [legSpots, amenityRadiusMiles],
+  )
   const nearbySpots = useMemo(() => pickDiverseNearbySpots(spots, 4), [spots])
-  const mapSpots = useMemo(() => allMapSpots(status), [status])
+
+  const handleAmenityRadiusChange = useCallback((miles: number) => {
+    const next = Math.max(5, Math.min(50, Math.round(miles)))
+    setAmenityRadiusMiles(next)
+    saveAmenityRadiusMi(next)
+  }, [])
   const agreed = useMemo(
     () => plans.filter((p) => p.status === 'agreed'),
     [plans],
@@ -146,6 +167,8 @@ export default function App() {
         spots={spots}
         nearbySpots={nearbySpots}
         mapSpots={mapSpots}
+        amenityRadiusMiles={amenityRadiusMiles}
+        onAmenityRadiusChange={handleAmenityRadiusChange}
         agreedPlans={agreed}
         pendingPlanCount={pendingForDirector}
         onLocalUpdate={setStatus}
