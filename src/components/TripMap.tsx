@@ -63,10 +63,13 @@ const spotIcon = (kind: string, selected = false, dimmed = false) => {
 const brandIcon = (brand: string, selected = false, dimmed = false) => {
   if (brand === "Buc-ee's") {
     const size = selected ? 44 : dimmed ? 30 : 36
-    const ring = selected ? ' brand-marker-pin--selected' : dimmed ? ' brand-marker-pin--dim' : ''
+    const opacity = dimmed ? 0.78 : 1
+    const shadow = selected
+      ? 'box-shadow:0 0 0 3px rgba(242,166,90,.55),0 4px 14px rgba(0,0,0,.28);'
+      : 'box-shadow:0 4px 14px rgba(0,0,0,.28);'
     return L.divIcon({
-      className: 'brand-marker-icon',
-      html: `<div class="brand-marker-pin${ring}"><img src="${BUCEES_LOGO}" alt="Buc-ee's" class="brand-marker-img" width="${size}" height="${size}" /></div>`,
+      className: '',
+      html: `<div style="width:${size}px;height:${size}px;flex-shrink:0;border-radius:50%;overflow:hidden;background:#fff;border:2px solid #fff;${shadow}opacity:${opacity}"><img src="${BUCEES_LOGO}" alt="Buc-ee's" style="display:block;width:${size}px;height:${size}px;max-width:${size}px;max-height:${size}px;object-fit:contain" /></div>`,
       iconSize: [size, size],
       iconAnchor: [size / 2, size / 2],
     })
