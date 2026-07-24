@@ -329,11 +329,11 @@ export const EXTRA_TOURIST_SPOTS: TouristSpot[] = [
     lat: 30.4621,
     lng: -86.6212,
     segment: 'navarre',
-    blurb: 'Gulf Breeze area zoo with Florida panthers and aviary.',
+    blurb: 'Crestview zoo — animal encounters north of the Panhandle beaches.',
     description:
-      'Native Florida species, a free-flight aviary, and keeper talks. Smaller than Gulf Breeze Zoo but highly rated for younger kids.',
-    websiteUrl: 'https://www.ecazoo.org/',
-    mapsUrl: 'https://www.google.com/maps/place/Zoo+Northwest+Florida/',
+      'Family zoo in Crestview with animal encounters and shows. Distinct from Gulf Breeze Zoo — a northern Panhandle detour for wildlife lovers.',
+    websiteUrl: 'https://emeraldcoastzoo.com/',
+    mapsUrl: 'https://www.google.com/maps/place/Emerald+Coast+Zoo/',
     kind: 'zoo',
   },
   {
@@ -355,9 +355,9 @@ export const EXTRA_TOURIST_SPOTS: TouristSpot[] = [
     lat: 30.4025,
     lng: -86.8921,
     segment: 'navarre',
-    blurb: 'Upscale Navarre seafood on the sound — birthday dinner contender.',
+    blurb: 'Pensacola Beach seafood on the sound — oysters, grouper, and Gulf views.',
     description:
-      'Waterfront dining on Santa Rosa Sound with fresh Gulf seafood, steaks, and sunset views. Strong reviews for a special Shannon birthday dinner.',
+      'Waterfront dining on Pensacola Beach Boulevard with fresh Gulf seafood, steaks, and sunset views on Santa Rosa Sound. Strong reviews for a special Shannon birthday dinner.',
     websiteUrl: 'https://www.thegrandmarlin.com/',
     mapsUrl: 'https://www.google.com/maps/place/The+Grand+Marlin/',
     kind: 'food',

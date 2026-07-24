@@ -22,6 +22,8 @@ import {
 import type { LiveUser, TripPlan, TripStatus } from '../lib/types'
 import { SpotDetail } from './SpotDetail'
 
+const BUCEES_LOGO = '/brands/bucees-logo.png'
+
 const youIcon = (color: string, size = 18) =>
   L.divIcon({
     className: '',
@@ -56,6 +58,25 @@ const spotIcon = (kind: string, selected = false, dimmed = false) => {
     iconSize: [size, size],
     iconAnchor: [size / 2, size / 2],
   })
+}
+
+const brandIcon = (brand: string, selected = false, dimmed = false) => {
+  if (brand === "Buc-ee's") {
+    const size = selected ? 44 : dimmed ? 30 : 36
+    const ring = selected ? ' brand-marker-pin--selected' : dimmed ? ' brand-marker-pin--dim' : ''
+    return L.divIcon({
+      className: 'brand-marker-icon',
+      html: `<div class="brand-marker-pin${ring}"><img src="${BUCEES_LOGO}" alt="Buc-ee's" class="brand-marker-img" width="${size}" height="${size}" /></div>`,
+      iconSize: [size, size],
+      iconAnchor: [size / 2, size / 2],
+    })
+  }
+  return spotIcon('stop', selected, dimmed)
+}
+
+function markerIconForSpot(spot: TouristSpot, selected: boolean, dimmed: boolean) {
+  if (spot.brand) return brandIcon(spot.brand, selected, dimmed)
+  return spotIcon(spot.kind, selected, dimmed)
 }
 
 const stopIcon = (name: string, active: boolean) =>
@@ -323,7 +344,8 @@ export function TripMap({
         <Marker
           key={s.id}
           position={[s.lat, s.lng]}
-          icon={spotIcon(s.kind, s.id === selectedSpotId, !legSpotIds.has(s.id))}
+          icon={markerIconForSpot(s, s.id === selectedSpotId, !legSpotIds.has(s.id))}
+          zIndexOffset={s.brand ? 400 : 0}
           opacity={legSpotIds.has(s.id) ? 1 : 0.82}
           eventHandlers={{
             click: () => onSpotSelect?.(s),

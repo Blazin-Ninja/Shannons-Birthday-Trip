@@ -1,4 +1,5 @@
 import { enrichSpots } from './spotEnrichment'
+import { BUCEES_LOCATIONS } from './buceesLocations'
 import { CORRIDOR_TOURIST_SPOTS } from './touristSpotsCorridor'
 import { EXTRA_TOURIST_SPOTS } from './touristSpotsExtra'
 
@@ -65,28 +66,6 @@ const BASE_TOURIST_SPOTS: TouristSpot[] = [
     segment: 'okc-shreveport',
     blurb: 'Dallas skyline break on the I-35 / I-20 swing toward Louisiana.',
     kind: 'landmark',
-  },
-  {
-    id: 'bucees-terrell',
-    name: "Buc-ee's Terrell",
-    lat: 32.7357,
-    lng: -96.2753,
-    segment: 'okc-shreveport',
-    blurb: 'I-20 east of Dallas — beaver nuggets if the crew takes the DFW corridor.',
-    kind: 'stop',
-    brand: "Buc-ee's",
-    viaDfwOnly: true,
-  },
-  {
-    id: 'bucees-denton',
-    name: "Buc-ee's Denton",
-    lat: 33.1846,
-    lng: -97.1331,
-    segment: 'okc-shreveport',
-    blurb: 'North Texas mega-stop on the OKC → DFW → I-20 option.',
-    kind: 'stop',
-    brand: "Buc-ee's",
-    viaDfwOnly: true,
   },
   {
     id: 'tyler-rose-garden',
@@ -183,16 +162,6 @@ const BASE_TOURIST_SPOTS: TouristSpot[] = [
     kind: 'landmark',
   },
   {
-    id: 'bucees-pass-christian',
-    name: "Buc-ee's Pass Christian",
-    lat: 30.3742,
-    lng: -89.2475,
-    segment: 'shreveport-navarre',
-    blurb: 'I-10 Exit 24 — legendary clean restrooms and beaver nuggets.',
-    kind: 'stop',
-    brand: "Buc-ee's",
-  },
-  {
     id: 'uss-alabama',
     name: 'USS Alabama Battleship Memorial Park',
     lat: 30.6828,
@@ -227,16 +196,6 @@ const BASE_TOURIST_SPOTS: TouristSpot[] = [
     segment: 'shreveport-navarre',
     blurb: 'Emerald Coast seafood and harbor views on the final approach.',
     kind: 'food',
-  },
-  {
-    id: 'bucees-loxley',
-    name: "Buc-ee's Loxley",
-    lat: 30.6185,
-    lng: -87.7369,
-    segment: 'shreveport-navarre',
-    blurb: 'I-10 Exit 49 — last mega-stop before Hampton Inn Navarre.',
-    kind: 'stop',
-    brand: "Buc-ee's",
   },
 
   // —— Navarre / Gulf Coast stay ——
@@ -306,26 +265,6 @@ const BASE_TOURIST_SPOTS: TouristSpot[] = [
 
   // —— Navarre → Greenville (I-10 west / MS Delta) ——
   {
-    id: 'bucees-loxley-return',
-    name: "Buc-ee's Loxley (westbound)",
-    lat: 30.6185,
-    lng: -87.7369,
-    segment: 'navarre-greenville',
-    blurb: 'First fuel and snack reload after leaving Navarre.',
-    kind: 'stop',
-    brand: "Buc-ee's",
-  },
-  {
-    id: 'bucees-pass-christian-return',
-    name: "Buc-ee's Pass Christian (westbound)",
-    lat: 30.3742,
-    lng: -89.2475,
-    segment: 'navarre-greenville',
-    blurb: 'I-10 beaver stop on the run back toward the Delta.',
-    kind: 'stop',
-    brand: "Buc-ee's",
-  },
-  {
     id: 'natchez-bluff',
     name: 'Natchez Bluff Park',
     lat: 31.5604,
@@ -358,7 +297,11 @@ const BASE_TOURIST_SPOTS: TouristSpot[] = [
     lat: 33.4101,
     lng: -91.0617,
     segment: 'navarre-greenville',
-    blurb: 'Evening walk near Walnut St before the overnight stay.',
+    blurb: 'Delta nature center — gardens and trails near Walnut St.',
+    description:
+      'Mississippi Delta Nature and Learning Center with children’s gardens, nature trails, and hands-on outdoor education at 1950 Lisa Drive.',
+    websiteUrl: 'https://www.msdeltanature.org/',
+    mapsUrl: 'https://www.google.com/maps/place/Mississippi+Delta+Nature+and+Learning+Center/',
     kind: 'nature',
   },
 
@@ -434,4 +377,5 @@ export const TOURIST_SPOTS = enrichSpots([
   ...BASE_TOURIST_SPOTS,
   ...EXTRA_TOURIST_SPOTS,
   ...CORRIDOR_TOURIST_SPOTS,
+  ...BUCEES_LOCATIONS,
 ])

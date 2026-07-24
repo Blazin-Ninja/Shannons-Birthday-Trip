@@ -1,4 +1,5 @@
 import type { TouristSpot } from './touristSpots'
+import { SPOT_COORDINATE_OVERRIDES } from './spotCoordinateOverrides'
 
 type Enrichment = Pick<TouristSpot, 'description' | 'websiteUrl' | 'mapsUrl'>
 
@@ -54,9 +55,19 @@ const ENRICHMENTS: Record<string, Enrichment> = {
 }
 
 export function enrichSpot(spot: TouristSpot): TouristSpot {
+  const override = SPOT_COORDINATE_OVERRIDES[spot.id]
+  let next = spot
+  if (override) {
+    next = {
+      ...next,
+      lat: override.lat,
+      lng: override.lng,
+      ...(override.name ? { name: override.name } : {}),
+    }
+  }
   const extra = ENRICHMENTS[spot.id]
-  if (!extra) return spot
-  return { ...spot, ...extra }
+  if (!extra) return next
+  return { ...next, ...extra }
 }
 
 export function enrichSpots(spots: TouristSpot[]): TouristSpot[] {

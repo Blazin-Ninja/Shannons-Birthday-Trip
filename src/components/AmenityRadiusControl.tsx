@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AMENITY_RADIUS_PRESETS } from '../lib/amenityRadius'
 
 type Props = {
@@ -8,14 +8,39 @@ type Props = {
 
 export function AmenityRadiusControl({ radiusMiles, onChange }: Props) {
   const [open, setOpen] = useState(false)
+  const rootRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+
+    function onPointerDown(event: PointerEvent) {
+      if (!rootRef.current?.contains(event.target as Node)) {
+        setOpen(false)
+      }
+    }
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') setOpen(false)
+    }
+
+    document.addEventListener('pointerdown', onPointerDown)
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown)
+      document.removeEventListener('keydown', onKeyDown)
+    }
+  }, [open])
 
   return (
-    <div className={`map-radius-control${open ? ' map-radius-control--open' : ''}`}>
+    <div
+      ref={rootRef}
+      className={`map-radius-control${open ? ' map-radius-control--open' : ''}`}
+    >
       <button
         type="button"
         className={`map-control-btn map-control-btn--radius${open ? ' map-control-btn--active' : ''}`}
-        aria-label="Adjust amenity search radius"
-        title="How far off route to search for amenities"
+        aria-label={open ? 'Close amenity search radius' : 'Adjust amenity search radius'}
+        title={open ? 'Close radius settings' : 'How far off route to search for amenities'}
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
       >
@@ -27,7 +52,17 @@ export function AmenityRadiusControl({ radiusMiles, onChange }: Props) {
 
       {open ? (
         <div className="map-radius-panel" role="dialog" aria-label="Amenity search radius">
-          <p className="map-radius-title">Search off route</p>
+          <div className="map-radius-panel-head">
+            <p className="map-radius-title">Search off route</p>
+            <button
+              type="button"
+              className="map-radius-close"
+              aria-label="Close radius settings"
+              onClick={() => setOpen(false)}
+            >
+              ×
+            </button>
+          </div>
           <p className="map-radius-hint">Show amenities within this distance of the driving route.</p>
           <div className="map-radius-presets">
             {AMENITY_RADIUS_PRESETS.map((preset) => (

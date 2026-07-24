@@ -1,0 +1,50 @@
+/**
+ * Verified coordinates for tourist spots where generic geocoding or
+ * hand-entered pins were inaccurate. Applied in spotEnrichment.ts.
+ */
+export const SPOT_COORDINATE_OVERRIDES: Record<
+  string,
+  { lat: number; lng: number; name?: string }
+> = {
+  'arcadia-pops': { lat: 35.6586, lng: -97.3351 },
+  'lafayette-acadian': { lat: 30.1767, lng: -92.0937 },
+  'grand-marlin': { lat: 30.3439, lng: -87.1497 },
+  'greenville-delta': {
+    lat: 33.3986,
+    lng: -91.0664,
+    name: 'Mississippi Delta Nature Center',
+  },
+  'gulf-breeze-zoo': { lat: 30.4011, lng: -86.9844 },
+  'zoo-nw-florida': { lat: 30.7541, lng: -86.4447, name: 'Emerald Coast Zoo' },
+  'rws-casino': { lat: 32.5175, lng: -93.7483 },
+  'tyler-rose-garden': { lat: 32.3203, lng: -95.3012 },
+  'caddo-lake': { lat: 32.7008, lng: -94.1238 },
+  'alexandria-riverfront': { lat: 31.3089, lng: -92.4455 },
+  'shreveport-riverfront': { lat: 32.5149, lng: -93.7495 },
+  'bellingrath-gardens': { lat: 30.4326, lng: -88.1392 },
+  'gulf-shores': { lat: 30.2463, lng: -87.7008 },
+  'destin-harbor': { lat: 30.3932, lng: -86.4955 },
+  'alabama-gulf-coast-zoo': { lat: 30.3297, lng: -87.7312 },
+  'original-oyster-house': { lat: 30.6815, lng: -88.0432 },
+  'big-kahunas': { lat: 30.3845, lng: -86.4523 },
+  'track-destin': { lat: 30.3898, lng: -86.4585 },
+  'waterville-usa': { lat: 30.2465, lng: -87.7018 },
+  'gulf-islands-waterpark': { lat: 30.4515, lng: -89.0958 },
+  'mississippi-aquarium': { lat: 30.3638, lng: -89.0895 },
+  'splash-shreveport': { lat: 32.4569, lng: -93.8915 },
+  'dockery-farms': { lat: 33.7185, lng: -90.6275 },
+  'grammy-museum': { lat: 33.7445, lng: -90.7268 },
+  'beavers-bend': { lat: 34.1448, lng: -94.6715 },
+  'turner-falls': { lat: 34.4095, lng: -97.1435 },
+  'chickasaw-nra': { lat: 34.5085, lng: -96.9682 },
+  'wilderness-safari-ar': { lat: 36.2915, lng: -94.5085 },
+  'ship-island': { lat: 30.3632, lng: -89.0892 },
+  'wakulla-springs': { lat: 30.2345, lng: -84.3025 },
+  'eden-gardens': { lat: 30.3768, lng: -86.1205 },
+  'tabasco-factory': { lat: 29.9085, lng: -91.9068 },
+  'oak-mountain-state-park': { lat: 33.3588, lng: -86.7465 },
+  'noccalula-falls': { lat: 34.0375, lng: -86.0262 },
+  'palo-duro-canyon': { lat: 34.9375, lng: -101.6365 },
+  'cadillac-ranch': { lat: 35.1872, lng: -101.9871 },
+  'big-texan-steak': { lat: 35.1936, lng: -101.9148 },
+}
