@@ -42,3 +42,12 @@ export type LocalIdentity = {
   avatar?: string
   isDirector: boolean
 }
+
+export type DriveDayPlan = {
+  dayId: string
+  departAt: string
+  stopIds: string[]
+  dwellOverrides?: Record<string, number>
+  updatedAt: number
+  updatedBy?: string
+}

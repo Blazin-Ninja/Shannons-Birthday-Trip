@@ -1,19 +1,21 @@
+import { Link } from 'react-router-dom'
 import type { TouristSpot } from '../data/touristSpots'
 
 type Props = {
   spots: TouristSpot[]
+  activeDayId: string
   onPropose: (spot: TouristSpot) => void
   onFocus: (spot: TouristSpot) => void
 }
 
-export function NearYou({ spots, onPropose, onFocus }: Props) {
+export function NearYou({ spots, activeDayId, onPropose, onFocus }: Props) {
   return (
     <section className="section" id="near">
       <p className="section-kicker">Near Shannon&apos;s route</p>
       <h2>Near you now</h2>
       <p className="section-lead">
-        Spots for this leg of Shannon&apos;s birthday trip — tap to map, or propose
-        for Shannon&apos;s OK.
+        Spots for this leg of Shannon&apos;s birthday trip — tap to map, propose
+        for Shannon&apos;s OK, or add to today&apos;s drive playbook.
       </p>
       <div className="spot-list">
         {spots.length === 0 && (
@@ -37,6 +39,13 @@ export function NearYou({ spots, onPropose, onFocus }: Props) {
               >
                 Show on map
               </button>
+              <Link
+                to={`/drive/${activeDayId}`}
+                state={{ addSpotId: s.id }}
+                className="btn btn-ghost"
+              >
+                Add to drive
+              </Link>
               <button
                 type="button"
                 className="btn btn-primary"
