@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import { ITINERARY } from '../data/itinerary'
 
 export function Timeline() {
@@ -24,6 +25,12 @@ export function Timeline() {
             </p>
             <h3>{day.title}</h3>
             <p style={{ margin: '0.25rem 0 0' }}>{day.detail}</p>
+            <Link
+              to={`/drive/${day.id}`}
+              className="btn btn-ghost timeline-plan-btn"
+            >
+              Plan this day
+            </Link>
           </motion.article>
         ))}
       </div>
