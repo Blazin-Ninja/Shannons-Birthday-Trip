@@ -9,7 +9,7 @@ import {
   update,
   type Database,
 } from 'firebase/database'
-import type { DriveDayPlan, LiveUser, TripPlan, TripStatus } from './types'
+import type { AdventurePicks, DriveDayPlan, LiveUser, TripPlan, TripStatus } from './types'
 import { normalizeLiveUsers } from './liveUsers'
 
 const tripPath = import.meta.env.VITE_TRIP_PATH || 'trips/shannon-birthday-2026'
@@ -58,6 +58,7 @@ const LS_STATUS = 'sbt-status-v1'
 const LS_PLANS = 'sbt-plans-v1'
 const LS_USERS = 'sbt-users-v1'
 const LS_DRIVE_PLANS = 'sbt-drive-plans-v1'
+const LS_ADVENTURE_PICKS = 'sbt-adventure-picks-v1'
 
 export const defaultStatus: TripStatus = {
   whereWeAre: 'Oklahoma City',
@@ -86,6 +87,9 @@ type Unsub = () => void
 const localStatusListeners = new Set<(s: TripStatus) => void>()
 const localUsersListeners = new Set<(u: Record<string, LiveUser>) => void>()
 const localPlansListeners = new Set<(p: TripPlan[]) => void>()
+const localAdventurePicksListeners = new Set<
+  (travelerId: string, picks: AdventurePicks | null) => void
+>()
 
 function notifyLocalStatus(value: TripStatus) {
   localStatusListeners.forEach((cb) => cb(value))
@@ -98,6 +102,13 @@ function notifyLocalUsers(all: Record<string, LiveUser>) {
 
 function notifyLocalPlans(list: TripPlan[]) {
   localPlansListeners.forEach((cb) => cb(list))
+}
+
+function notifyLocalAdventurePicks(
+  travelerId: string,
+  picks: AdventurePicks | null,
+) {
+  localAdventurePicksListeners.forEach((cb) => cb(travelerId, picks))
 }
 
 export function subscribeStatus(cb: (s: TripStatus) => void): Unsub {
@@ -346,4 +357,72 @@ export async function saveDrivePlan(plan: DriveDayPlan): Promise<void> {
     return
   }
   await set(ref(database, `${tripPath}/drivePlans/${plan.dayId}`), next)
+}
+
+export function defaultAdventurePicks(travelerId: string): AdventurePicks {
+  return { travelerId, spotIds: [], updatedAt: Date.now() }
+}
+
+function readAdventurePicksLs(): Record<string, AdventurePicks> {
+  return readLs<Record<string, AdventurePicks>>(LS_ADVENTURE_PICKS, {})
+}
+
+function writeAdventurePicksLs(all: Record<string, AdventurePicks>) {
+  writeLs(LS_ADVENTURE_PICKS, all)
+  Object.entries(all).forEach(([travelerId, picks]) => {
+    notifyLocalAdventurePicks(travelerId, picks)
+  })
+  window.dispatchEvent(
+    new StorageEvent('storage', {
+      key: LS_ADVENTURE_PICKS,
+      newValue: JSON.stringify(all),
+    }),
+  )
+}
+
+export function subscribeAdventurePicks(
+  travelerId: string,
+  cb: (picks: AdventurePicks | null) => void,
+): Unsub {
+  const database = getDb()
+  if (!database) {
+    const all = readAdventurePicksLs()
+    cb(all[travelerId] ?? null)
+    const listener = (id: string, picks: AdventurePicks | null) => {
+      if (id === travelerId) cb(picks)
+    }
+    localAdventurePicksListeners.add(listener)
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === LS_ADVENTURE_PICKS && e.newValue) {
+        const next = JSON.parse(e.newValue) as Record<string, AdventurePicks>
+        cb(next[travelerId] ?? null)
+      }
+    }
+    window.addEventListener('storage', onStorage)
+    return () => {
+      localAdventurePicksListeners.delete(listener)
+      window.removeEventListener('storage', onStorage)
+    }
+  }
+  return onValue(
+    ref(database, `${tripPath}/adventurePicks/${travelerId}`),
+    (snap) => {
+      cb((snap.val() as AdventurePicks | null) ?? null)
+    },
+  )
+}
+
+export async function saveAdventurePicks(picks: AdventurePicks): Promise<void> {
+  const next: AdventurePicks = { ...picks, updatedAt: Date.now() }
+  const database = getDb()
+  if (!database) {
+    const all = readAdventurePicksLs()
+    all[picks.travelerId] = next
+    writeAdventurePicksLs(all)
+    return
+  }
+  await set(
+    ref(database, `${tripPath}/adventurePicks/${picks.travelerId}`),
+    next,
+  )
 }

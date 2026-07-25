@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import {
   MapContainer,
   Marker,
@@ -122,34 +122,43 @@ function FlyToFocus({ focus }: { focus?: { lat: number; lng: number } | null }) 
   return null
 }
 
-/** Open (or recenter) on the traveler — live GPS when available, else device location. */
+/** Open once near the traveler, or recenter when recenterKey bumps — never on GPS drift. */
 function OpenNearPerson({
   anchor,
   recenterKey = 0,
   zoom = PERSON_MAP_ZOOM,
+  centeredRef,
 }: {
   anchor: { lat: number; lng: number }
   recenterKey?: number
   zoom?: number
+  centeredRef: { current: boolean }
 }) {
   const map = useMap()
+  const anchorRef = useRef(anchor)
+  anchorRef.current = anchor
+
   useEffect(() => {
     let cancelled = false
     void (async () => {
       const gps = await getCurrentPosition()
       if (cancelled) return
-      const target = gps ?? anchor
-      const animate = recenterKey > 0
-      if (animate) {
+      const target = gps ?? anchorRef.current
+
+      if (recenterKey > 0) {
         map.flyTo([target.lat, target.lng], zoom, { duration: 0.65 })
-      } else {
+        return
+      }
+
+      if (!centeredRef.current) {
         map.setView([target.lat, target.lng], zoom, { animate: false })
+        centeredRef.current = true
       }
     })()
     return () => {
       cancelled = true
     }
-  }, [map, anchor.lat, anchor.lng, recenterKey, zoom])
+  }, [map, recenterKey, zoom, centeredRef])
   return null
 }
 
@@ -290,6 +299,7 @@ export function TripMap({
 
   const activeSegmentCoords = SEGMENT_COORDS[activeSegment] ?? []
   const personAnchor = myLivePosition ?? you
+  const personCenteredRef = useRef(false)
 
   const mapContent = (
     <MapContainer
@@ -432,10 +442,11 @@ export function TripMap({
           </Marker>
         ))}
       <FitBounds points={points} enabled={autoFit && !focus} />
-      {!autoFit && !focus && (
+      {!autoFit && (
         <OpenNearPerson
           anchor={personAnchor}
           recenterKey={personRecenterKey}
+          centeredRef={personCenteredRef}
         />
       )}
       <FlyToFocus focus={focus} />
