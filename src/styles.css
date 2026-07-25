@@ -1451,6 +1451,19 @@ textarea {
   text-decoration: underline;
 }
 
+.map-hub-sync-warn {
+  margin: 0.35rem 0 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #b45309;
+  line-height: 1.35;
+}
+
+.sharing-compact-time {
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
 .spot-detail-desc {
   margin: 0;
   color: #5b4b6a;

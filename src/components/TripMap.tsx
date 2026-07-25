@@ -189,6 +189,8 @@ type Props = {
   selectedSpotId?: string | null
   excludeTravelerId?: string | null
   myLivePosition?: { lat: number; lng: number } | null
+  myLiveColor?: string
+  myLiveName?: string
   variant?: 'embedded' | 'fullscreen'
   autoFit?: boolean
   onSpotSelect?: (spot: TouristSpot) => void
@@ -205,6 +207,8 @@ export function TripMap({
   selectedSpotId,
   excludeTravelerId,
   myLivePosition,
+  myLiveColor = '#f2a65a',
+  myLiveName = 'You',
   variant = 'embedded',
   autoFit = true,
   onSpotSelect,
@@ -229,6 +233,7 @@ export function TripMap({
     () =>
       Object.entries(users).filter(([id, u]) => {
         if (!u.sharing) return false
+        if (u.lat === 0 && u.lng === 0) return false
         if (!excludeTravelerId) return true
         return u.travelerId !== excludeTravelerId && id !== excludeTravelerId
       }),
@@ -240,10 +245,11 @@ export function TripMap({
     if (dest) list.push(dest)
     TRIP_DESTINATIONS.forEach((h) => list.push({ lat: h.lat, lng: h.lng }))
     liveUsers.forEach(([, u]) => list.push({ lat: u.lat, lng: u.lng }))
+    if (myLivePosition) list.push(myLivePosition)
     displaySpots.forEach((s) => list.push({ lat: s.lat, lng: s.lng }))
     if (focus) list.push(focus)
     return list
-  }, [you, dest, liveUsers, displaySpots, focus])
+  }, [you, dest, liveUsers, myLivePosition, displaySpots, focus])
 
   const activeSegmentCoords = SEGMENT_COORDS[activeSegment] ?? []
 
@@ -323,6 +329,19 @@ export function TripMap({
             <strong>Headed to</strong>
             <br />
             {status.headedTo}
+          </Popup>
+        </Marker>
+      )}
+      {myLivePosition && (
+        <Marker
+          position={[myLivePosition.lat, myLivePosition.lng]}
+          icon={youIcon(myLiveColor, 22)}
+          zIndexOffset={900}
+        >
+          <Popup>
+            <strong>{myLiveName}</strong>
+            <br />
+            Live GPS
           </Popup>
         </Marker>
       )}

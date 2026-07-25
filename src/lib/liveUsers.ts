@@ -11,7 +11,12 @@ function inferTravelerId(user: LiveUser, key?: string): string | null {
   const byName = TRAVELERS.find(
     (t) => t.name.toLowerCase() === user.name.trim().toLowerCase(),
   )
-  return byName?.id ?? null
+  if (byName) return byName.id
+
+  // Keep Firebase keys that are already traveler ids, or fall back to key
+  if (key && key.length > 0 && !key.startsWith('local-')) return key
+
+  return null
 }
 
 export function normalizeLiveUsers(

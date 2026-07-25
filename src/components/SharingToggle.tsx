@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { publishUser } from '../lib/firebase'
-import { getCurrentPosition } from '../lib/location'
+import { watchPosition } from '../lib/location'
 import type { LocalIdentity } from '../lib/types'
 
 type Props = {
@@ -10,52 +10,69 @@ type Props = {
 
 export function SharingToggle({ identity, compact }: Props) {
   const [sharing, setSharing] = useState(false)
-  const [last, setLast] = useState<string>('')
+  const [last, setLast] = useState('')
   const [error, setError] = useState('')
+  const identityRef = useRef(identity)
+  identityRef.current = identity
 
   useEffect(() => {
     if (!sharing) return
-    let cancelled = false
 
-    async function tick() {
-      const pos = await getCurrentPosition()
-      if (cancelled) return
-      if (!pos) {
-        setError('Could not read location. Check permissions and try again.')
-        setSharing(false)
-        return
-      }
-      setError('')
-      await publishUser(identity.travelerId, {
-        name: identity.name,
-        color: identity.color,
-        avatar: identity.avatar,
-        travelerId: identity.travelerId,
-        lat: pos.lat,
-        lng: pos.lng,
+    let cancelled = false
+    let stopWatch: (() => void) | null = null
+
+    const publishLive = async (lat: number, lng: number) => {
+      const id = identityRef.current
+      await publishUser(id.travelerId, {
+        name: id.name,
+        color: id.color,
+        avatar: id.avatar,
+        travelerId: id.travelerId,
+        lat,
+        lng,
         updatedAt: Date.now(),
         sharing: true,
       })
       setLast(new Date().toLocaleTimeString())
     }
 
-    void tick()
-    const id = window.setInterval(() => void tick(), 8000)
+    void (async () => {
+      try {
+        stopWatch = await watchPosition(
+          (pos) => {
+            if (cancelled) return
+            setError('')
+            void publishLive(pos.lat, pos.lng)
+          },
+          (message) => {
+            if (cancelled) return
+            setError(message)
+          },
+        )
+      } catch {
+        if (!cancelled) {
+          setError('Could not read location. Check permissions and try again.')
+          setSharing(false)
+        }
+      }
+    })()
+
     return () => {
       cancelled = true
-      window.clearInterval(id)
-      void publishUser(identity.travelerId, {
-        name: identity.name,
-        color: identity.color,
-        avatar: identity.avatar,
-        travelerId: identity.travelerId,
+      stopWatch?.()
+      const id = identityRef.current
+      void publishUser(id.travelerId, {
+        name: id.name,
+        color: id.color,
+        avatar: id.avatar,
+        travelerId: id.travelerId,
         lat: 0,
         lng: 0,
         updatedAt: Date.now(),
         sharing: false,
       })
     }
-  }, [sharing, identity])
+  }, [sharing])
 
   if (compact) {
     return (
@@ -67,6 +84,9 @@ export function SharingToggle({ identity, compact }: Props) {
         >
           {sharing ? '● Live' : 'Share location'}
         </button>
+        {sharing && last && (
+          <span className="sharing-compact-time muted">{last}</span>
+        )}
         {error && (
           <span className="sharing-compact-error" title={error}>
             !

@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { TouristSpot } from '../data/touristSpots'
+import { firebaseEnabled } from '../lib/firebase'
 import { googleMapsRouteUrl } from '../lib/routeDeviation'
 import type { LiveUser, LocalIdentity, TripPlan, TripStatus } from '../lib/types'
 import { AmenityRadiusControl } from './AmenityRadiusControl'
@@ -131,6 +132,8 @@ export function MapHub({
         selectedSpotId={selectedSpot?.id ?? null}
         excludeTravelerId={identity.travelerId}
         myLivePosition={myLivePosition}
+        myLiveColor={identity.color}
+        myLiveName={identity.name}
         variant="fullscreen"
         autoFit={autoFit}
         onSpotSelect={selectSpot}
@@ -155,6 +158,12 @@ export function MapHub({
         >
           <p className="map-hub-kicker">Birthday route map</p>
           <h1 className="map-hub-title">Shannon&apos;s Birthday Trip!</h1>
+          {!firebaseEnabled() && (
+            <p className="map-hub-sync-warn">
+              Offline mode — add Firebase in app settings for live sync between
+              phones. Tap Share location on each phone to test on this device.
+            </p>
+          )}
           <a
             href={googleMapsRouteUrl()}
             target="_blank"

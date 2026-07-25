@@ -73,17 +73,39 @@ function writeLs(key: string, value: unknown) {
 
 type Unsub = () => void
 
+const localStatusListeners = new Set<(s: TripStatus) => void>()
+const localUsersListeners = new Set<(u: Record<string, LiveUser>) => void>()
+const localPlansListeners = new Set<(p: TripPlan[]) => void>()
+
+function notifyLocalStatus(value: TripStatus) {
+  localStatusListeners.forEach((cb) => cb(value))
+}
+
+function notifyLocalUsers(all: Record<string, LiveUser>) {
+  const normalized = normalizeLiveUsers(all)
+  localUsersListeners.forEach((cb) => cb(normalized))
+}
+
+function notifyLocalPlans(list: TripPlan[]) {
+  localPlansListeners.forEach((cb) => cb(list))
+}
+
 export function subscribeStatus(cb: (s: TripStatus) => void): Unsub {
   const database = getDb()
   if (!database) {
-    cb(readLs(LS_STATUS, defaultStatus))
+    const initial = readLs(LS_STATUS, defaultStatus)
+    cb(initial)
+    localStatusListeners.add(cb)
     const onStorage = (e: StorageEvent) => {
       if (e.key === LS_STATUS && e.newValue) {
         cb(JSON.parse(e.newValue) as TripStatus)
       }
     }
     window.addEventListener('storage', onStorage)
-    return () => window.removeEventListener('storage', onStorage)
+    return () => {
+      localStatusListeners.delete(cb)
+      window.removeEventListener('storage', onStorage)
+    }
   }
   const r = ref(database, `${tripPath}/status`)
   return onValue(r, (snap) => {
@@ -97,6 +119,7 @@ export async function saveStatus(status: TripStatus): Promise<void> {
   const database = getDb()
   if (!database) {
     writeLs(LS_STATUS, next)
+    notifyLocalStatus(next)
     window.dispatchEvent(
       new StorageEvent('storage', {
         key: LS_STATUS,
@@ -113,14 +136,23 @@ export function subscribeUsers(
 ): Unsub {
   const database = getDb()
   if (!database) {
-    cb(normalizeLiveUsers(readLs(LS_USERS, {})))
+    const initial = normalizeLiveUsers(readLs(LS_USERS, {}))
+    cb(initial)
+    localUsersListeners.add(cb)
     const onStorage = (e: StorageEvent) => {
       if (e.key === LS_USERS && e.newValue) {
-        cb(normalizeLiveUsers(JSON.parse(e.newValue) as Record<string, LiveUser>))
+        cb(
+          normalizeLiveUsers(
+            JSON.parse(e.newValue) as Record<string, LiveUser>,
+          ),
+        )
       }
     }
     window.addEventListener('storage', onStorage)
-    return () => window.removeEventListener('storage', onStorage)
+    return () => {
+      localUsersListeners.delete(cb)
+      window.removeEventListener('storage', onStorage)
+    }
   }
   return onValue(ref(database, `${tripPath}/users`), (snap) => {
     cb(normalizeLiveUsers((snap.val() as Record<string, LiveUser>) ?? {}))
@@ -136,6 +168,7 @@ export async function publishUser(
     const all = readLs<Record<string, LiveUser>>(LS_USERS, {})
     all[userId] = user
     writeLs(LS_USERS, all)
+    notifyLocalUsers(all)
     window.dispatchEvent(
       new StorageEvent('storage', {
         key: LS_USERS,
@@ -150,14 +183,19 @@ export async function publishUser(
 export function subscribePlans(cb: (plans: TripPlan[]) => void): Unsub {
   const database = getDb()
   if (!database) {
-    cb(readLs(LS_PLANS, []))
+    const initial = readLs(LS_PLANS, [])
+    cb(initial)
+    localPlansListeners.add(cb)
     const onStorage = (e: StorageEvent) => {
       if (e.key === LS_PLANS && e.newValue) {
         cb(JSON.parse(e.newValue) as TripPlan[])
       }
     }
     window.addEventListener('storage', onStorage)
-    return () => window.removeEventListener('storage', onStorage)
+    return () => {
+      localPlansListeners.delete(cb)
+      window.removeEventListener('storage', onStorage)
+    }
   }
   return onValue(ref(database, `${tripPath}/plans`), (snap) => {
     const val = snap.val() as Record<string, Omit<TripPlan, 'id'>> | null
@@ -188,6 +226,7 @@ export async function createPlan(
     const id = `local-${Date.now()}`
     all.unshift({ ...payload, id })
     writeLs(LS_PLANS, all)
+    notifyLocalPlans(all)
     window.dispatchEvent(
       new StorageEvent('storage', {
         key: LS_PLANS,
@@ -218,6 +257,7 @@ export async function decidePlan(
         : p,
     )
     writeLs(LS_PLANS, next)
+    notifyLocalPlans(next)
     window.dispatchEvent(
       new StorageEvent('storage', {
         key: LS_PLANS,
@@ -238,6 +278,7 @@ export async function withdrawPlan(planId: string): Promise<void> {
   if (!database) {
     const all = readLs<TripPlan[]>(LS_PLANS, []).filter((p) => p.id !== planId)
     writeLs(LS_PLANS, all)
+    notifyLocalPlans(all)
     window.dispatchEvent(
       new StorageEvent('storage', {
         key: LS_PLANS,
