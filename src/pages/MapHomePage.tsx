@@ -13,7 +13,10 @@ import { dayIdForStatus } from '../data/driveDays'
 import { useIdentity, useLogout } from '../context/IdentityContext'
 import {
   createPlan,
+  defaultAdventurePicks,
   defaultStatus,
+  saveAdventurePicks,
+  subscribeAdventurePicks,
   subscribePlans,
   subscribeStatus,
   subscribeUsers,
@@ -22,10 +25,16 @@ import {
   loadAmenityRadiusMi,
   saveAmenityRadiusMi,
 } from '../lib/amenityRadius'
-import { pickDiverseNearbySpots } from '../lib/nearbySpots'
+import {
+  distanceFromPoint,
+  filterSpotsNearPoint,
+  formatDistanceMi,
+  pickDiverseNearbyFromPoint,
+} from '../lib/nearbySpots'
 import { filterSpotsForAmenityRadius } from '../lib/routeDeviation'
 import { allMapSpots, resolveSegment, spotsForStatus } from '../lib/segments'
-import type { LiveUser, TripPlan, TripStatus } from '../lib/types'
+import { useNearbyOrigin } from '../lib/useNearbyOrigin'
+import type { AdventurePicks, LiveUser, TripPlan, TripStatus } from '../lib/types'
 
 export function MapHomePage() {
   const identity = useIdentity()
@@ -33,6 +42,9 @@ export function MapHomePage() {
   const [status, setStatus] = useState<TripStatus>(defaultStatus)
   const [users, setUsers] = useState<Record<string, LiveUser>>({})
   const [plans, setPlans] = useState<TripPlan[]>([])
+  const [adventurePicks, setAdventurePicks] = useState<AdventurePicks>(() =>
+    defaultAdventurePicks(identity.travelerId),
+  )
   const [draftSpot, setDraftSpot] = useState<TouristSpot | null>(null)
   const [celebrate, setCelebrate] = useState(false)
   const [mapFocus, setMapFocus] = useState<{
@@ -44,16 +56,26 @@ export function MapHomePage() {
     () => loadAmenityRadiusMi(),
   )
 
+  const { origin: nearbyOrigin, usingLiveGps } = useNearbyOrigin(
+    identity,
+    users,
+    status,
+  )
+
   useEffect(() => {
     const u1 = subscribeStatus(setStatus)
     const u2 = subscribeUsers(setUsers)
     const u3 = subscribePlans(setPlans)
+    const u4 = subscribeAdventurePicks(identity.travelerId, (picks) => {
+      setAdventurePicks(picks ?? defaultAdventurePicks(identity.travelerId))
+    })
     return () => {
       u1()
       u2()
       u3()
+      u4()
     }
-  }, [])
+  }, [identity.travelerId])
 
   const legSpots = useMemo(() => spotsForStatus(status), [status])
   const mapSpots = useMemo(
@@ -64,14 +86,52 @@ export function MapHomePage() {
     () => filterSpotsForAmenityRadius(legSpots, amenityRadiusMiles),
     [legSpots, amenityRadiusMiles],
   )
-  const nearbySpots = useMemo(() => pickDiverseNearbySpots(spots, 4), [spots])
+
+  const nearbyPool = useMemo(
+    () =>
+      filterSpotsNearPoint(allMapSpots(status), nearbyOrigin, amenityRadiusMiles),
+    [status, nearbyOrigin, amenityRadiusMiles],
+  )
+  const nearbySpots = useMemo(
+    () => pickDiverseNearbyFromPoint(nearbyPool, nearbyOrigin, 4),
+    [nearbyPool, nearbyOrigin],
+  )
+  const nearbyDistances = useMemo(
+    () =>
+      Object.fromEntries(
+        nearbySpots.map((s) => [
+          s.id,
+          formatDistanceMi(distanceFromPoint(s, nearbyOrigin)),
+        ]),
+      ),
+    [nearbySpots, nearbyOrigin],
+  )
+
   const activeDayId = useMemo(() => dayIdForStatus(status), [status])
+  const savedSpotIds = useMemo(
+    () => new Set(adventurePicks.spotIds),
+    [adventurePicks.spotIds],
+  )
 
   const handleAmenityRadiusChange = useCallback((miles: number) => {
     const next = Math.max(5, Math.min(50, Math.round(miles)))
     setAmenityRadiusMiles(next)
     saveAmenityRadiusMi(next)
   }, [])
+
+  const toggleSavedSpot = useCallback(
+    (spotId: string) => {
+      const spotIds = adventurePicks.spotIds.includes(spotId)
+        ? adventurePicks.spotIds.filter((id) => id !== spotId)
+        : [...adventurePicks.spotIds, spotId]
+      void saveAdventurePicks({
+        ...adventurePicks,
+        spotIds,
+        updatedBy: identity.name,
+      })
+    },
+    [adventurePicks, identity.name],
+  )
 
   const agreed = useMemo(
     () => plans.filter((p) => p.status === 'agreed'),
@@ -137,6 +197,11 @@ export function MapHomePage() {
         users={users}
         spots={spots}
         nearbySpots={nearbySpots}
+        nearbyDistances={nearbyDistances}
+        nearbyUsingLiveGps={usingLiveGps}
+        savedSpotIds={savedSpotIds}
+        onToggleSavedSpot={toggleSavedSpot}
+        savedAdventureCount={adventurePicks.spotIds.length}
         mapSpots={mapSpots}
         amenityRadiusMiles={amenityRadiusMiles}
         onAmenityRadiusChange={handleAmenityRadiusChange}
@@ -152,8 +217,14 @@ export function MapHomePage() {
       <div className="below-map storybook-zone">
         <NearYou
           spots={nearbySpots}
+          distances={nearbyDistances}
+          usingLiveGps={usingLiveGps}
+          amenityRadiusMiles={amenityRadiusMiles}
+          savedSpotIds={savedSpotIds}
+          savedCount={adventurePicks.spotIds.length}
           activeDayId={activeDayId}
           onPropose={(spot) => void proposeSpot(spot)}
+          onToggleSaved={toggleSavedSpot}
           onFocus={(spot) => {
             setMapFocus({ lat: spot.lat, lng: spot.lng, spotId: spot.id })
             scrollToSection('map-hub')

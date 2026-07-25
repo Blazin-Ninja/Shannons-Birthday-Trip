@@ -1,5 +1,5 @@
 import type { SpotKind, TouristSpot } from '../data/touristSpots'
-import { estimateRouteDetour } from './routeDeviation'
+import { haversineMiles, estimateRouteDetour } from './routeDeviation'
 
 const KIND_PRIORITY: SpotKind[] = [
   'food',
@@ -12,6 +12,36 @@ const KIND_PRIORITY: SpotKind[] = [
   'stop',
 ]
 
+export function distanceFromPoint(
+  spot: Pick<TouristSpot, 'lat' | 'lng'>,
+  origin: { lat: number; lng: number },
+): number {
+  return haversineMiles(origin, { lat: spot.lat, lng: spot.lng })
+}
+
+export function formatDistanceMi(miles: number): string {
+  if (miles < 0.15) return 'right nearby'
+  if (miles < 1) return `~${(Math.round(miles * 10) / 10).toFixed(1)} mi`
+  return `~${miles.toFixed(1)} mi`
+}
+
+export function filterSpotsNearPoint<T extends Pick<TouristSpot, 'lat' | 'lng'>>(
+  spots: T[],
+  origin: { lat: number; lng: number },
+  radiusMiles: number,
+): T[] {
+  return spots.filter((s) => distanceFromPoint(s, origin) <= radiusMiles)
+}
+
+export function sortSpotsByDistanceFrom<T extends Pick<TouristSpot, 'lat' | 'lng'>>(
+  spots: T[],
+  origin: { lat: number; lng: number },
+): T[] {
+  return [...spots].sort(
+    (a, b) => distanceFromPoint(a, origin) - distanceFromPoint(b, origin),
+  )
+}
+
 function sortByProximity(spots: TouristSpot[]): TouristSpot[] {
   return [...spots].sort((a, b) => {
     const da = estimateRouteDetour(a)
@@ -21,14 +51,12 @@ function sortByProximity(spots: TouristSpot[]): TouristSpot[] {
   })
 }
 
-/** Pick a small curated set with as many different spot kinds as possible. */
-export function pickDiverseNearbySpots(
-  spots: TouristSpot[],
+function pickDiverseFromSorted(
+  sorted: TouristSpot[],
   limit = 4,
 ): TouristSpot[] {
-  if (spots.length <= limit) return sortByProximity(spots)
+  if (sorted.length <= limit) return sorted
 
-  const sorted = sortByProximity(spots)
   const picked: TouristSpot[] = []
   const pickedIds = new Set<string>()
 
@@ -49,4 +77,21 @@ export function pickDiverseNearbySpots(
   }
 
   return picked
+}
+
+/** Pick a small curated set with as many different spot kinds as possible. */
+export function pickDiverseNearbySpots(
+  spots: TouristSpot[],
+  limit = 4,
+): TouristSpot[] {
+  return pickDiverseFromSorted(sortByProximity(spots), limit)
+}
+
+/** Curated nearby picks sorted by distance from a live GPS point. */
+export function pickDiverseNearbyFromPoint(
+  spots: TouristSpot[],
+  origin: { lat: number; lng: number },
+  limit = 4,
+): TouristSpot[] {
+  return pickDiverseFromSorted(sortSpotsByDistanceFrom(spots, origin), limit)
 }

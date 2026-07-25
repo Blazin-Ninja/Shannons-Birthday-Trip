@@ -53,3 +53,10 @@ export type DriveDayPlan = {
   updatedAt: number
   updatedBy?: string
 }
+
+export type AdventurePicks = {
+  travelerId: string
+  spotIds: string[]
+  updatedAt: number
+  updatedBy?: string
+}

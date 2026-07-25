@@ -2364,3 +2364,157 @@ textarea {
   margin: 0.15rem 0 0;
   font-size: 0.85rem;
 }
+
+/* Adventures picker page */
+.adventures-page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 1rem 1rem 4rem;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #fff9f2 0%, #f3f8fb 100%);
+}
+
+.adventures-header {
+  margin-bottom: 1.5rem;
+}
+
+.adventures-back {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  color: var(--gulf-mid);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.adventures-title {
+  margin: 0 0 0.4rem;
+  font-size: clamp(1.8rem, 6vw, 2.4rem);
+  color: var(--gulf-teal);
+}
+
+.adventures-lead {
+  margin: 0;
+  color: #405066;
+  line-height: 1.5;
+}
+
+.adventures-saving {
+  margin-top: 0.5rem;
+  color: var(--gulf-mid);
+  font-weight: 600;
+}
+
+.adventures-section {
+  margin-top: 2rem;
+}
+
+.adventures-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.adventures-section-head h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  color: var(--gulf-teal);
+}
+
+.adventures-radius {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  color: #405066;
+}
+
+.adventures-radius select {
+  border-radius: 0.5rem;
+  border: 1px solid rgba(11, 61, 74, 0.15);
+  padding: 0.25rem 0.5rem;
+  background: #fff;
+}
+
+.adventures-empty {
+  padding: 1rem;
+  border-radius: 1rem;
+  background: rgba(255, 252, 247, 0.92);
+  color: #405066;
+}
+
+.adventures-saved-list,
+.adventures-browse-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.adventures-card {
+  padding: 1rem;
+  border-radius: 1.25rem;
+  background: rgba(255, 252, 247, 0.95);
+  border: 1px solid rgba(11, 61, 74, 0.08);
+  box-shadow: var(--shadow);
+}
+
+.adventures-card--picked,
+.adventures-card--saved {
+  border-color: rgba(26, 107, 106, 0.35);
+}
+
+.adventures-card-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.adventures-distance {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--gulf-mid);
+}
+
+.adventures-saved-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.adventures-icon-btn {
+  min-width: auto;
+  padding: 0.25rem 0.5rem;
+}
+
+.near-you-actions {
+  margin-bottom: 1rem;
+}
+
+.near-you-distance {
+  margin: 0 0 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--gulf-mid);
+}
+
+.map-hub-sheet-toolbar {
+  margin-bottom: 0.75rem;
+}
+
+.map-hub-adventures-link {
+  width: 100%;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+}
+
+.map-hub-spot-distance {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--gulf-mid);
+}

@@ -3,6 +3,7 @@ import { HashRouter, Route, Routes } from 'react-router-dom'
 import { IdentityLayout } from './components/IdentityLayout'
 import { DriveDayPage } from './components/drive/DriveDayPage'
 import { DriveDayPicker } from './components/drive/DriveDayPicker'
+import { AdventuresPage } from './components/AdventuresPage'
 import { UserSetup } from './components/UserSetup'
 import { MapHomePage } from './pages/MapHomePage'
 import { publishUser } from './lib/firebase'
@@ -54,6 +55,7 @@ export default function App() {
           element={<IdentityLayout identity={identity} logout={handleLogout} />}
         >
           <Route path="/" element={<MapHomePage />} />
+          <Route path="/adventures" element={<AdventuresPage />} />
           <Route path="/drive" element={<DriveDayPicker />} />
           <Route path="/drive/:dayId" element={<DriveDayPage />} />
         </Route>

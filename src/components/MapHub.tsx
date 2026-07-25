@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { TouristSpot } from '../data/touristSpots'
 import { firebaseEnabled, firebaseStatusLabel } from '../lib/firebase'
@@ -17,6 +18,11 @@ type Props = {
   users: Record<string, LiveUser>
   spots: TouristSpot[]
   nearbySpots: TouristSpot[]
+  nearbyDistances?: Record<string, string>
+  nearbyUsingLiveGps?: boolean
+  savedSpotIds?: Set<string>
+  onToggleSavedSpot?: (spotId: string) => void
+  savedAdventureCount?: number
   mapSpots: TouristSpot[]
   amenityRadiusMiles: number
   onAmenityRadiusChange: (miles: number) => void
@@ -35,6 +41,11 @@ export function MapHub({
   users,
   spots,
   nearbySpots,
+  nearbyDistances = {},
+  nearbyUsingLiveGps = false,
+  savedSpotIds,
+  onToggleSavedSpot,
+  savedAdventureCount = 0,
   mapSpots,
   amenityRadiusMiles,
   onAmenityRadiusChange,
@@ -50,7 +61,8 @@ export function MapHub({
   const [focus, setFocus] = useState<{ lat: number; lng: number } | null>(null)
   const [sheetExpanded, setSheetExpanded] = useState(false)
   const [showStatus, setShowStatus] = useState(false)
-  const [autoFit, setAutoFit] = useState(true)
+  const [autoFit, setAutoFit] = useState(false)
+  const [personRecenterKey, setPersonRecenterKey] = useState(0)
   const dragStartY = useRef<number | null>(null)
 
   function collapseSheet() {
@@ -136,9 +148,11 @@ export function MapHub({
         myLiveName={identity.name}
         variant="fullscreen"
         autoFit={autoFit}
+        personRecenterKey={personRecenterKey}
         onSpotSelect={selectSpot}
         onRecenter={() => {
-          setAutoFit(true)
+          setAutoFit(false)
+          setPersonRecenterKey((k) => k + 1)
           clearSelection()
         }}
       />
@@ -291,12 +305,20 @@ export function MapHub({
         >
           <span className="handle-bar" />
           <span className="handle-label">
-            {nearbySpots.length} nearby adventures · within {amenityRadiusMiles} mi of route
+            {nearbyUsingLiveGps ? 'Live nearby' : 'Nearby'} · {nearbySpots.length} picks ·{' '}
+            {amenityRadiusMiles} mi
+            {savedAdventureCount > 0 ? ` · ${savedAdventureCount} saved` : ''}
             {selectedSpot ? ` · ${selectedSpot.name}` : ''}
           </span>
         </button>
 
         <div className="map-hub-sheet-body">
+          <div className="map-hub-sheet-toolbar">
+            <Link to="/adventures" className="btn btn-primary map-hub-adventures-link">
+              Browse & manage adventures
+              {savedAdventureCount > 0 ? ` (${savedAdventureCount})` : ''}
+            </Link>
+          </div>
           {selectedSpot ? (
             <div className="map-hub-spot-detail">
               <SpotDetail spot={selectedSpot} compact />
@@ -308,6 +330,16 @@ export function MapHub({
                 >
                   Clear
                 </button>
+                {onToggleSavedSpot &&
+                  !selectedSpot.id.startsWith('stop-') && (
+                    <button
+                      type="button"
+                      className="btn btn-ghost"
+                      onClick={() => onToggleSavedSpot(selectedSpot.id)}
+                    >
+                      {savedSpotIds?.has(selectedSpot.id) ? 'Saved ✓' : 'Save'}
+                    </button>
+                  )}
                 {!selectedSpot.id.startsWith('stop-') && (
                   <button
                     type="button"
@@ -334,13 +366,18 @@ export function MapHub({
                 onClick={() => selectSpot(s)}
               >
                 <strong>{s.name}</strong>
+                {nearbyDistances[s.id] && (
+                  <span className="map-hub-spot-distance">
+                    {nearbyDistances[s.id]} away
+                  </span>
+                )}
                 <span className="muted">{s.blurb}</span>
               </button>
             ))}
             {nearbySpots.length === 0 && (
               <p className="muted" style={{ margin: 0 }}>
-                No spots within {amenityRadiusMiles} mi of the route on this leg — try widening
-                the search radius on the map.
+                No spots within {amenityRadiusMiles} mi — try widening the search
+                radius or open Browse & manage.
               </p>
             )}
           </div>
