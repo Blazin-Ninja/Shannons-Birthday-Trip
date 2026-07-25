@@ -23,6 +23,8 @@ import type { LiveUser, TripPlan, TripStatus } from '../lib/types'
 import { SpotDetail } from './SpotDetail'
 
 const BUCEES_LOGO = '/brands/bucees-logo.png'
+const PERSON_MAP_ZOOM = 15
+const ROUTE_OVERVIEW_ZOOM = 7
 
 const youIcon = (color: string, size = 18) =>
   L.divIcon({
@@ -104,7 +106,7 @@ function FitBounds({
   useEffect(() => {
     if (!enabled || !points.length) return
     const bounds = L.latLngBounds(points.map((p) => [p.lat, p.lng] as [number, number]))
-    map.fitBounds(bounds.pad(0.2), { animate: true })
+    map.fitBounds(bounds.pad(0.2), { animate: true, maxZoom: ROUTE_OVERVIEW_ZOOM })
   }, [map, points, enabled])
   return null
 }
@@ -113,8 +115,41 @@ function FlyToFocus({ focus }: { focus?: { lat: number; lng: number } | null }) 
   const map = useMap()
   useEffect(() => {
     if (!focus) return
-    map.flyTo([focus.lat, focus.lng], Math.max(map.getZoom(), 9), { duration: 0.8 })
+    map.flyTo([focus.lat, focus.lng], Math.max(map.getZoom(), PERSON_MAP_ZOOM), {
+      duration: 0.8,
+    })
   }, [map, focus])
+  return null
+}
+
+/** Open (or recenter) on the traveler — live GPS when available, else device location. */
+function OpenNearPerson({
+  anchor,
+  recenterKey = 0,
+  zoom = PERSON_MAP_ZOOM,
+}: {
+  anchor: { lat: number; lng: number }
+  recenterKey?: number
+  zoom?: number
+}) {
+  const map = useMap()
+  useEffect(() => {
+    let cancelled = false
+    void (async () => {
+      const gps = await getCurrentPosition()
+      if (cancelled) return
+      const target = gps ?? anchor
+      const animate = recenterKey > 0
+      if (animate) {
+        map.flyTo([target.lat, target.lng], zoom, { duration: 0.65 })
+      } else {
+        map.setView([target.lat, target.lng], zoom, { animate: false })
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [map, anchor.lat, anchor.lng, recenterKey, zoom])
   return null
 }
 
@@ -193,6 +228,7 @@ type Props = {
   myLiveName?: string
   variant?: 'embedded' | 'fullscreen'
   autoFit?: boolean
+  personRecenterKey?: number
   onSpotSelect?: (spot: TouristSpot) => void
   onRecenter?: () => void
 }
@@ -211,6 +247,7 @@ export function TripMap({
   myLiveName = 'You',
   variant = 'embedded',
   autoFit = true,
+  personRecenterKey = 0,
   onSpotSelect,
   onRecenter,
 }: Props) {
@@ -252,11 +289,12 @@ export function TripMap({
   }, [you, dest, liveUsers, myLivePosition, displaySpots, focus])
 
   const activeSegmentCoords = SEGMENT_COORDS[activeSegment] ?? []
+  const personAnchor = myLivePosition ?? you
 
   const mapContent = (
     <MapContainer
-      center={[you.lat, you.lng]}
-      zoom={7}
+      center={[personAnchor.lat, personAnchor.lng]}
+      zoom={PERSON_MAP_ZOOM}
       scrollWheelZoom
       zoomControl={false}
     >
@@ -394,6 +432,12 @@ export function TripMap({
           </Marker>
         ))}
       <FitBounds points={points} enabled={autoFit && !focus} />
+      {!autoFit && !focus && (
+        <OpenNearPerson
+          anchor={personAnchor}
+          recenterKey={personRecenterKey}
+        />
+      )}
       <FlyToFocus focus={focus} />
       <MapLocateMe
         fallbackCenter={you}

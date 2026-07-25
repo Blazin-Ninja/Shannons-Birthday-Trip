@@ -50,7 +50,8 @@ export function MapHub({
   const [focus, setFocus] = useState<{ lat: number; lng: number } | null>(null)
   const [sheetExpanded, setSheetExpanded] = useState(false)
   const [showStatus, setShowStatus] = useState(false)
-  const [autoFit, setAutoFit] = useState(true)
+  const [autoFit, setAutoFit] = useState(false)
+  const [personRecenterKey, setPersonRecenterKey] = useState(0)
   const dragStartY = useRef<number | null>(null)
 
   function collapseSheet() {
@@ -136,9 +137,11 @@ export function MapHub({
         myLiveName={identity.name}
         variant="fullscreen"
         autoFit={autoFit}
+        personRecenterKey={personRecenterKey}
         onSpotSelect={selectSpot}
         onRecenter={() => {
-          setAutoFit(true)
+          setAutoFit(false)
+          setPersonRecenterKey((k) => k + 1)
           clearSelection()
         }}
       />
