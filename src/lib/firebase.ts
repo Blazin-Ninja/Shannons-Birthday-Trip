@@ -35,6 +35,16 @@ export function firebaseEnabled(): boolean {
   )
 }
 
+export function firebaseStatusLabel(): string {
+  if (firebaseEnabled()) {
+    return `Live sync · ${firebaseConfig.projectId}`
+  }
+  if (!firebaseConfig.apiKey && !firebaseConfig.databaseURL) {
+    return 'Offline mode · add Firebase config'
+  }
+  return 'Offline mode · incomplete Firebase config'
+}
+
 function getDb(): Database | null {
   if (!firebaseEnabled()) return null
   if (!app) {

@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { TouristSpot } from '../data/touristSpots'
-import { firebaseEnabled } from '../lib/firebase'
+import { firebaseEnabled, firebaseStatusLabel } from '../lib/firebase'
 import { googleMapsRouteUrl } from '../lib/routeDeviation'
 import type { LiveUser, LocalIdentity, TripPlan, TripStatus } from '../lib/types'
 import { AmenityRadiusControl } from './AmenityRadiusControl'
@@ -160,8 +160,9 @@ export function MapHub({
           <h1 className="map-hub-title">Shannon&apos;s Birthday Trip!</h1>
           {!firebaseEnabled() && (
             <p className="map-hub-sync-warn">
-              Offline mode — add Firebase in app settings for live sync between
-              phones. Tap Share location on each phone to test on this device.
+              {firebaseStatusLabel()} — family phones won&apos;t share live GPS
+              until Firebase is in the app build. Run{' '}
+              <code>npm run firebase:guide</code> in the repo.
             </p>
           )}
           <a

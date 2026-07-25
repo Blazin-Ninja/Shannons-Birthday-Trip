@@ -31,33 +31,31 @@ Set `VITE_SHANNON_DIRECTOR_PIN` to whatever Shannon should use.
 
 ## Firebase (multi-phone live sync)
 
-1. Create a Firebase project + **Realtime Database**.
-2. Paste web config into `.env`:
+**Phones only see each other’s live GPS when Firebase is configured in the build.** Without it, the map shows “Offline mode” and each phone works alone.
 
-```env
-VITE_FIREBASE_API_KEY=
-VITE_FIREBASE_AUTH_DOMAIN=
-VITE_FIREBASE_DATABASE_URL=
-VITE_FIREBASE_PROJECT_ID=
-VITE_FIREBASE_STORAGE_BUCKET=
-VITE_FIREBASE_MESSAGING_SENDER_ID=
-VITE_FIREBASE_APP_ID=
+### Quick setup (about 5 minutes)
+
+```bash
+npm run firebase:guide          # prints step-by-step console instructions
 ```
 
-3. Example rules for a private family trip node (tighten before wide sharing):
+1. [Firebase console](https://console.firebase.google.com/) → **Create project** (e.g. `shannons-birthday-trip`).
+2. **Build → Realtime Database → Create database** → United States → start in **test mode** (we deploy proper rules below).
+3. **Project settings → Your apps → Add app → Web** → copy the `firebaseConfig` JSON.
+4. Save it as `firebase-config.json` (see `firebase-config.example.json`).
+5. Run:
 
-```json
-{
-  "rules": {
-    "trips": {
-      "shannon-birthday-2026": {
-        ".read": true,
-        ".write": true
-      }
-    }
-  }
-}
+```bash
+npm run env:from-firebase       # writes .env from firebase-config.json
+npm run firebase:login          # one-time Google sign-in for CLI
+npm run firebase:deploy-rules   # deploy database.rules.json
+npm run build                   # verify "Live sync on" in the app
+npm run android:build-release   # APK with Firebase baked in
 ```
+
+Trip data lives at `trips/shannon-birthday-2026` (override with `VITE_TRIP_PATH` in `.env`).
+
+Rules file: [`database.rules.json`](./database.rules.json) — open read/write on the trip node for family sideload use. Tighten before sharing widely.
 
 ## Android APK
 

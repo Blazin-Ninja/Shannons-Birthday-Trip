@@ -4,6 +4,7 @@ dist-ssr
 *.local
 .env
 .env.local
+firebase-config.json
 .DS_Store
 android/.gradle
 android/app/build

@@ -1,0 +1,28 @@
+{
+  "rules": {
+    "trips": {
+      "shannon-birthday-2026": {
+        ".read": true,
+        ".write": true,
+        "status": {
+          ".validate": "newData.hasChildren(['whereWeAre', 'leavingAt', 'headedTo', 'updatedAt'])"
+        },
+        "users": {
+          "$userId": {
+            ".validate": "newData.hasChildren(['name', 'color', 'lat', 'lng', 'updatedAt', 'sharing'])"
+          }
+        },
+        "plans": {
+          "$planId": {
+            ".validate": "newData.hasChildren(['title', 'createdById', 'createdByName', 'createdAt', 'status'])"
+          }
+        },
+        "drivePlans": {
+          "$dayId": {
+            ".validate": "newData.hasChildren(['dayId', 'departAt', 'stopIds', 'updatedAt'])"
+          }
+        }
+      }
+    }
+  }
+}
