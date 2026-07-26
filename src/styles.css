@@ -3215,16 +3215,21 @@ input {
   backdrop-filter: blur(14px);
 }
 
-.drive-jump-nav a {
+.drive-jump-nav a,
+.drive-jump-nav button {
   padding: 0.4rem 0.75rem;
+  border: none;
   border-radius: 99px;
+  background: transparent;
   color: #596762;
+  font: inherit;
   font-size: 0.74rem;
   font-weight: 800;
   text-decoration: none;
 }
 
-.drive-jump-nav a:hover {
+.drive-jump-nav a:hover,
+.drive-jump-nav button:hover {
   background: white;
   color: var(--gulf-teal);
 }
@@ -3839,7 +3844,8 @@ input {
     justify-content: flex-start;
   }
 
-  .drive-jump-nav a {
+  .drive-jump-nav a,
+  .drive-jump-nav button {
     flex-shrink: 0;
   }
 

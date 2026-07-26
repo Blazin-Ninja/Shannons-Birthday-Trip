@@ -164,6 +164,12 @@ export function DriveDayPage() {
     })
   }
 
+  const scrollToSection = (sectionId: string) => {
+    document
+      .getElementById(sectionId)
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   const routeUrl = (() => {
     const waypoints = orderedStops
       .map((spot) => `${spot.lat},${spot.lng}`)
@@ -283,9 +289,15 @@ export function DriveDayPage() {
         </section>
 
         <nav className="drive-jump-nav" aria-label="Jump to planner section">
-          <a href="#timing">Timing</a>
-          <a href="#stops">Add stops</a>
-          <a href="#schedule">Schedule</a>
+          <button type="button" onClick={() => scrollToSection('timing')}>
+            Timing
+          </button>
+          <button type="button" onClick={() => scrollToSection('stops')}>
+            Add stops
+          </button>
+          <button type="button" onClick={() => scrollToSection('schedule')}>
+            Schedule
+          </button>
         </nav>
 
         <div className="drive-planner-layout">
