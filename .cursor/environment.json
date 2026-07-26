@@ -1,5 +1,4 @@
 {
-  "$schema": "https://cursor.com/schemas/environment.schema.json",
   "name": "Shannon's Trip · Android SDK 35",
   "user": "ubuntu",
   "build": {
