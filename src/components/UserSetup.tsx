@@ -76,12 +76,17 @@ export function UserSetup({ onComplete }: Props) {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        Who&apos;s joining the celebration?
+        Who&apos;s traveling?
       </motion.h1>
       <p className="toon-lead setup-lead">
-        Pick your cartoon face for the live map. Location stays on this family
-        trip only — and fun plans need Shannon&apos;s OK.
+        Choose your profile to join the shared route, day plans, and family
+        updates.
       </p>
+      <div className="setup-travel-notes" aria-label="App features">
+        <span>⌖ Live trip map</span>
+        <span>▦ Shared day plans</span>
+        <span>○ Works offline</span>
+      </div>
 
       <div className="traveler-grid traveler-grid--toon">
         {TRAVELERS.map((t, i) => (
@@ -144,7 +149,7 @@ export function UserSetup({ onComplete }: Props) {
         {error && <p className="setup-error">{error}</p>}
 
         <button type="button" className="btn btn-toon-coral setup-start-btn" onClick={submit}>
-          🎂 Start Shannon&apos;s Birthday Trip
+          Continue to the trip <span aria-hidden>→</span>
         </button>
       </motion.div>
     </motion.div>

@@ -8,6 +8,7 @@ import { NearYou } from '../components/NearYou'
 import { Pensacola } from '../components/Pensacola'
 import { PlansBoard } from '../components/PlansBoard'
 import { Timeline } from '../components/Timeline'
+import { TripOverview } from '../components/TripOverview'
 import type { TouristSpot } from '../data/touristSpots'
 import { dayIdForStatus } from '../data/driveDays'
 import { useIdentity, useLogout } from '../context/IdentityContext'
@@ -147,9 +148,17 @@ export function MapHomePage() {
         onScrollTo={scrollToSection}
         externalFocus={mapFocus}
         onLogout={handleLogout}
+        activeDayId={activeDayId}
       />
 
       <div className="below-map storybook-zone">
+        <TripOverview
+          activeDayId={activeDayId}
+          status={status}
+          nearbyCount={nearbySpots.length}
+          pendingCount={pendingForDirector}
+          onScrollTo={scrollToSection}
+        />
         <NearYou
           spots={nearbySpots}
           activeDayId={activeDayId}

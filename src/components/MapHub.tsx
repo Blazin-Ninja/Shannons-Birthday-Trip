@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import type { TouristSpot } from '../data/touristSpots'
 import { firebaseEnabled, firebaseStatusLabel } from '../lib/firebase'
 import { googleMapsRouteUrl } from '../lib/routeDeviation'
@@ -27,6 +28,7 @@ type Props = {
   onScrollTo: (id: string) => void
   externalFocus?: { lat: number; lng: number; spotId: string } | null
   onLogout: () => void
+  activeDayId: string
 }
 
 export function MapHub({
@@ -45,6 +47,7 @@ export function MapHub({
   onScrollTo,
   externalFocus,
   onLogout,
+  activeDayId,
 }: Props) {
   const [selectedSpot, setSelectedSpot] = useState<TouristSpot | null>(null)
   const [focus, setFocus] = useState<{ lat: number; lng: number } | null>(null)
@@ -156,8 +159,8 @@ export function MapHub({
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <p className="map-hub-kicker">Birthday route map</p>
-          <h1 className="map-hub-title">Shannon&apos;s Birthday Trip!</h1>
+          <p className="map-hub-kicker">Live family road trip</p>
+          <h1 className="map-hub-title">Shannon&apos;s birthday route</h1>
           {!firebaseEnabled() && (
             <p className="map-hub-sync-warn">
               {firebaseStatusLabel()} — family phones won&apos;t share live GPS
@@ -171,7 +174,7 @@ export function MapHub({
             rel="noopener noreferrer"
             className="map-hub-route-link"
           >
-            Open full route in Google Maps
+            Open full route ↗
           </a>
         </motion.div>
         <div className="map-hub-user-wrap">
@@ -211,12 +214,17 @@ export function MapHub({
       </div>
 
       <nav className="map-hub-nav" aria-label="Trip sections">
+        <Link
+          to={`/drive/${activeDayId}`}
+          className="map-hub-nav-btn map-hub-nav-btn--primary"
+        >
+          <span aria-hidden>☀</span> Today
+        </Link>
         {[
-          { id: 'plans', label: 'Plans', badge: pendingPlanCount },
-          { id: 'near', label: 'Spots' },
-          { id: 'destinations', label: 'Hotels' },
-          { id: 'timeline', label: 'Timeline' },
-          { id: 'pensacola', label: 'Gulf Coast' },
+          { id: 'near', label: '⌖ Stops' },
+          { id: 'plans', label: '♡ Ideas', badge: pendingPlanCount },
+          { id: 'destinations', label: '▣ Stays' },
+          { id: 'timeline', label: '▦ Itinerary' },
         ].map((item) => (
           <button
             key={item.id}
@@ -291,7 +299,7 @@ export function MapHub({
         >
           <span className="handle-bar" />
           <span className="handle-label">
-            {nearbySpots.length} nearby adventures · within {amenityRadiusMiles} mi of route
+            {nearbySpots.length} nearby stops · within {amenityRadiusMiles} mi
             {selectedSpot ? ` · ${selectedSpot.name}` : ''}
           </span>
         </button>
