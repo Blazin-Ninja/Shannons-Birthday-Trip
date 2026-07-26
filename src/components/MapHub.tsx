@@ -11,6 +11,7 @@ import { LiveStatus } from './LiveStatus'
 import { SharingToggle } from './SharingToggle'
 import { SpotDetail } from './SpotDetail'
 import { TripMap } from './TripMap'
+import { milesFromPoint } from '../lib/cityDiscovery'
 
 type Props = {
   identity: LocalIdentity
@@ -29,6 +30,9 @@ type Props = {
   externalFocus?: { lat: number; lng: number; spotId: string } | null
   onLogout: () => void
   activeDayId: string
+  stayMode?: boolean
+  stayAnchorLabel?: string
+  stayAnchorPoint?: { lat: number; lng: number }
 }
 
 export function MapHub({
@@ -48,6 +52,9 @@ export function MapHub({
   externalFocus,
   onLogout,
   activeDayId,
+  stayMode = false,
+  stayAnchorLabel = 'hotel',
+  stayAnchorPoint,
 }: Props) {
   const [selectedSpot, setSelectedSpot] = useState<TouristSpot | null>(null)
   const [focus, setFocus] = useState<{ lat: number; lng: number } | null>(null)
@@ -150,6 +157,8 @@ export function MapHub({
         <AmenityRadiusControl
           radiusMiles={amenityRadiusMiles}
           onChange={onAmenityRadiusChange}
+          stayMode={stayMode}
+          stayAnchorLabel={stayAnchorLabel}
         />
       </div>
 
@@ -299,7 +308,9 @@ export function MapHub({
         >
           <span className="handle-bar" />
           <span className="handle-label">
-            {nearbySpots.length} nearby stops · within {amenityRadiusMiles} mi
+            {nearbySpots.length} {stayMode ? 'local picks' : 'nearby stops'} · within{' '}
+            {amenityRadiusMiles} mi
+            {stayMode ? ` of ${stayAnchorLabel}` : ''}
             {selectedSpot ? ` · ${selectedSpot.name}` : ''}
           </span>
         </button>
@@ -307,7 +318,15 @@ export function MapHub({
         <div className="map-hub-sheet-body">
           {selectedSpot ? (
             <div className="map-hub-spot-detail">
-              <SpotDetail spot={selectedSpot} compact />
+              <SpotDetail
+                spot={selectedSpot}
+                compact
+                distanceLabel={
+                  stayMode && stayAnchorPoint
+                    ? `${milesFromPoint(selectedSpot, stayAnchorPoint)} mi from ${stayAnchorLabel}`
+                    : undefined
+                }
+              />
               <div className="row">
                 <button
                   type="button"
@@ -328,9 +347,11 @@ export function MapHub({
               </div>
             </div>
           ) : (
-            <p className="muted map-hub-sheet-hint">
-              Tap a marker on the map to see details, or browse spots below.
-            </p>
+              <p className="muted map-hub-sheet-hint">
+                {stayMode
+                  ? 'Tap a marker for details, or browse local picks below.'
+                  : 'Tap a marker on the map to see details, or browse spots below.'}
+              </p>
           )}
 
           <div className="map-hub-spot-scroll">

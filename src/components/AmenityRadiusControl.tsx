@@ -4,9 +4,16 @@ import { AMENITY_RADIUS_PRESETS } from '../lib/amenityRadius'
 type Props = {
   radiusMiles: number
   onChange: (miles: number) => void
+  stayMode?: boolean
+  stayAnchorLabel?: string
 }
 
-export function AmenityRadiusControl({ radiusMiles, onChange }: Props) {
+export function AmenityRadiusControl({
+  radiusMiles,
+  onChange,
+  stayMode = false,
+  stayAnchorLabel = 'hotel',
+}: Props) {
   const [open, setOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
 
@@ -39,8 +46,18 @@ export function AmenityRadiusControl({ radiusMiles, onChange }: Props) {
       <button
         type="button"
         className={`map-control-btn map-control-btn--radius${open ? ' map-control-btn--active' : ''}`}
-        aria-label={open ? 'Close amenity search radius' : 'Adjust amenity search radius'}
-        title={open ? 'Close radius settings' : 'How far off route to search for amenities'}
+        aria-label={
+          open
+            ? 'Close search radius'
+            : stayMode
+              ? 'Adjust search radius from hotel'
+              : 'Adjust amenity search radius'
+        }
+        title={
+          stayMode
+            ? `How far from ${stayAnchorLabel} to search`
+            : 'How far off route to search for amenities'
+        }
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
       >
@@ -51,9 +68,11 @@ export function AmenityRadiusControl({ radiusMiles, onChange }: Props) {
       </button>
 
       {open ? (
-        <div className="map-radius-panel" role="dialog" aria-label="Amenity search radius">
+        <div className="map-radius-panel" role="dialog" aria-label="Search radius">
           <div className="map-radius-panel-head">
-            <p className="map-radius-title">Search off route</p>
+            <p className="map-radius-title">
+              {stayMode ? 'Search nearby' : 'Search off route'}
+            </p>
             <button
               type="button"
               className="map-radius-close"
@@ -63,7 +82,11 @@ export function AmenityRadiusControl({ radiusMiles, onChange }: Props) {
               ×
             </button>
           </div>
-          <p className="map-radius-hint">Show amenities within this distance of the driving route.</p>
+          <p className="map-radius-hint">
+            {stayMode
+              ? `Show places within this distance of ${stayAnchorLabel}.`
+              : 'Show amenities within this distance of the driving route.'}
+          </p>
           <div className="map-radius-presets">
             {AMENITY_RADIUS_PRESETS.map((preset) => (
               <button
@@ -86,7 +109,9 @@ export function AmenityRadiusControl({ radiusMiles, onChange }: Props) {
               value={radiusMiles}
               onChange={(e) => onChange(Number(e.target.value))}
             />
-            <span className="map-radius-slider-label">{radiusMiles} mi from route</span>
+            <span className="map-radius-slider-label">
+              {radiusMiles} mi from {stayMode ? stayAnchorLabel : 'route'}
+            </span>
           </label>
         </div>
       ) : null}

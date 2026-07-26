@@ -1,4 +1,5 @@
 import type { SpotKind, TouristSpot } from '../data/touristSpots'
+import { milesFromPoint } from './cityDiscovery'
 import { estimateRouteDetour } from './routeDeviation'
 
 const KIND_PRIORITY: SpotKind[] = [
@@ -12,7 +13,7 @@ const KIND_PRIORITY: SpotKind[] = [
   'stop',
 ]
 
-function sortByProximity(spots: TouristSpot[]): TouristSpot[] {
+function sortByRouteProximity(spots: TouristSpot[]): TouristSpot[] {
   return [...spots].sort((a, b) => {
     const da = estimateRouteDetour(a)
     const db = estimateRouteDetour(b)
@@ -21,14 +22,30 @@ function sortByProximity(spots: TouristSpot[]): TouristSpot[] {
   })
 }
 
-/** Pick a small curated set with as many different spot kinds as possible. */
+function sortByPointProximity(
+  spots: TouristSpot[],
+  point: { lat: number; lng: number },
+): TouristSpot[] {
+  return [...spots].sort(
+    (a, b) => milesFromPoint(a, point) - milesFromPoint(b, point),
+  )
+}
+
+/** Pick a curated set with as many different spot kinds as possible. */
 export function pickDiverseNearbySpots(
   spots: TouristSpot[],
   limit = 4,
+  nearPoint?: { lat: number; lng: number },
 ): TouristSpot[] {
-  if (spots.length <= limit) return sortByProximity(spots)
+  if (spots.length <= limit) {
+    return nearPoint
+      ? sortByPointProximity(spots, nearPoint)
+      : sortByRouteProximity(spots)
+  }
 
-  const sorted = sortByProximity(spots)
+  const sorted = nearPoint
+    ? sortByPointProximity(spots, nearPoint)
+    : sortByRouteProximity(spots)
   const picked: TouristSpot[] = []
   const pickedIds = new Set<string>()
 

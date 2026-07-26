@@ -60,8 +60,8 @@ const LS_USERS = 'sbt-users-v1'
 const LS_DRIVE_PLANS = 'sbt-drive-plans-v1'
 
 export const defaultStatus: TripStatus = {
-  whereWeAre: 'Oklahoma City',
-  leavingAt: '2026-07-27T07:00',
+  whereWeAre: 'Shreveport',
+  leavingAt: '2026-07-28T09:00',
   headedTo: 'Shreveport',
   updatedAt: Date.now(),
   viaDfw: false,

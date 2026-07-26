@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Confetti } from '../components/Confetti'
 import { Destinations } from '../components/Destinations'
 import { DirectorProposalPopup } from '../components/DirectorProposalPopup'
+import { ExploreHereBanner } from '../components/ExploreHereBanner'
 import { MapHub } from '../components/MapHub'
 import { NearYou } from '../components/NearYou'
 import { Pensacola } from '../components/Pensacola'
@@ -23,6 +24,11 @@ import {
   loadAmenityRadiusMi,
   saveAmenityRadiusMi,
 } from '../lib/amenityRadius'
+import {
+  filterSpotsNearPoint,
+  isStayStatus,
+  stayAnchor,
+} from '../lib/cityDiscovery'
 import { pickDiverseNearbySpots } from '../lib/nearbySpots'
 import { filterSpotsForAmenityRadius } from '../lib/routeDeviation'
 import { allMapSpots, resolveSegment, spotsForStatus } from '../lib/segments'
@@ -56,16 +62,30 @@ export function MapHomePage() {
     }
   }, [])
 
+  const stayMode = useMemo(() => isStayStatus(status), [status])
+  const anchor = useMemo(() => stayAnchor(status), [status])
   const legSpots = useMemo(() => spotsForStatus(status), [status])
-  const mapSpots = useMemo(
-    () => filterSpotsForAmenityRadius(allMapSpots(status), amenityRadiusMiles),
-    [status, amenityRadiusMiles],
+  const mapSpots = useMemo(() => {
+    if (stayMode) {
+      return filterSpotsNearPoint(legSpots, anchor, amenityRadiusMiles)
+    }
+    return filterSpotsForAmenityRadius(allMapSpots(status), amenityRadiusMiles)
+  }, [stayMode, legSpots, anchor, amenityRadiusMiles, status])
+  const spots = useMemo(() => {
+    if (stayMode) {
+      return filterSpotsNearPoint(legSpots, anchor, amenityRadiusMiles)
+    }
+    return filterSpotsForAmenityRadius(legSpots, amenityRadiusMiles)
+  }, [stayMode, legSpots, anchor, amenityRadiusMiles])
+  const nearbySpots = useMemo(
+    () =>
+      pickDiverseNearbySpots(
+        spots,
+        stayMode ? Math.max(12, spots.length) : 4,
+        stayMode ? anchor : undefined,
+      ),
+    [spots, stayMode, anchor],
   )
-  const spots = useMemo(
-    () => filterSpotsForAmenityRadius(legSpots, amenityRadiusMiles),
-    [legSpots, amenityRadiusMiles],
-  )
-  const nearbySpots = useMemo(() => pickDiverseNearbySpots(spots, 4), [spots])
   const activeDayId = useMemo(() => dayIdForStatus(status), [status])
 
   const handleAmenityRadiusChange = useCallback((miles: number) => {
@@ -149,9 +169,17 @@ export function MapHomePage() {
         externalFocus={mapFocus}
         onLogout={handleLogout}
         activeDayId={activeDayId}
+        stayMode={stayMode}
+        stayAnchorLabel={anchor.label}
+        stayAnchorPoint={anchor}
       />
 
       <div className="below-map storybook-zone">
+        <ExploreHereBanner
+          identity={identity}
+          status={status}
+          onLocalUpdate={setStatus}
+        />
         <TripOverview
           activeDayId={activeDayId}
           status={status}
@@ -162,6 +190,9 @@ export function MapHomePage() {
         <NearYou
           spots={nearbySpots}
           activeDayId={activeDayId}
+          stayMode={stayMode}
+          cityName={status.whereWeAre}
+          anchor={stayMode ? anchor : undefined}
           onPropose={(spot) => void proposeSpot(spot)}
           onFocus={(spot) => {
             setMapFocus({ lat: spot.lat, lng: spot.lng, spotId: spot.id })

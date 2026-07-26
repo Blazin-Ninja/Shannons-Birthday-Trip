@@ -113,6 +113,9 @@ const BASE_TOURIST_SPOTS: TouristSpot[] = [
     lng: -93.7499,
     segment: 'shreveport',
     blurb: 'Birthplace of the Louisiana Hayride — music history steps from Market St.',
+    description:
+      'Historic Art Deco auditorium where the Louisiana Hayride launched careers. Worth a quick look and photo stop while downtown.',
+    mapsUrl: 'https://www.google.com/maps/place/Shreveport+Municipal+Auditorium/',
     kind: 'landmark',
   },
   {
@@ -130,7 +133,10 @@ const BASE_TOURIST_SPOTS: TouristSpot[] = [
     lat: 32.5145,
     lng: -93.7492,
     segment: 'shreveport',
-    blurb: 'Red River walk and sunset photos on Shannon’s birthday trip.',
+    blurb: 'Red River walk and sunset photos — easiest free outing from the Hilton.',
+    description:
+      'Paved riverfront paths, festival plaza energy, and skyline views across to Bossier. Ideal golden-hour walk before dinner.',
+    mapsUrl: 'https://www.google.com/maps/place/Shreveport+Riverfront/',
     kind: 'nature',
   },
   {
@@ -139,7 +145,11 @@ const BASE_TOURIST_SPOTS: TouristSpot[] = [
     lat: 32.5135,
     lng: -93.7231,
     segment: 'shreveport',
-    blurb: 'Bossier City riverwalk — dinner, shops, and AC.',
+    blurb: 'Bossier City riverwalk — dinner, shops, and AC across the bridge.',
+    description:
+      'Outdoor outlet and entertainment complex with restaurants, shops, and river views. Easy dinner destination from downtown.',
+    websiteUrl: 'https://www.louisianaboardwalk.com/',
+    mapsUrl: 'https://www.google.com/maps/place/Louisiana+Boardwalk+Outlets/',
     kind: 'food',
   },
   {
@@ -148,7 +158,10 @@ const BASE_TOURIST_SPOTS: TouristSpot[] = [
     lat: 32.5128,
     lng: -93.7478,
     segment: 'shreveport',
-    blurb: 'Live music and late-night energy across the river from the hotel.',
+    blurb: 'Live music and late-night energy around the riverfront casinos.',
+    description:
+      'Downtown entertainment pocket with casinos, live music, and night spots. Good after-dinner option within a short walk or rideshare.',
+    mapsUrl: 'https://www.google.com/maps/place/Shreveport+Riverfront/',
     kind: 'fun',
   },
 

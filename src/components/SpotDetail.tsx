@@ -7,10 +7,17 @@ import { estimateRouteDetour, formatDetour } from '../lib/routeDeviation'
 type Props = {
   spot: TouristSpot
   compact?: boolean
+  distanceLabel?: string
 }
 
-export function SpotDetail({ spot, compact = false }: Props) {
-  const meta = isSpotKind(spot.kind) ? SPOT_KIND_META[spot.kind] : SPOT_KIND_META.landmark
+export function SpotDetail({
+  spot,
+  compact = false,
+  distanceLabel,
+}: Props) {
+  const meta = isSpotKind(spot.kind)
+    ? SPOT_KIND_META[spot.kind]
+    : SPOT_KIND_META.landmark
   const { description, mapsUrl, websiteUrl } = resolveSpotDetails(spot)
   const detour = estimateRouteDetour(spot)
 
@@ -27,9 +34,13 @@ export function SpotDetail({ spot, compact = false }: Props) {
           </strong>
           <span className="spot-detail-tag">{meta.label}</span>
           <span
-            className={`spot-detail-detour${detour.onRoute ? ' spot-detail-detour--on-route' : ''}`}
+            className={`spot-detail-detour${
+              distanceLabel || detour.onRoute
+                ? ' spot-detail-detour--on-route'
+                : ''
+            }`}
           >
-            {formatDetour(detour)}
+            {distanceLabel ?? formatDetour(detour)}
           </span>
         </div>
       </div>
@@ -41,7 +52,7 @@ export function SpotDetail({ spot, compact = false }: Props) {
           rel="noopener noreferrer"
           className="spot-detail-link"
         >
-          📍 Google listing
+          Open in Google Maps
         </a>
         {websiteUrl ? (
           <a
@@ -50,7 +61,7 @@ export function SpotDetail({ spot, compact = false }: Props) {
             rel="noopener noreferrer"
             className="spot-detail-link"
           >
-            🌐 Website
+            Website
           </a>
         ) : null}
       </div>
