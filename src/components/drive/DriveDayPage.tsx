@@ -5,6 +5,7 @@ import {
   defaultDrivePlan,
   getDriveDayConfig,
   getItineraryDay,
+  normalizeDrivePlanDepartAt,
   spotsForDriveDay,
 } from '../../data/driveDays'
 import { dwellMinutesForSpot, spotById } from '../../data/touristSpots'
@@ -45,7 +46,12 @@ export function DriveDayPage() {
   useEffect(() => {
     if (!dayId) return
     if (remotePlan) {
-      setPlan(remotePlan)
+      const departAt = normalizeDrivePlanDepartAt(dayId, remotePlan.departAt)
+      const normalizedPlan = { ...remotePlan, departAt }
+      setPlan(normalizedPlan)
+      if (departAt !== remotePlan.departAt) {
+        void saveDrivePlan(normalizedPlan)
+      }
       return
     }
     setPlan(defaultDrivePlan(dayId))
@@ -125,8 +131,10 @@ export function DriveDayPage() {
     }
   }
 
-  const updateDepartAt = (departAt: string) => {
-    void persist({ ...plan, departAt })
+  const updateDepartAt = (time: string) => {
+    if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(time)) return
+    const date = normalizeDrivePlanDepartAt(dayId, plan.departAt).slice(0, 10)
+    void persist({ ...plan, departAt: `${date}T${time}` })
   }
 
   const toggleSpot = (spotId: string) => {
@@ -313,9 +321,10 @@ export function DriveDayPage() {
               <label className="field drive-date-field">
                 Estimated departure
                 <input
-                  type="datetime-local"
-                  value={plan.departAt}
+                  type="time"
+                  value={plan.departAt.slice(11, 16)}
                   onChange={(event) => updateDepartAt(event.target.value)}
+                  required
                 />
               </label>
               <div className="drive-route-line">

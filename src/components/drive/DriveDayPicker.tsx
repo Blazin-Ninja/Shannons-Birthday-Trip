@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import {
   dayIdForStatus,
   DRIVE_DAY_CONFIGS,
+  normalizeDrivePlanDepartAt,
 } from '../../data/driveDays'
 import { ITINERARY } from '../../data/itinerary'
 import {
@@ -162,7 +163,10 @@ export function DriveDayPicker() {
                     <small>Start</small>
                     <strong>
                       {new Date(
-                        plan?.departAt ?? config?.defaultDepartAt ?? '',
+                        normalizeDrivePlanDepartAt(
+                          day.id,
+                          plan?.departAt ?? config?.defaultDepartAt ?? '',
+                        ),
                       ).toLocaleTimeString([], {
                         hour: 'numeric',
                         minute: '2-digit',

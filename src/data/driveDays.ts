@@ -114,6 +114,19 @@ export function dayIdForStatus(status: TripStatus): string {
   return 'd1'
 }
 
+export function normalizeDrivePlanDepartAt(
+  dayId: string,
+  departAt: string,
+): string {
+  const fallback =
+    getDriveDayConfig(dayId)?.defaultDepartAt ?? '2026-07-27T07:00'
+  const date = fallback.slice(0, 10)
+  const fallbackTime = fallback.slice(11, 16)
+  const time = departAt.match(/T([01]\d|2[0-3]):([0-5]\d)/)
+
+  return `${date}T${time ? `${time[1]}:${time[2]}` : fallbackTime}`
+}
+
 export function defaultDrivePlan(dayId: string) {
   const config = getDriveDayConfig(dayId)
   return {
